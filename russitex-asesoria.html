@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asesoría — Russitex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --azul-oficio:#2C5C7C; --azul-profundo:#1C3D54; --ladrillo:#A95445; --ladrillo-osc:#8F4537;
+  --arena:#D8C2A1; --crema:#FDFBF7; --crema-osc:#F1EADC; --tinta:#3B302A; --gris-calido:#6E665C;
+  --linea:#E0D8CB; --azul-claro:#E8EFF4; --verde:#5B7A52; --rojo:#9E3B2E; --ambar:#D89A3C; --verde-wa:#25D366;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:22px; --r-pill:100px;
+  --sh-sm:0 2px 8px rgba(59,48,42,0.06); --sh-md:0 6px 20px rgba(59,48,42,0.10); --sh-lg:0 16px 38px rgba(59,48,42,0.14);
+  --f-head:'Fraunces', Georgia, serif; --f-body:'Mulish', system-ui, sans-serif;
+  /* Alias de nombres antiguos -> paleta aprobada */
+  --azul:#2C5C7C; --azul-oscuro:#1C3D54; --terracota:#A95445; --terracota-cl:#C16A52;
+  --carbon:#3B302A; --gris:#6E665C; --gris-claro:#E0D8CB; --verde-bg:#EAF1E6;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+body { font-family: 'Mulish', sans-serif; background: var(--crema); color: var(--carbon); overflow-x: hidden; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+/* ════════ COMPONENTES GLOBALES APROBADOS ════════ */
+/* ── TOPBAR ROTANTE HORIZONTAL ── */
+.topbar {
+  background: var(--azul-profundo);
+  height: 38px; overflow: hidden;
+  position: relative;
+}
+.topbar-inner { position: relative; width: 100%; height: 100%; }
+.topbar-msg {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.78rem; color: rgba(255,255,255,0.82);
+  letter-spacing: 0.02em; white-space: nowrap;
+  padding: 0 1rem; text-align: center;
+  opacity: 0;
+}
+.topbar-msg strong { color: #fff; font-weight: 600; }
+/* Conjuntos superpuestos: escritorio/tablet (2 mensajes) y celular (3 mensajes) */
+.topbar-set { position: absolute; inset: 0; }
+.topbar-set-mobile { display: none; }
+/* Escritorio/tablet: 2 mensajes, bucle 10s */
+.topbar-set-desktop .topbar-msg:nth-child(1) { animation: slideMsg 10s ease-in-out 0s infinite; }
+.topbar-set-desktop .topbar-msg:nth-child(2) { animation: slideMsg 10s ease-in-out 5s infinite; }
+
+@keyframes slideMsg {
+  0%   { opacity: 0; transform: translateX(60px); }
+  8%   { opacity: 1; transform: translateX(0); }
+  42%  { opacity: 1; transform: translateX(0); }
+  50%  { opacity: 0; transform: translateX(-60px); }
+  100% { opacity: 0; transform: translateX(60px); }
+}
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 300;
+  background: rgba(250,246,238,0.96); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--linea);
+}
+.header-inner { display: flex; align-items: center; padding: 0 5%; height: 68px; gap: 2rem; }
+.logo {
+  font-family: var(--f-head); font-size: 1.6rem; font-weight: 600;
+  color: var(--azul-oficio); text-decoration: none; letter-spacing: -0.01em; white-space: nowrap;
+}
+.logo span { color: var(--ladrillo); }
+nav { display: flex; gap: 1.7rem; flex: 1; position: relative; }
+nav a {
+  text-decoration: none; color: var(--tinta);
+  font-size: 0.92rem; font-weight: 500; white-space: nowrap; transition: color 0.2s;
+  display: flex; align-items: center; gap: 0.3rem; padding: 0 0 4px; position: relative;
+}
+nav a:not(.active)::after {
+  content: ''; position: absolute; left: 0; right: 100%; bottom: -2px;
+  height: 2px; background: var(--ladrillo); transition: right 0.25s ease;
+}
+nav a:hover { color: var(--azul-oficio); }
+nav a:hover:not(.active)::after { right: 0; }
+nav a.active { color: var(--azul-oficio); font-weight: 700; }
+nav a.active::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -2px;
+  height: 2px; background: var(--ladrillo); border-radius: 2px;
+}
+.nav-catalog-wrap { position: relative; }
+.nav-catalog-wrap > a svg { transition: transform 0.2s; }
+.nav-catalog-wrap:hover > a { color: var(--azul-oficio); }
+.nav-catalog-wrap:hover > a svg { transform: rotate(180deg); }
+
+/* ── MEGA MENU ── */
+.mega-menu {
+  position: absolute; top: calc(100% + 16px); left: -2rem; width: 620px;
+  background: #fff; border-radius: var(--r-xl);
+  box-shadow: var(--sh-lg), 0 0 0 1px var(--linea);
+  padding: 1.6rem; opacity: 0; pointer-events: none;
+  transform: translateY(8px); transition: opacity 0.22s ease, transform 0.22s ease; z-index: 400;
+}
+.nav-catalog-wrap:hover .mega-menu { opacity: 1; pointer-events: all; transform: translateY(0); }
+.mega-menu-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gris-calido); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--linea);
+}
+.mega-cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 1.2rem; }
+.mega-cat {
+  display: flex; flex-direction: column; align-items: center; gap: 0.45rem;
+  padding: 0.9rem 0.5rem; border-radius: var(--r-md); cursor: pointer;
+  text-decoration: none; transition: all 0.18s; border: 1.5px solid transparent;
+}
+.mega-cat:hover { background: var(--azul-claro); border-color: var(--azul-oficio); transform: translateY(-2px); }
+.mega-cat:not(.active)::after, .mega-cat:hover:not(.active)::after { content: none; }
+.mega-cat-icon { color: var(--azul-oficio); display: flex; }
+.mega-cat-icon svg { width: 26px; height: 26px; stroke: currentColor; stroke-width: 0.75px; stroke-linejoin: round; stroke-linecap: round; }
+.mega-cat-icon svg * { vector-effect: non-scaling-stroke; }
+.mega-cat-icon svg[viewBox^="0 0 682"] { stroke-width: 1.3px; }
+.mega-cat[data-filter="cierres"] .mega-cat-icon svg { stroke-width: 1.5px; }
+.mega-cat-name { font-size: 0.78rem; font-weight: 600; color: var(--tinta); text-align: center; line-height: 1.2; }
+.mega-cat-count { font-size: 0.68rem; color: var(--gris-calido); }
+.mega-mobile { display: none; }
+.mega-footer { padding-top: 1rem; border-top: 1px solid var(--linea); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.mega-ver-todo {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--azul-oficio); color: #fff; text-decoration: none;
+  padding: 0.55rem 1.2rem; border-radius: var(--r-pill);
+  font-size: 0.82rem; font-weight: 700; transition: background 0.2s, transform 0.2s;
+}
+.mega-ver-todo:hover { background: var(--azul-profundo); color: #fff; transform: translateY(-1px); }
+.mega-ver-todo svg { width: 15px; height: 15px; }
+.mega-promo { font-size: 0.78rem; color: var(--gris-calido); }
+.mega-promo strong { color: var(--ladrillo); }
+
+/* Header icons + hamburger */
+.header-icons { display: flex; align-items: center; gap: 0.3rem; }
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--azul-oficio); transition: background 0.2s;
+}
+.icon-btn:hover { background: var(--azul-claro); }
+.icon-btn svg { width: 19px; height: 19px; }
+.cart-btn { position: relative; }
+.cart-badge {
+  position: absolute; top: 3px; right: 3px; min-width: 17px; height: 17px; padding: 0 4px;
+  border-radius: var(--r-pill); background: var(--ladrillo); color: #fff;
+  font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+.nav-toggle {
+  display: none; width: 40px; height: 40px; border-radius: 50%;
+  background: none; border: none; cursor: pointer;
+  align-items: center; justify-content: center; color: var(--azul-oficio);
+}
+.nav-toggle svg { width: 22px; height: 22px; }
+
+/* ── BÚSQUEDA EN CABECERA (desplegable) ── */
+.icon-btn.active { background: var(--azul-claro); color: var(--azul-oficio); }
+.header-search {
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: rgba(250,246,238,0.98); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--linea); box-shadow: var(--sh-md);
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height 0.28s ease, opacity 0.2s ease;
+}
+.header-search.open { max-height: 130px; opacity: 1; }
+.header-search-inner {
+  max-width: 720px; margin: 0 auto; padding: 0.9rem 5%;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.header-search-box { position: relative; flex: 1; }
+.header-search-box > svg {
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; color: var(--gris-calido); pointer-events: none;
+}
+.header-search-input {
+  width: 100%; height: 46px; padding: 0 16px 0 46px;
+  border: 1.5px solid var(--linea); border-radius: var(--r-pill);
+  background: #fff; font-family: var(--f-body); font-size: 0.98rem; color: var(--tinta);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.header-search-input:focus { border-color: var(--azul-oficio); box-shadow: 0 0 0 3px rgba(44,92,124,0.12); }
+.header-search-input::placeholder { color: var(--gris-calido); }
+.header-search-close {
+  width: 44px; height: 44px; border-radius: 50%; border: none; background: none; cursor: pointer;
+  color: var(--azul-oficio); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.2s;
+}
+.header-search-close:hover { background: var(--azul-claro); }
+.header-search-close svg { width: 20px; height: 20px; }
+
+
+/* ── BREADCRUMB ── */
+.breadcrumb-bar { background: white; border-bottom: 1px solid var(--gris-claro); padding: 0.75rem 8%; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--gris); }
+.breadcrumb a { color: var(--gris); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--azul); }
+.breadcrumb .sep { color: var(--gris-claro); }
+.breadcrumb .current { color: var(--carbon); font-weight: 500; }
+
+/* ── BANNER ── */
+.page-banner {
+  background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul) 65%, #3a6fa0 100%);
+  padding: 5.5rem 8% 5rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.page-banner::before {
+  content: ''; position: absolute; width: 600px; height: 600px; border-radius: 50%;
+  background: rgba(255,255,255,0.04); top: -250px; right: -150px; pointer-events: none;
+  animation: float-blob 9s ease-in-out infinite;
+}
+.page-banner::after {
+  content: ''; position: absolute; width: 280px; height: 280px; border-radius: 50%;
+  background: rgba(255,255,255,0.03); bottom: -80px; left: 5%; pointer-events: none;
+  animation: float-blob 6s ease-in-out 2s infinite;
+}
+@keyframes float-blob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+.banner-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.9rem; position: relative; z-index: 1; }
+.banner-title { font-family: 'Fraunces', serif; font-size: clamp(2.2rem, 3.5vw, 3.4rem); font-weight: 700; color: white; line-height: 1.12; margin-bottom: 1.1rem; animation: fadeUp 0.6s ease both; max-width: 680px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; }
+.banner-title em { font-style: italic; color: #f0d5c8; }
+.banner-sub { font-size: 1.05rem; color: rgba(255,255,255,0.75); line-height: 1.7; margin-bottom: 0.8rem; animation: fadeUp 0.6s 0.1s ease both; max-width: 560px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; }
+.banner-support { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.65; font-style: italic; animation: fadeUp 0.6s 0.18s ease both; position: relative; z-index: 1; }
+
+/* ── INTRODUCCIÓN ── */
+.intro-section { background: white; padding: 5rem 8%; border-bottom: 1px solid var(--gris-claro); }
+.intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.intro-left .s-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terracota); margin-bottom: 0.7rem; }
+.intro-left h2 { font-family: 'Fraunces', serif; font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 700; color: var(--azul-oscuro); line-height: 1.2; margin-bottom: 1rem; }
+.intro-left h2 em { font-style: italic; color: var(--terracota); }
+.intro-left p { font-size: 0.95rem; color: var(--gris); line-height: 1.8; }
+.intro-benefits { display: flex; flex-direction: column; gap: 1rem; }
+.benefit-item {
+  display: flex; gap: 1rem; align-items: flex-start;
+  padding: 1.1rem 1.2rem; background: var(--crema);
+  border-radius: 14px; border-left: 3px solid var(--azul);
+  transition: all 0.2s;
+}
+.benefit-item:hover { background: var(--azul-claro); border-left-color: var(--azul); transform: translateX(4px); }
+.benefit-icon { font-size: 1.4rem; flex-shrink: 0; }
+.benefit-text strong { font-size: 0.88rem; font-weight: 700; color: var(--azul); display: block; margin-bottom: 0.2rem; }
+.benefit-text span { font-size: 0.82rem; color: var(--gris); line-height: 1.5; }
+
+/* ── SECCIÓN DE OPCIONES ── */
+.opciones-section { background: var(--crema); padding: 5rem 8%; }
+.opciones-header { text-align: center; margin-bottom: 3rem; }
+.opciones-header .s-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terracota); margin-bottom: 0.7rem; }
+.opciones-header h2 { font-family: 'Fraunces', serif; font-size: clamp(1.7rem, 2.8vw, 2.4rem); font-weight: 700; color: var(--azul-oscuro); }
+.opciones-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.opcion-card {
+  background: white; border-radius: 22px;
+  border: 1.5px solid var(--gris-claro);
+  padding: 2.5rem; cursor: pointer;
+  transition: all 0.28s; position: relative; overflow: hidden;
+}
+.opcion-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.opcion-card.rapida::before { background: var(--azul); }
+.opcion-card.personalizada::before { background: var(--terracota); }
+.opcion-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(47,95,143,0.1); border-color: transparent; }
+.opcion-card:hover::before { transform: scaleX(1); }
+.opcion-card.active { border-color: var(--azul); box-shadow: 0 16px 48px rgba(47,95,143,0.12); }
+.opcion-card.active::before { transform: scaleX(1); }
+.opcion-card.personalizada.active { border-color: var(--terracota); }
+.card-icon-big { font-size: 2.5rem; margin-bottom: 1.2rem; display: block; }
+.opcion-card h3 { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.7rem; }
+.opcion-card.rapida h3 { color: var(--azul); }
+.opcion-card.personalizada h3 { color: var(--terracota); }
+.opcion-card p { font-size: 0.9rem; color: var(--gris); line-height: 1.7; margin-bottom: 0.6rem; }
+.opcion-hint { font-size: 0.78rem; color: var(--gris); font-style: italic; margin-bottom: 1.5rem; display: block; }
+.btn-opcion {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.75rem 1.6rem; border-radius: 100px;
+  font-family: 'Mulish', sans-serif; font-size: 0.85rem; font-weight: 700;
+  border: none; cursor: pointer; transition: all 0.2s;
+}
+.btn-opcion.rapida { background: var(--azul); color: white; }
+.btn-opcion.rapida:hover { background: var(--azul-oscuro); transform: translateY(-1px); }
+.btn-opcion.personalizada { background: var(--terracota); color: white; }
+.btn-opcion.personalizada:hover { background: var(--terracota-cl); transform: translateY(-1px); }
+
+/* ── CONTENIDO DE OPCIONES ── */
+.content-section { padding: 0 8% 5rem; background: var(--crema); }
+.content-pane { display: none; animation: fadeUp 0.35s ease both; }
+.content-pane.active { display: block; }
+
+/* CHATBOT */
+.chat-layout { display: grid; grid-template-columns: 1fr 320px; gap: 2rem; align-items: start; }
+.chat-container { background: white; border-radius: 22px; border: 1px solid var(--gris-claro); overflow: hidden; display: flex; flex-direction: column; height: 560px; box-shadow: 0 8px 32px rgba(47,95,143,0.08); }
+.chat-header { background: linear-gradient(135deg, var(--azul-oscuro), var(--azul)); padding: 1.1rem 1.4rem; display: flex; align-items: center; gap: 0.9rem; flex-shrink: 0; }
+.chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+.chat-header-info h3 { font-size: 0.92rem; font-weight: 700; color: white; }
+.chat-header-info p { font-size: 0.72rem; color: rgba(255,255,255,0.65); }
+.online-dot { width: 9px; height: 9px; border-radius: 50%; background: #7ecba0; margin-left: auto; flex-shrink: 0; animation: pulse-dot 2s ease-in-out infinite; box-shadow: 0 0 0 2px rgba(126,203,160,0.3); }
+@keyframes pulse-dot { 0%,100%{box-shadow:0 0 0 2px rgba(126,203,160,0.3)} 50%{box-shadow:0 0 0 6px rgba(126,203,160,0.1)} }
+.chat-messages { flex: 1; overflow-y: auto; padding: 1.2rem; display: flex; flex-direction: column; gap: 0.8rem; scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--gris-claro) transparent; }
+.msg { display: flex; gap: 0.6rem; max-width: 86%; animation: fadeUp 0.25s ease both; }
+.msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.msg-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; flex-shrink: 0; margin-top: 2px; }
+.msg.bot .msg-avatar { background: var(--azul-claro); }
+.msg.user .msg-avatar { background: var(--crema-osc); }
+.msg-bubble { padding: 0.72rem 1rem; border-radius: 16px; font-size: 0.855rem; line-height: 1.62; }
+.msg-bubble strong { font-weight: 700; color: var(--azul-profundo); }
+.msg.bot .msg-bubble { background: var(--crema); color: var(--carbon); border-radius: 4px 16px 16px 16px; }
+.msg.user .msg-bubble { background: var(--azul); color: white; border-radius: 16px 4px 16px 16px; }
+.msg-time { font-size: 0.62rem; color: var(--gris); margin-top: 0.2rem; }
+.msg.user .msg-time { text-align: right; }
+.typing-indicator { display: none; align-self: flex-start; }
+.typing-indicator.visible { display: flex; gap: 0.6rem; }
+.typing-bubble { background: var(--crema); padding: 0.72rem 1rem; border-radius: 4px 16px 16px 16px; display: flex; gap: 4px; align-items: center; }
+.typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gris); animation: typing 1.4s ease-in-out infinite; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-4px);opacity:1} }
+.quick-suggestions { padding: 0.6rem 1rem; display: flex; gap: 0.4rem; flex-wrap: wrap; border-top: 1px solid var(--gris-claro); background: white; flex-shrink: 0; }
+.suggestion-chip { background: var(--crema); border: 1px solid var(--gris-claro); color: var(--azul); font-size: 0.74rem; font-weight: 500; padding: 0.28rem 0.72rem; border-radius: 100px; cursor: pointer; transition: all 0.18s; white-space: nowrap; font-family: 'Mulish', sans-serif; }
+.suggestion-chip:hover { background: var(--azul-claro); border-color: var(--azul); }
+.chat-input-row { padding: 0.85rem 1rem; display: flex; gap: 0.6rem; border-top: 1px solid var(--gris-claro); background: white; flex-shrink: 0; }
+.chat-input { flex: 1; padding: 0.65rem 1rem; border: 1.5px solid var(--gris-claro); border-radius: 100px; font-family: 'Mulish', sans-serif; font-size: 0.85rem; color: var(--carbon); outline: none; transition: border-color 0.2s; background: var(--crema); }
+.chat-input:focus { border-color: var(--azul); background: white; }
+.chat-input::placeholder { color: var(--gris); }
+.chat-send { width: 38px; height: 38px; border-radius: 50%; background: var(--azul); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+.chat-send:hover { background: var(--azul-oscuro); transform: scale(1.06); }
+.chat-info { display: flex; flex-direction: column; gap: 1rem; }
+.chat-info-card { background: white; border-radius: 16px; padding: 1.2rem 1.4rem; border: 1px solid var(--gris-claro); }
+.chat-info-card h4 { font-family: 'Fraunces', serif; font-size: 0.95rem; font-weight: 700; color: var(--azul); margin-bottom: 0.8rem; }
+.chat-info-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.chat-info-card ul li { font-size: 0.82rem; color: var(--gris); display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.45; }
+.chat-info-card ul li::before { content: '✓'; color: var(--azul); font-weight: 700; flex-shrink: 0; font-size: 0.72rem; margin-top: 0.1rem; }
+
+/* FORMULARIO */
+.form-layout { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
+.form-card { background: white; border-radius: 22px; border: 1px solid var(--gris-claro); padding: 2.5rem; box-shadow: 0 8px 32px rgba(47,95,143,0.06); }
+.form-card h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700; color: var(--ladrillo); margin-bottom: 0.85rem; }
+.form-card > p { font-size: 0.88rem; color: var(--gris); line-height: 1.65; margin-bottom: 2rem; }
+.form-fields { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.6rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-label { font-size: 0.8rem; font-weight: 600; color: var(--carbon); }
+.form-label .req { color: var(--terracota); margin-left: 2px; }
+.form-label .opt { color: var(--gris); font-weight: 400; margin-left: 4px; }
+.form-input, .form-textarea, .form-select {
+  padding: 0.8rem 1rem; border: 1.5px solid var(--gris-claro);
+  border-radius: 10px; font-family: 'Mulish', sans-serif;
+  font-size: 0.88rem; color: var(--carbon); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s; background: var(--crema); width: 100%;
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--azul); background: white; box-shadow: 0 0 0 3px rgba(47,95,143,0.08); }
+.form-input::placeholder, .form-textarea::placeholder { color: var(--gris); }
+.form-hint { font-size: 0.74rem; color: var(--gris); margin-top: 0.2rem; line-height: 1.4; }
+.form-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+.form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; cursor: pointer; }
+
+/* Image upload */
+.img-upload-area { border: 2px dashed var(--gris-claro); border-radius: 14px; background: var(--crema); cursor: pointer; transition: all 0.22s; min-height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.img-upload-area:hover { border-color: var(--azul); background: var(--azul-claro); }
+.img-upload-area.drag-over { border-color: var(--azul); background: var(--azul-claro); transform: scale(1.01); }
+.img-upload-area.has-image { border-style: solid; border-color: var(--azul); background: white; cursor: default; }
+.img-upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; padding: 1.6rem; text-align: center; pointer-events: none; }
+.img-upload-icon { width: 48px; height: 48px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; color: var(--azul); box-shadow: 0 2px 10px rgba(47,95,143,0.1); margin-bottom: 0.2rem; }
+.img-upload-text { font-size: 0.84rem; color: var(--carbon); line-height: 1.5; }
+.img-upload-text strong { color: var(--azul); }
+.img-upload-hint { font-size: 0.72rem; color: var(--gris); }
+.img-preview-wrap { position: relative; width: 100%; }
+.img-preview-wrap img { width: 100%; max-height: 200px; object-fit: cover; display: block; }
+.img-remove-btn { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.55); color: white; border: none; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.img-remove-btn:hover { background: rgba(0,0,0,0.8); }
+.img-preview-name { padding: 0.45rem 0.9rem; font-size: 0.74rem; color: var(--gris); background: var(--crema); border-top: 1px solid var(--gris-claro); }
+
+/* Submit button */
+.btn-wa-submit { width: 100%; padding: 1rem; margin-top: 0.5rem; background: var(--ladrillo); color: white; border: none; cursor: pointer; border-radius: 12px; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.6rem; transition: all 0.2s; }
+.btn-wa-submit:hover { background: var(--ladrillo-osc); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(169,84,69,0.3); }
+.form-note { font-size: 0.74rem; color: var(--gris); text-align: center; margin-top: 0.8rem; line-height: 1.5; }
+
+/* Confirmación */
+.form-confirm { display: none; flex-direction: column; align-items: center; text-align: center; padding: 3rem 2rem; gap: 1rem; }
+.form-confirm.visible { display: flex; animation: fadeUp 0.4s ease both; }
+.confirm-circle { width: 80px; height: 80px; border-radius: 50%; background: var(--verde-bg); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin-bottom: 0.5rem; }
+.form-confirm h3 { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 700; color: var(--azul); }
+.form-confirm p { font-size: 0.9rem; color: var(--gris); line-height: 1.7; max-width: 380px; }
+.confirm-actions { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; }
+.btn-catalog { background: var(--azul-claro); color: var(--azul); border: none; cursor: pointer; border-radius: 100px; padding: 0.75rem 1.6rem; font-family: 'Mulish', sans-serif; font-size: 0.88rem; font-weight: 700; transition: all 0.2s; }
+.btn-catalog:hover { background: var(--azul); color: white; }
+.btn-confirm-wa { background: var(--verde-wa); color: white; border: none; cursor: pointer; border-radius: 100px; padding: 0.75rem 1.6rem; font-family: 'Mulish', sans-serif; font-size: 0.88rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s; }
+.btn-confirm-wa:hover { background: #1ebe5b; transform: translateY(-1px); }
+
+/* Form side info */
+.form-info { display: flex; flex-direction: column; gap: 1rem; }
+.form-info-card { background: white; border-radius: 16px; padding: 1.4rem; border: 1px solid var(--gris-claro); }
+.form-info-card h4 { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; color: var(--ladrillo); margin-bottom: 1rem; }
+.how-step { display: flex; gap: 0.9rem; align-items: flex-start; margin-bottom: 1rem; }
+.how-step:last-child { margin-bottom: 0; }
+.step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--ladrillo); color: white; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.step-text strong { font-size: 0.83rem; color: var(--ladrillo); display: block; margin-bottom: 0.15rem; }
+.step-text span { font-size: 0.78rem; color: var(--gris); line-height: 1.45; }
+
+/* ── BLOQUE WA DIRECTO ── */
+.wa-section {
+  background: var(--azul-oscuro); padding: 4rem 8%;
+  display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: center;
+}
+.wa-section-left .s-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 0.6rem; }
+.wa-section-left h2 { font-family: 'Fraunces', serif; font-size: clamp(1.4rem, 2.2vw, 1.9rem); font-weight: 700; color: white; margin-bottom: 0.6rem; }
+.wa-section-left p { font-size: 0.9rem; color: rgba(255,255,255,0.62); line-height: 1.7; max-width: 500px; }
+.wa-section-right { display: flex; flex-direction: column; gap: 0.6rem; align-items: flex-end; }
+.wa-horario { font-size: 0.78rem; color: rgba(255,255,255,0.45); text-align: right; line-height: 1.6; }
+.btn-wa-direct {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  background: var(--verde-wa); color: white; border: none; cursor: pointer;
+  border-radius: 100px; padding: 0.9rem 2rem;
+  font-family: 'Mulish', sans-serif; font-size: 0.92rem; font-weight: 700;
+  transition: all 0.2s; white-space: nowrap; text-decoration: none;
+}
+.btn-wa-direct:hover { background: #1ebe5b; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,211,102,0.35); }
+
+/* ── FAQ ── */
+.faq-section { background: white; padding: 5rem 8%; }
+.faq-header { text-align: center; margin-bottom: 3rem; }
+.faq-header .s-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terracota); margin-bottom: 0.6rem; }
+.faq-header h2 { font-family: 'Fraunces', serif; font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 700; color: var(--azul-oscuro); }
+.faq-list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; }
+.faq-item { border-bottom: 1px solid var(--gris-claro); }
+.faq-item:first-child { border-top: 1px solid var(--gris-claro); }
+.faq-q {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.3rem 0; cursor: pointer; gap: 1rem;
+  font-size: 0.95rem; font-weight: 600; color: var(--carbon);
+  transition: color 0.2s;
+}
+.faq-q:hover { color: var(--azul); }
+.faq-q.open { color: var(--azul); }
+.faq-icon { width: 24px; height: 24px; border-radius: 50%; background: var(--azul-claro); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.75rem; color: var(--azul); font-weight: 700; transition: all 0.25s; }
+.faq-q.open .faq-icon { background: var(--azul); color: white; transform: rotate(45deg); }
+.faq-a { font-size: 0.88rem; color: var(--gris); line-height: 1.75; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.25s ease; }
+.faq-a.open { max-height: 200px; padding-bottom: 1.3rem; }
+
+
+
+/* ── FOOTER ── */
+footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 8% 2rem; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1.4fr 1.6fr; gap: 4rem; padding-bottom: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.f-logo { font-family: var(--f-head); font-size: 1.6rem; font-weight: 600; color: #fff; display: block; margin-bottom: 0.8rem; }
+.f-logo span { color: var(--arena); }
+.footer-desc { font-size: 0.92rem; line-height: 1.7; margin-bottom: 0.4rem; }
+.footer-slogan { font-size: 0.86rem; font-style: italic; font-family: var(--f-head); color: rgba(255,255,255,0.5); }
+.f-col h4 { color: #fff; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1.1rem; }
+.f-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+.f-col ul a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+.f-col ul a:hover { color: var(--arena); }
+.f-contact { display: flex; flex-direction: column; gap: 1.05rem; }
+.f-ci-item { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.9rem; }
+.f-ci { color: var(--arena); margin-top: 0.05rem; flex-shrink: 0; display: flex; }
+.f-ci svg { width: 18px; height: 18px; }
+.f-ci-item a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
+.f-ci-item a:hover { color: #fff; }
+.footer-bottom { padding-top: 1.6rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.footer-bottom p { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+/* ── FLOATING WA ── */
+.wa-float {
+  position: fixed; bottom: 26px; right: 26px; z-index: 999;
+  width: 58px; height: 58px; background: var(--verde-wa); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 22px rgba(37,211,102,0.40);
+  cursor: pointer; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+  animation: waPop 0.5s 0.8s ease both;
+}
+.wa-float:hover { transform: scale(1.08); box-shadow: 0 10px 30px rgba(37,211,102,0.50); }
+.wa-float svg { width: 31px; height: 31px; fill: #fff; }
+.wa-float-badge {
+  position: absolute; top: -2px; right: -2px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--rojo); color: #fff; font-size: 0.65rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; border: 2px solid var(--crema);
+}
+.wa-float-tooltip {
+  position: absolute; right: 70px; bottom: 50%; transform: translateY(50%);
+  background: var(--tinta); color: #fff; font-size: 0.8rem; font-weight: 500;
+  padding: 0.45rem 0.85rem; border-radius: 8px; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity 0.2s; box-shadow: var(--sh-md);
+}
+.wa-float-tooltip::after { content:''; position:absolute; left:100%; top:50%; transform:translateY(-50%); border:5px solid transparent; border-left-color:var(--tinta); }
+.wa-float:hover .wa-float-tooltip { opacity: 1; }
+@keyframes waPop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
+
+
+/* ════════ RESPONSIVE GLOBAL APROBADO ════════ */
+@media (max-width: 1199px) {
+  .page-banner { padding: 2.6rem 6%; }
+  .catalog-layout { grid-template-columns: 230px 1fr; }
+  .catalog-main { padding: 1.8rem 1.8rem 4rem; }
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
+  /* Header tablet: logo izquierda · iconos agrupados a la derecha con hamburguesa */
+  .header-inner { padding: 0 6%; gap: 1rem; }
+  .header-icons { margin-left: auto; gap: 0.35rem; }
+  .nav-toggle { display: flex; }
+  .mega-menu { display: none; }
+  nav#mainNav {
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; gap: 0; flex: none;
+    background: var(--crema); border-bottom: 1px solid var(--linea);
+    box-shadow: var(--sh-md); max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease; padding: 0 6%;
+  }
+  nav#mainNav.open { max-height: 640px; padding: 0.4rem 6% 1rem; }
+  nav#mainNav > a, nav#mainNav .nav-catalog-wrap > a {
+    padding: 0.9rem 0; border-bottom: 1px solid var(--linea); font-size: 1rem;
+  }
+  nav#mainNav .nav-catalog-wrap { width: 100%; }
+  nav#mainNav a::after, nav#mainNav a.active::after { display: none; }
+
+  /* Catálogo como acordeón en tablet/móvil */
+  nav#mainNav .nav-catalog-wrap > a { position: relative; }
+  nav#mainNav .nav-catalog-wrap > a .mega-cat-arrow {
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%) rotate(0deg);
+    transition: transform 0.25s ease; width: 16px; height: 16px; color: var(--gris-calido);
+  }
+  nav#mainNav .nav-catalog-wrap.open > a .mega-cat-arrow { transform: translateY(-50%) rotate(180deg); }
+  .mega-mobile {
+    display: block; max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .nav-catalog-wrap.open .mega-mobile { max-height: 520px; }
+  .mega-mobile-cat {
+    display: block; padding: 0.7rem 0 0.7rem 1rem;
+    font-size: 0.95rem; color: var(--gris-calido);
+    border-bottom: 1px solid var(--linea);
+  }
+  .mega-mobile-cat:last-child { border-bottom: none; }
+  .mega-mobile-cat:hover { color: var(--azul-oficio); }
+}
+
+/* ── Sidebar colapsable (≤991px) ── */
+@media (max-width: 991px) {
+  .catalog-layout { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static; height: auto; max-height: 0; overflow: hidden;
+    border-right: none; border-bottom: 1px solid var(--linea);
+    padding: 0 6%; transition: max-height 0.32s ease, padding 0.32s ease;
+  }
+  .sidebar.open { max-height: 1400px; padding: 1.6rem 6%; }
+  .catalog-main { padding: 1.6rem 6% 4rem; }
+  .filtros-toggle { display: inline-flex; }
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ── Móvil (≤767px) ── */
+@media (max-width: 767px) {
+  body { font-size: 16px; }
+  /* Topbar celular: 2 mensajes (envíos resumido), bucle 10s */
+  .topbar-set-desktop { display: none; }
+  .topbar-set-mobile { display: block; }
+  .topbar-set-mobile .topbar-msg { font-size: 0.72rem; padding: 0 0.75rem; }
+  .topbar-set-mobile .topbar-msg:nth-child(1) { animation: slideMsg 10s ease-in-out 0s infinite; }
+  .topbar-set-mobile .topbar-msg:nth-child(2) { animation: slideMsg 10s ease-in-out 5s infinite; }
+  /* Header móvil: padding lateral seguro, iconos agrupados a la derecha */
+  .header-inner { padding: 0 6%; gap: 1rem; }
+
+  .page-banner { padding: 2.2rem 6%; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
+  .prod-body { padding: 0.85rem 0.9rem 1rem; }
+  .prod-actions { flex-direction: column; }
+  .btn-consultar { padding: 0.55rem 0; }
+  .catalog-topbar { gap: 0.75rem; }
+  .footer-grid { grid-template-columns: 1fr; gap: 2.2rem; }
+  .footer-bottom { justify-content: center; }
+  .wa-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
+  .wa-float svg { width: 28px; height: 28px; }
+  .wa-float-tooltip { display: none; }
+}
+
+/* ── Móvil pequeño (≤479px) ── */
+@media (max-width: 479px) {
+  .products-grid { grid-template-columns: 1fr; }
+  .prod-img { aspect-ratio: 16 / 10; }
+  .banner-count { width: 100%; text-align: center; }
+}
+
+/* ── RESPONSIVE DE SECCIONES (Asesoría) ── */
+@media (max-width: 1199px) {
+  .intro-grid { gap: 2.5rem; }
+  .intro-left h2 .br-desktop { display: none; }
+  .chat-layout { grid-template-columns: 1fr; }
+  .form-layout { grid-template-columns: 1fr; }
+  .chat-info { flex-direction: row; flex-wrap: wrap; }
+  .chat-info-card { flex: 1 1 240px; }
+}
+@media (max-width: 767px) {
+  /* Padding lateral al 6% (estándar aprobado) para aprovechar el ancho en móvil */
+  .breadcrumb-bar, .intro-section, .opciones-section, .content-section,
+  .faq-section, .wa-section { padding-left: 6%; padding-right: 6%; }
+  .intro-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .intro-left h2 { font-size: clamp(1.8rem, 6.5vw, 2.15rem); line-height: 1.15; }
+  .opciones-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .chat-info { flex-direction: column; }
+  .chat-container { height: auto; min-height: 480px; max-height: 72vh; }
+  .wa-section { grid-template-columns: 1fr; gap: 1.6rem; }
+  .wa-section-right { align-items: flex-start; }
+  .wa-horario { text-align: left; }
+}
+
+/* ── Iconos SVG (reemplazo de emojis) ── */
+.benefit-icon { display: flex; align-items: center; }
+.benefit-icon svg { width: 30px; height: 30px; fill: var(--azul-oficio); display: block; }
+.card-icon-big svg { width: 48px; height: 48px; fill: var(--azul-oficio); display: block; }
+.opcion-card.personalizada .card-icon-big svg { fill: var(--ladrillo); }
+.msg-avatar svg { width: 15px; height: 15px; fill: var(--azul-oficio); display: block; }
+.chat-avatar svg { width: 22px; height: 22px; fill: #fff; }
+.chat-send svg { width: 17px; height: 17px; fill: #fff; }
+.chat-info-card h4 { display: flex; align-items: center; gap: 8px; }
+.chat-info-card h4 svg { width: 18px; height: 18px; fill: var(--azul); flex-shrink: 0; }
+.btn-wa-submit svg { width: 19px; height: 19px; fill: #fff; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR (aprobado) -->
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <!-- Escritorio / tablet: 2 mensajes -->
+    <div class="topbar-set topbar-set-desktop">
+      <div class="topbar-msg">
+        📦 En Bogotá, pide antes de las 12 p.m. y <strong>recibe el mismo día.</strong>
+      </div>
+      <div class="topbar-msg">
+        🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong>
+      </div>
+    </div>
+    <!-- Celular: 2 mensajes (mensaje de envíos resumido) -->
+    <div class="topbar-set topbar-set-mobile">
+      <div class="topbar-msg">📦 Bogotá: pide antes de las 12 pm y <strong>recibe hoy</strong></div>
+      <div class="topbar-msg">🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER (aprobado) -->
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">Russi<span>tex</span></a>
+    <nav id="mainNav">
+      <a href="#">Inicio</a>
+
+      <!-- CATÁLOGO CON MEGA MENU -->
+      <div class="nav-catalog-wrap">
+        <a href="#">
+          Catálogo
+          <svg class="mega-cat-arrow" width="10" height="6" fill="none" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </a>
+
+        <div class="mega-menu">
+          <div class="mega-menu-title">Explorar por categoría</div>
+          <div class="mega-cats">
+            <a href="#" class="mega-cat" data-filter="forros">
+              <span class="mega-cat-icon"><svg viewBox="0 0 128 128" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g><path d="m119.072 111.384a14.836 14.836 0 0 1 -2.794-5.106c-.484-1.749.126-2.593 1.439-4.189 1.233-1.5 2.767-3.36 2.767-6.46a9.237 9.237 0 0 0 -2.493-6.366 5.927 5.927 0 0 1 0-8.362 9.377 9.377 0 0 0 0-12.734 5.922 5.922 0 0 1 0-8.358 9.371 9.371 0 0 0 0-12.729 5.922 5.922 0 0 1 0-8.358 9.374 9.374 0 0 0 0-12.732 5.8 5.8 0 0 1 -1.726-4.179c0-1.726 1.18-3.306 2.321-4.834 1.567-2.1 3.937-5.275.766-8.443s-6.345-.8-8.444.768c-1.529 1.141-3.11 2.322-4.837 2.322a5.808 5.808 0 0 1 -4.184-1.724 9.382 9.382 0 0 0 -12.736 0 5.923 5.923 0 0 1 -8.361 0 9.38 9.38 0 0 0 -12.734 0 5.921 5.921 0 0 1 -8.358 0 9.372 9.372 0 0 0 -12.73 0 5.921 5.921 0 0 1 -8.358 0 9.376 9.376 0 0 0 -12.732 0 5.8 5.8 0 0 1 -4.178 1.724c-1.726 0-3.307-1.18-4.835-2.321-2.1-1.567-5.272-3.938-8.442-.767s-.8 6.345.768 8.445c1.141 1.529 2.322 3.11 2.322 4.837a5.807 5.807 0 0 1 -1.727 4.182 9.38 9.38 0 0 0 0 12.736 5.925 5.925 0 0 1 0 8.362 9.377 9.377 0 0 0 0 12.734 5.918 5.918 0 0 1 0 8.357 9.373 9.373 0 0 0 0 12.731 5.918 5.918 0 0 1 0 8.357 9.374 9.374 0 0 0 0 12.732 5.8 5.8 0 0 1 1.727 4.179c0 1.726-1.18 3.306-2.321 4.834-1.568 2.1-3.937 5.275-.767 8.443a4.7 4.7 0 0 0 3.375 1.565c1.94 0 3.722-1.33 5.065-2.332 1.529-1.141 3.11-2.322 4.837-2.322a5.808 5.808 0 0 1 4.188 1.724 9.381 9.381 0 0 0 12.736 0 5.926 5.926 0 0 1 8.362 0 9.38 9.38 0 0 0 12.734 0 5.92 5.92 0 0 1 8.357 0 9.372 9.372 0 0 0 12.73 0 5.922 5.922 0 0 1 8.358 0 9.374 9.374 0 0 0 12.732 0 5.8 5.8 0 0 1 4.179-1.726c1.725 0 3.306 1.18 4.834 2.321 2.1 1.568 5.275 3.938 8.442.767 3.303-3.303 1.315-5.95-.282-8.078zm-2.193 5.606c-.846.844-1.273.843-3.873-1.1-1.8-1.343-4.041-3.016-6.928-3.016a9.234 9.234 0 0 0 -6.366 2.494 5.925 5.925 0 0 1 -8.359 0 9.371 9.371 0 0 0 -12.73 0 5.923 5.923 0 0 1 -8.357 0 9.372 9.372 0 0 0 -12.731 0 5.926 5.926 0 0 1 -8.361 0 9.377 9.377 0 0 0 -12.734 0 5.929 5.929 0 0 1 -8.364 0 9.244 9.244 0 0 0 -6.37-2.493c-2.889 0-5.129 1.673-6.93 3.017-2.6 1.942-3.031 1.943-3.877 1.1s-.844-1.272 1.1-3.873c1.344-1.8 3.017-4.04 3.017-6.928a9.232 9.232 0 0 0 -2.494-6.365 5.923 5.923 0 0 1 0-8.359 9.372 9.372 0 0 0 0-12.732 5.918 5.918 0 0 1 0-8.355 9.372 9.372 0 0 0 0-12.732 5.926 5.926 0 0 1 0-8.361 9.374 9.374 0 0 0 0-12.734 5.928 5.928 0 0 1 0-8.364 9.245 9.245 0 0 0 2.493-6.369c0-2.889-1.673-5.13-3.017-6.93-1.942-2.6-1.944-3.031-1.1-3.878a1.377 1.377 0 0 1 .971-.538c.556 0 1.333.466 2.9 1.635 1.8 1.344 4.041 3.017 6.929 3.017a9.236 9.236 0 0 0 6.365-2.493 5.923 5.923 0 0 1 8.359 0 9.372 9.372 0 0 0 12.731 0 5.922 5.922 0 0 1 8.356 0 9.372 9.372 0 0 0 12.731 0 5.926 5.926 0 0 1 8.361 0 9.377 9.377 0 0 0 12.735 0 5.931 5.931 0 0 1 8.364 0 9.239 9.239 0 0 0 6.369 2.493c2.889 0 5.13-1.673 6.93-3.017 2.6-1.941 3.029-1.944 3.878-1.1s.844 1.272-1.1 3.873c-1.344 1.8-3.016 4.04-3.016 6.928a9.232 9.232 0 0 0 2.493 6.365 5.923 5.923 0 0 1 0 8.359 9.373 9.373 0 0 0 0 12.731 5.921 5.921 0 0 1 0 8.357 9.373 9.373 0 0 0 0 12.731 5.926 5.926 0 0 1 0 8.361 9.377 9.377 0 0 0 0 12.734 5.8 5.8 0 0 1 1.726 4.18c0 1.844-.913 2.953-1.969 4.236-1.382 1.678-3.1 3.767-2.11 7.347a18.263 18.263 0 0 0 3.368 6.274c1.725 2.293 1.684 2.43.61 3.505z"/><path d="m95.064 55.054a1.75 1.75 0 0 0 -1.75 1.75v4.785a1.75 1.75 0 0 0 3.5 0v-4.789a1.749 1.749 0 0 0 -1.75-1.746z"/><path d="m95.064 68.688a1.751 1.751 0 0 0 -1.75 1.75v4.786a1.75 1.75 0 1 0 3.5 0v-4.786a1.75 1.75 0 0 0 -1.75-1.75z"/><path d="m104.274 64.264h-4.785a1.75 1.75 0 0 0 0 3.5h4.785a1.75 1.75 0 0 0 0-3.5z"/><path d="m90.64 64.264h-4.786a1.75 1.75 0 0 0 0 3.5h4.786a1.75 1.75 0 0 0 0-3.5z"/><path d="m63.993 55.054a1.75 1.75 0 0 0 -1.75 1.75v4.785a1.75 1.75 0 1 0 3.5 0v-4.789a1.75 1.75 0 0 0 -1.75-1.746z"/><path d="m63.993 68.688a1.751 1.751 0 0 0 -1.75 1.75v4.786a1.75 1.75 0 1 0 3.5 0v-4.786a1.751 1.751 0 0 0 -1.75-1.75z"/><path d="m73.2 64.264h-4.783a1.75 1.75 0 0 0 0 3.5h4.783a1.75 1.75 0 0 0 0-3.5z"/><path d="m59.569 64.264h-4.786a1.75 1.75 0 0 0 0 3.5h4.786a1.75 1.75 0 0 0 0-3.5z"/><path d="m32.922 55.054a1.749 1.749 0 0 0 -1.75 1.75v4.785a1.75 1.75 0 0 0 3.5 0v-4.789a1.75 1.75 0 0 0 -1.75-1.746z"/><path d="m32.922 68.688a1.75 1.75 0 0 0 -1.75 1.75v4.786a1.75 1.75 0 0 0 3.5 0v-4.786a1.751 1.751 0 0 0 -1.75-1.75z"/><path d="m42.132 64.264h-4.786a1.75 1.75 0 1 0 0 3.5h4.786a1.75 1.75 0 0 0 0-3.5z"/><path d="m28.5 64.264h-4.788a1.75 1.75 0 0 0 0 3.5h4.788a1.75 1.75 0 0 0 0-3.5z"/><path d="m73.2 95.335h-4.783a1.75 1.75 0 0 0 0 3.5h4.783a1.75 1.75 0 0 0 0-3.5z"/><path d="m59.569 95.335h-4.786a1.75 1.75 0 0 0 0 3.5h4.786a1.75 1.75 0 0 0 0-3.5z"/><path d="m63.993 99.759a1.751 1.751 0 0 0 -1.75 1.75v4.791a1.75 1.75 0 0 0 3.5 0v-4.786a1.751 1.751 0 0 0 -1.75-1.755z"/><path d="m63.993 86.125a1.751 1.751 0 0 0 -1.75 1.75v4.786a1.75 1.75 0 1 0 3.5 0v-4.786a1.751 1.751 0 0 0 -1.75-1.75z"/><path d="m73.2 33.192h-4.783a1.75 1.75 0 0 0 0 3.5h4.783a1.75 1.75 0 0 0 0-3.5z"/><path d="m59.569 33.192h-4.786a1.75 1.75 0 0 0 0 3.5h4.786a1.75 1.75 0 0 0 0-3.5z"/><path d="m63.993 37.616a1.751 1.751 0 0 0 -1.75 1.75v4.786a1.75 1.75 0 1 0 3.5 0v-4.786a1.751 1.751 0 0 0 -1.75-1.75z"/><path d="m63.993 23.982a1.751 1.751 0 0 0 -1.75 1.75v4.786a1.75 1.75 0 0 0 3.5 0v-4.786a1.751 1.751 0 0 0 -1.75-1.75z"/><path d="m42.132 95.335h-4.786a1.75 1.75 0 1 0 0 3.5h4.786a1.75 1.75 0 0 0 0-3.5z"/><path d="m28.5 95.335h-4.788a1.75 1.75 0 0 0 0 3.5h4.788a1.75 1.75 0 0 0 0-3.5z"/><path d="m32.922 99.759a1.75 1.75 0 0 0 -1.75 1.75v4.791a1.75 1.75 0 0 0 3.5 0v-4.786a1.751 1.751 0 0 0 -1.75-1.755z"/><path d="m32.922 86.125a1.75 1.75 0 0 0 -1.75 1.75v4.786a1.75 1.75 0 0 0 3.5 0v-4.786a1.751 1.751 0 0 0 -1.75-1.75z"/><path d="m42.132 33.192h-4.786a1.75 1.75 0 0 0 0 3.5h4.786a1.75 1.75 0 0 0 0-3.5z"/><path d="m28.5 33.192h-4.788a1.75 1.75 0 1 0 0 3.5h4.788a1.75 1.75 0 0 0 0-3.5z"/><path d="m32.922 37.616a1.75 1.75 0 0 0 -1.75 1.75v4.786a1.75 1.75 0 0 0 3.5 0v-4.786a1.751 1.751 0 0 0 -1.75-1.75z"/><path d="m32.922 23.982a1.75 1.75 0 0 0 -1.75 1.75v4.786a1.75 1.75 0 0 0 3.5 0v-4.786a1.751 1.751 0 0 0 -1.75-1.75z"/><path d="m104.272 95.335h-4.785a1.75 1.75 0 0 0 0 3.5h4.785a1.75 1.75 0 0 0 0-3.5z"/><path d="m90.638 95.335h-4.786a1.75 1.75 0 0 0 0 3.5h4.786a1.75 1.75 0 0 0 0-3.5z"/><path d="m95.062 99.759a1.751 1.751 0 0 0 -1.75 1.75v4.791a1.75 1.75 0 0 0 3.5 0v-4.786a1.75 1.75 0 0 0 -1.75-1.755z"/><path d="m95.062 86.125a1.751 1.751 0 0 0 -1.75 1.75v4.786a1.75 1.75 0 0 0 3.5 0v-4.786a1.75 1.75 0 0 0 -1.75-1.75z"/><path d="m99.487 36.692h4.785a1.75 1.75 0 0 0 0-3.5h-4.785a1.75 1.75 0 0 0 0 3.5z"/><path d="m85.852 36.692h4.786a1.75 1.75 0 0 0 0-3.5h-4.786a1.75 1.75 0 0 0 0 3.5z"/><path d="m95.062 45.9a1.749 1.749 0 0 0 1.75-1.75v-4.784a1.75 1.75 0 0 0 -3.5 0v4.786a1.75 1.75 0 0 0 1.75 1.748z"/><path d="m95.062 32.268a1.75 1.75 0 0 0 1.75-1.75v-4.786a1.75 1.75 0 0 0 -3.5 0v4.786a1.751 1.751 0 0 0 1.75 1.75z"/></g></svg></span>
+              <span class="mega-cat-name">Forros</span>
+              <span class="mega-cat-count">4 productos</span>
+            </a>
+            <a href="#" class="mega-cat" data-filter="entretelas">
+              <span class="mega-cat-icon"><svg viewBox="0 0 128 128" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g><path d="m117.517 111.542v-98.173a1.75 1.75 0 0 0 -1.75-1.75h-91.946c-7.389 0-12.962 3.286-12.962 7.644v92.279c0 4.357 5.573 7.643 12.962 7.643 6.361 0 11.365-2.437 12.638-5.893h79.308a1.75 1.75 0 0 0 1.75-1.75zm-93.7-96.423c5.416 0 9.463 2.188 9.463 4.144s-4.047 4.142-9.463 4.142-9.462-2.187-9.462-4.142 4.051-4.144 9.466-4.144zm0 100.566c-5.415 0-9.462-2.188-9.462-4.143v-86.961a18.216 18.216 0 0 0 9.462 2.324 18.217 18.217 0 0 0 9.463-2.324v86.961c.004 1.958-4.043 4.143-9.459 4.143zm90.2-5.893h-77.233v-90.529a5.694 5.694 0 0 0 -1.961-4.144h79.194z"/><ellipse cx="23.822" cy="19.263" rx="2.706" ry="1.422"/><path d="m49.4 36.162a6.967 6.967 0 1 0 -6.969-6.962 6.975 6.975 0 0 0 6.969 6.962zm0-10.434a3.467 3.467 0 1 1 -3.469 3.472 3.471 3.471 0 0 1 3.469-3.472z"/><path d="m75.882 36.162a6.967 6.967 0 1 0 -6.967-6.962 6.975 6.975 0 0 0 6.967 6.962zm0-10.434a3.467 3.467 0 1 1 -3.467 3.472 3.471 3.471 0 0 1 3.467-3.472z"/><path d="m102.366 36.162a6.967 6.967 0 1 0 -6.966-6.962 6.974 6.974 0 0 0 6.966 6.962zm0-10.434a3.467 3.467 0 1 1 -3.466 3.472 3.471 3.471 0 0 1 3.466-3.472z"/><path d="m62.64 58.336a6.968 6.968 0 1 0 -6.967-6.967 6.975 6.975 0 0 0 6.967 6.967zm0-10.435a3.468 3.468 0 1 1 -3.467 3.468 3.471 3.471 0 0 1 3.467-3.469z"/><path d="m89.124 58.336a6.968 6.968 0 1 0 -6.968-6.967 6.975 6.975 0 0 0 6.968 6.967zm0-10.435a3.468 3.468 0 1 1 -3.468 3.468 3.472 3.472 0 0 1 3.468-3.469z"/><path d="m49.4 80.51a6.968 6.968 0 1 0 -6.967-6.967 6.975 6.975 0 0 0 6.967 6.967zm0-10.435a3.468 3.468 0 1 1 -3.467 3.468 3.472 3.472 0 0 1 3.467-3.468z"/><path d="m75.882 66.575a6.968 6.968 0 1 0 6.968 6.968 6.975 6.975 0 0 0 -6.968-6.968zm0 10.435a3.468 3.468 0 1 1 3.468-3.467 3.472 3.472 0 0 1 -3.468 3.467z"/><path d="m102.366 66.575a6.968 6.968 0 1 0 6.967 6.968 6.976 6.976 0 0 0 -6.967-6.968zm0 10.435a3.468 3.468 0 1 1 3.467-3.467 3.472 3.472 0 0 1 -3.467 3.467z"/><path d="m62.64 88.749a6.968 6.968 0 1 0 6.967 6.968 6.975 6.975 0 0 0 -6.967-6.968zm0 10.435a3.468 3.468 0 1 1 3.467-3.467 3.471 3.471 0 0 1 -3.467 3.467z"/><path d="m89.124 88.749a6.968 6.968 0 1 0 6.968 6.968 6.976 6.976 0 0 0 -6.968-6.968zm0 10.435a3.468 3.468 0 1 1 3.468-3.467 3.472 3.472 0 0 1 -3.468 3.467z"/></g></svg></span>
+              <span class="mega-cat-name">Entretelas</span>
+              <span class="mega-cat-count">7 productos</span>
+            </a>
+            <a href="#" class="mega-cat" data-filter="hombreras">
+              <span class="mega-cat-icon"><svg viewBox="0 0 22.782 22.782" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g><path style="fill:currentColor;" d="M20.748,6.931c0.114-0.538-0.035-1.12-0.452-1.537l-1.882-1.882 c-0.576-0.574-1.461-0.646-2.112-0.216h-2.178c0.097-0.425,0.259-1.154,0.272-1.219c0.005-0.021,0.007-0.044,0.006-0.066 c-0.006-0.136-0.159-0.243-0.294-0.243c-0.254,0-1.664,0.005-3.011,0.01c-2.872,0.01-2.872,0.01-2.883,0.253 C8.213,2.052,8.215,2.074,8.219,2.096L8.265,2.31C8.36,2.774,8.427,3.088,8.471,3.294H6.793C6.224,2.92,5.478,2.93,4.916,3.318 C4.915,3.319,4.913,3.319,4.912,3.32c-0.067,0.047-0.645,0.457-1.38,1.34L2.798,5.393C2.515,5.677,2.362,6.036,2.323,6.405 C1.141,8.451,0,11.633,0,16.306c0,0.141,0.114,0.254,0.254,0.254h2.721c0.14,0,0.254-0.113,0.254-0.254 c0-3.866,0.874-6.433,1.724-8.013L6.07,13.47l-0.178,4.392c-0.002,0.042,0.007,0.086,0.026,0.124l0.951,1.889 c0.021,0.039,0.05,0.072,0.085,0.097c0.064,0.043,1.59,1.042,4.188,1.042c1.516,0,3.085-0.343,4.667-1.02 c0.055-0.023,0.1-0.065,0.127-0.119l0.956-1.921c0.019-0.038,0.027-0.08,0.026-0.123l-0.166-4.536l1.097-4.962 c0.839,1.578,1.702,4.135,1.702,7.974c0,0.141,0.114,0.254,0.255,0.254h2.722c0.141,0,0.254-0.113,0.254-0.254 C22.783,12.014,21.822,8.982,20.748,6.931z M2.723,16.051H0.511c0.036-4.022,0.931-6.874,1.93-8.815 c0.082,0.194,0.2,0.376,0.358,0.535c0.442,0.443,1.069,0.58,1.632,0.425C3.594,9.807,2.759,12.335,2.723,16.051z M17.495,7.579 l-1.245,5.638c-0.004,0.021-0.007,0.043-0.006,0.064l0.165,4.503l-0.885,1.778c-1.488,0.625-2.961,0.941-4.38,0.941 c-2.173,0-3.566-0.754-3.852-0.923l-0.889-1.766l0.177-4.356c0.001-0.021-0.001-0.043-0.005-0.064L5.328,7.619l1.73-1.73 C7.624,5.323,7.7,4.453,7.288,3.804h1.5c0.079,0,0.149-0.048,0.198-0.111s0.061-0.156,0.041-0.232 c-0.02-0.073-0.171-0.8-0.247-1.166c0.975-0.005,4.002-0.016,5.051-0.018c-0.094,0.422-0.253,1.127-0.271,1.197 c-0.024,0.077-0.009,0.161,0.039,0.226c0.048,0.065,0.123,0.104,0.204,0.104h2.002c-0.411,0.649-0.336,1.519,0.23,2.085 l1.553,1.551C17.543,7.475,17.508,7.521,17.495,7.579z M20.06,16.051c-0.038-3.851-0.936-6.427-1.797-8.023 c0.643,0.376,1.48,0.294,2.033-0.257c0.074-0.074,0.137-0.155,0.194-0.239c0.938,1.931,1.748,4.696,1.783,8.52L20.06,16.051 L20.06,16.051z"/></g></svg></span>
+              <span class="mega-cat-name">Hombreras</span>
+              <span class="mega-cat-count">5 productos</span>
+            </a>
+            <a href="#" class="mega-cat" data-filter="guatas">
+              <span class="mega-cat-icon"><svg viewBox="0 0 682.66669 682.66669" fill="none" xmlns="http://www.w3.org/2000/svg"><defs id="defs592"><clipPath clipPathUnits="userSpaceOnUse" id="clipPath602"><path d="M 0,512 H 512 V 0 H 0 Z" id="path600" /></clipPath></defs><g id="g594" transform="matrix(1.3333333,0,0,-1.3333333,0,682.66667)"><g id="g596"><g id="g598" clip-path="url(#clipPath602)"><g id="g604" transform="translate(458.8926,490.0093)"><path d="m 0,0 2.154,2.126 c 8.533,8.561 22.535,8.561 31.068,0 8.56,-8.561 8.56,-22.535 0,-31.096 l -2.126,-2.126 c -16.016,-16.015 -16.016,-41.981 0,-57.968 16.015,-16.016 16.015,-41.981 0,-57.968 -16.016,-16.016 -16.016,-41.981 0,-57.997 16.015,-15.987 16.015,-41.952 0,-57.968 -16.016,-16.016 -16.016,-41.953 0,-57.968 16.015,-16.016 16.015,-41.953 0,-57.969 -16.016,-16.015 -16.016,-41.98 0,-57.967 l 2.126,-2.155 c 8.56,-8.532 8.56,-22.535 0,-31.068 -8.533,-8.56 -22.535,-8.56 -31.068,0 L 0,-467.998 c -15.987,16.016 -41.953,16.016 -57.969,0 -16.015,-16.015 -41.952,-16.015 -57.968,0 -16.015,16.016 -41.953,16.016 -57.968,0 -16.016,-16.015 -41.981,-16.015 -57.968,0 -16.016,16.016 -41.981,16.016 -57.997,0 -15.987,-16.015 -41.952,-16.015 -57.968,0 -15.987,16.016 -41.952,16.016 -57.969,0 l -2.126,-2.126 c -8.56,-8.56 -22.535,-8.56 -31.095,0 -8.561,8.533 -8.561,22.536 0,31.068 l 2.126,2.155 c 16.015,15.987 16.015,41.952 0,57.967 -15.988,16.016 -15.988,41.953 0,57.969 16.015,16.015 16.015,41.952 0,57.968 -15.988,16.016 -15.988,41.981 0,57.968 16.015,16.016 16.015,41.981 0,57.997 -15.988,15.987 -15.988,41.952 0,57.968 16.015,15.987 16.015,41.953 0,57.968 l -2.126,2.126 c -8.561,8.561 -8.561,22.535 0,31.096 8.56,8.561 22.535,8.561 31.095,0 L -405.807,0 c 16.017,-16.016 41.982,-16.016 57.969,0 16.016,15.988 41.981,15.988 57.968,0 16.016,-16.016 41.981,-16.016 57.997,0 15.987,15.988 41.952,15.988 57.968,0 16.015,-16.016 41.953,-16.016 57.968,0 16.016,15.988 41.953,15.988 57.968,0 C -41.953,-16.016 -15.987,-16.016 0,0 Z" style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" id="path606" /></g><g id="g608" transform="translate(185.8604,426.145)"><path d="m 0,0 h 39.855 m 60.151,0 h 39.827 m -239.839,-239.838 v 39.827 m 0,60.151 v 39.855 M 0,-340.269 h 39.855 m 60.151,0 h 39.827 m -199.983,0 -39.856,0.198 v 40.054 m 340.27,60.179 v 39.827 m 0,60.151 v 39.855 m 0,60.151 L 240.065,0 h -40.053 m 0,-340.269 40.053,0.198 0.199,40.054 m -340.27,260.163 V 0 h 39.856" style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" id="path610" /></g></g></g></g></svg></span>
+              <span class="mega-cat-name">Guatas</span>
+              <span class="mega-cat-count">2 productos</span>
+            </a>
+            <a href="#" class="mega-cat" data-filter="tizas">
+              <span class="mega-cat-icon"><svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="m58.51367 40.55762-18.25097-29.20215c-3.57473-6.04476-12.95029-6.05214-16.52538.00021l-18.25099 29.20194a9.74424 9.74424 0 0 0 5.38281 14.47363 71.2135 71.2135 0 0 0 42.26172 0 9.79952 9.79952 0 0 0 5.38281-14.47363zm-1.0039 7.86426a7.69135 7.69135 0 0 1 -4.97071 4.69921 69.232 69.232 0 0 1 -41.07812 0 7.74423 7.74423 0 0 1 -4.2793-11.50293l18.25098-29.20216c2.79326-4.79382 10.34177-4.79968 13.13475.00021l18.251 29.20193a7.69262 7.69262 0 0 1 .6914 6.80374z"/><path d="m32 27.56934a8.203 8.203 0 0 0 -8.19336 8.19336c.41177 10.85333 15.97659 10.85038 16.38673-.00011a8.203 8.203 0 0 0 -8.19337-8.19325zm0 14.38574a6.20015 6.20015 0 0 1 -6.19336-6.19238c.29077-8.197 12.09718-8.19485 12.38673.0001a6.20015 6.20015 0 0 1 -6.19337 6.19228z"/></svg></span>
+              <span class="mega-cat-name">Tizas</span>
+              <span class="mega-cat-count">4 productos</span>
+            </a>
+            <a href="#" class="mega-cat" data-filter="cierres">
+              <span class="mega-cat-icon"><svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><g><g><path style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" d=" M315.717,299.591v22.336c0,4.903-1.236,9.718-3.6,14.008l-18.484,33.487c-3.951-8.098-10.55-14.817-18.976-18.866 c-5.909-2.834-12.311-4.257-18.713-4.257c-6.336,0-12.684,1.39-18.549,4.181l-0.153,0.077c-8.361,4.016-14.927,10.67-18.878,18.68 l-18.385-33.301c-2.364-4.29-3.6-9.105-3.6-14.008v-22.336c0-16.021,12.979-29,28.989-29h61.36 C302.738,270.591,315.717,283.57,315.717,299.591z"/><path style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" d=" M297.738,413.801v-26.567c0-15.647-8.973-29.907-23.079-36.678h0c-11.771-5.65-25.465-5.678-37.259-0.076l-0.16,0.076 c-14.106,6.771-23.079,21.031-23.079,36.678v26.567c0,5.259-1.02,10.468-3.002,15.339l-6.854,16.837 c-4.975,12.222-3.713,26.097,3.384,37.222l0,0C215.162,494.911,228.095,502,241.988,502h13.864h0.196h13.864 c13.893,0,26.826-7.089,34.298-18.802l0,0c7.097-11.124,8.359-25,3.384-37.221l-6.854-16.837 C298.757,424.269,297.738,419.06,297.738,413.801z"/><line style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="255.949" y1="324.007" x2="255.949" y2="370.085"/></g><line style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="244.097" y1="461.298" x2="267.998" y2="461.298"/><path style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" d=" M222.435,496.99c5.9,3.24,12.6,5.01,19.55,5.01h-105.59V248.15c0,0,5.44-109.46-80.4-166.42L119.235,10 c0,0,106.13,68.04,106.13,219.79l-0.03,40.8c-16,0.02-28.96,12.99-28.96,29v22.34c0,4.9,1.24,9.71,3.6,14l18.39,33.3 c-2.72,5.5-4.2,11.63-4.2,18v26.57c0,5.26-1.02,10.47-3.01,15.34l-6.85,16.84c-4.97,12.22-3.71,26.09,3.38,37.22 C211.425,489.06,216.525,493.76,222.435,496.99z"/><path style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" d=" M375.605,341.678V248.15c0,0-5.45-109.46,80.4-166.42L392.765,10c0,0-106.14,65.33-106.14,219.79l0.03,40.8h0.07 c16.01,0,28.99,12.98,28.99,29v22.34c0,4.9-1.23,9.71-3.6,14l-18.48,33.49c2.65,5.45,4.1,11.52,4.1,17.81v26.57 c0,5.26,1.02,10.47,3.01,15.34l6.85,16.84c2.01,4.94,3,10.14,3,15.33c0,7.65-2.16,15.26-6.39,21.89 c-7.47,11.71-20.4,18.8-34.29,18.8h105.69v-72.358"/><path style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:30,41,30,41;" d=" M394.506,68.231c0,0-64.438,61.61-64.438,174.959"/><path style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:30,41,30,41;" d=" M118.309,68.231c0,0,64.438,61.61,64.438,174.959"/><line style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="374.917" y1="385.661" x2="374.917" y2="385.661"/></g></svg></span>
+              <span class="mega-cat-name">Cierres</span>
+              <span class="mega-cat-count">1 producto</span>
+            </a>
+            <a href="#" class="mega-cat" data-filter="otros">
+              <span class="mega-cat-icon"><svg viewBox="0 0 48 48" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g><path d="m24 0c-13.2 0-24 10.8-24 24s10.8 24 24 24 24-10.8 24-24-10.8-24-24-24zm0 46c-12.1 0-22-9.9-22-22s9.9-22 22-22 22 9.9 22 22-9.9 22-22 22z"/><path d="m24 6c-9.9 0-18 8.1-18 18s8.1 18 18 18 18-8.1 18-18-8.1-18-18-18zm0 34c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16z"/><path d="m24 11.1c-1.9 0-3.5 1.6-3.5 3.5s1.6 3.5 3.5 3.5 3.5-1.6 3.5-3.5-1.6-3.5-3.5-3.5zm0 5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z"/><path d="m14.6 20.5c-1.9 0-3.5 1.6-3.5 3.5s1.6 3.5 3.5 3.5 3.5-1.6 3.5-3.5-1.6-3.5-3.5-3.5zm0 5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z"/><path d="m24 29.9c-1.9 0-3.5 1.6-3.5 3.5s1.6 3.5 3.5 3.5 3.5-1.6 3.5-3.5-1.6-3.5-3.5-3.5zm0 5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z"/><path d="m33.4 20.5c-1.9 0-3.5 1.6-3.5 3.5s1.6 3.5 3.5 3.5 3.5-1.6 3.5-3.5-1.6-3.5-3.5-3.5zm0 5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z"/></g></svg></span>
+              <span class="mega-cat-name">Otros materiales</span>
+              <span class="mega-cat-count">11 productos</span>
+            </a>
+            <a href="#" class="mega-cat" data-filter="todos">
+              <span class="mega-cat-icon"><svg viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g><g><path d="M187.753,0H51.18C22.959,0,0,22.958,0,51.179v136.575c0,28.221,22.959,51.179,51.18,51.179h136.573 c28.221,0,51.18-22.958,51.18-51.179V51.179C238.933,22.958,215.974,0,187.753,0z M221.867,187.754 c0,18.81-15.303,34.112-34.114,34.112H51.18c-18.81,0-34.114-15.302-34.114-34.112V51.179c0-18.81,15.303-34.112,34.114-34.112 h136.573c18.81,0,34.114,15.302,34.114,34.112V187.754z"/></g></g><g><g><path d="M187.753,273.067H51.18C22.959,273.067,0,296.025,0,324.246v136.575C0,489.042,22.959,512,51.18,512h136.573 c28.221,0,51.18-22.958,51.18-51.179V324.246C238.933,296.025,215.974,273.067,187.753,273.067z M221.867,460.821 c0,18.81-15.303,34.112-34.114,34.112H51.18c-18.81,0-34.114-15.302-34.114-34.112V324.246c0-18.81,15.303-34.113,34.114-34.113 h136.573c18.81,0,34.114,15.302,34.114,34.112V460.821z"/></g></g><g><g><path d="M460.82,0H324.247c-28.221,0-51.18,22.958-51.18,51.179v136.575c0,28.221,22.959,51.179,51.18,51.179H460.82 c28.221,0,51.18-22.958,51.18-51.179V51.179C512,22.958,489.041,0,460.82,0z M494.933,187.754 c0,18.81-15.303,34.112-34.114,34.112H324.247c-18.81,0-34.113-15.302-34.113-34.112V51.179c0-18.81,15.303-34.112,34.114-34.112 H460.82c18.81,0,34.113,15.302,34.113,34.112V187.754z"/></g></g><g><g><path d="M460.82,273.067H324.247c-28.221,0-51.18,22.958-51.18,51.179v136.575c0,28.221,22.959,51.179,51.18,51.179H460.82 c28.221,0,51.18-22.958,51.18-51.179V324.246C512,296.025,489.041,273.067,460.82,273.067z M494.933,460.821 c0,18.81-15.303,34.112-34.114,34.112H324.247c-18.81,0-34.113-15.302-34.113-34.112V324.246c0-18.81,15.303-34.113,34.114-34.113 H460.82c18.81,0,34.113,15.302,34.113,34.112V460.821z"/></g></g></svg></span>
+              <span class="mega-cat-name">Ver todo</span>
+              <span class="mega-cat-count">34 productos</span>
+            </a>
+          </div>
+          <div class="mega-footer">
+            <a href="#" class="mega-ver-todo">Ver todos los materiales <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M18,12h0a2,2,0,0,0-.59-1.4l-4.29-4.3a1,1,0,0,0-1.41,0,1,1,0,0,0,0,1.42L15,11H5a1,1,0,0,0,0,2H15l-3.29,3.29a1,1,0,0,0,1.41,1.42l4.29-4.3A2,2,0,0,0,18,12Z"/></svg></a>
+          </div>
+        </div>
+
+        <!-- Lista de categorías solo para tablet/móvil (acordeón de texto) -->
+        <div class="mega-mobile" id="megaMobile">
+          <a href="#" class="mega-mobile-cat" data-filter="todos">Todos los materiales</a>
+          <a href="#" class="mega-mobile-cat" data-filter="forros">Forros</a>
+          <a href="#" class="mega-mobile-cat" data-filter="entretelas">Entretelas</a>
+          <a href="#" class="mega-mobile-cat" data-filter="hombreras">Hombreras</a>
+          <a href="#" class="mega-mobile-cat" data-filter="guatas">Guatas</a>
+          <a href="#" class="mega-mobile-cat" data-filter="tizas">Tizas</a>
+          <a href="#" class="mega-mobile-cat" data-filter="cierres">Cierres</a>
+          <a href="#" class="mega-mobile-cat" data-filter="otros">Otros materiales</a>
+        </div>
+      </div>
+
+      <a href="#" class="active">Asesoría</a>
+      <a href="#">Sobre nosotros</a>
+      <a href="#">Contacto</a>
+    </nav>
+
+    <div class="header-icons">
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" title="Menú"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <button class="icon-btn" id="searchToggle" title="Buscar" aria-label="Buscar" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.707,22.293l-5.969-5.969a10.016,10.016,0,1,0-1.414,1.414l5.969,5.969a1,1,0,0,0,1.414-1.414ZM10,18a8,8,0,1,1,8-8A8.009,8.009,0,0,1,10,18Z"/></svg>
+      </button>
+      <button class="icon-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12,12A6,6,0,1,0,6,6,6.006,6.006,0,0,0,12,12ZM12,2A4,4,0,1,1,8,6,4,4,0,0,1,12,2Z"/><path d="M12,14a9.01,9.01,0,0,0-9,9,1,1,0,0,0,2,0,7,7,0,0,1,14,0,1,1,0,0,0,2,0A9.01,9.01,0,0,0,12,14Z"/></svg>
+      </button>
+      <button class="icon-btn cart-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.713,4.077A2.993,2.993,0,0,0,20.41,3H4.242L4.2,2.649A3,3,0,0,0,1.222,0H1A1,1,0,0,0,1,2h.222a1,1,0,0,1,.993.883l1.376,11.7A5,5,0,0,0,8.557,19H19a1,1,0,0,0,0-2H8.557a3,3,0,0,1-2.82-2h11.92a5,5,0,0,0,4.921-4.113l.785-4.354A2.994,2.994,0,0,0,22.713,4.077ZM21.4,6.178l-.786,4.354A3,3,0,0,1,17.657,13H5.419L4.478,5H20.41A1,1,0,0,1,21.4,6.178Z"/><circle cx="7" cy="22" r="2"/><circle cx="17" cy="22" r="2"/></svg>
+        <span class="cart-badge">0</span>
+      </button>
+    </div>
+  </div>
+  <div class="header-search" id="headerSearch">
+    <div class="header-search-inner">
+      <div class="header-search-box">
+        <svg fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="header-search-input" id="headerSearchInput" placeholder="Buscar material..." aria-label="Buscar material">
+      </div>
+      <button class="header-search-close" id="headerSearchClose" aria-label="Cerrar búsqueda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+  </div>
+</header>
+
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb">
+    <a href="#">Inicio</a><span class="sep">/</span>
+    <span class="current">Asesoría</span>
+  </div>
+</div>
+
+<!-- BANNER -->
+<div class="page-banner">
+  <h1 class="banner-title">Asesoría para tus proyectos<br>de <em>confección</em></h1>
+  <p class="banner-sub">Te ayudamos a encontrar los materiales adecuados para tu prenda, arreglo o proyecto creativo.</p>
+  <p class="banner-support">No necesitas saber el nombre exacto del material. Cuéntanos qué quieres hacer y te orientamos.</p>
+</div>
+
+<!-- INTRODUCCIÓN -->
+<section class="intro-section">
+  <div class="intro-grid">
+    <div class="intro-left">
+      <div class="s-label">Por qué te acompañamos</div>
+      <h2>Comprar el material correcto<br class="br-desktop">no tiene por qué ser <em>complicado</em></h2>
+      <p>En Russitex sabemos que cada proyecto necesita materiales diferentes. Por eso te acompañamos para que elijas con más confianza, evites compras innecesarias y avances en tu confección sin perder tiempo.</p>
+    </div>
+    <div class="intro-benefits">
+      <div class="benefit-item">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="22" r="2"/><circle cx="17" cy="22" r="2"/><path d="M23.685,1.336a1,1,0,0,0-1.414,0L17.112,6.5,15.561,4.881a1,1,0,0,0-1.442,1.386l1.614,1.679a1.872,1.872,0,0,0,1.345.6h.033a1.873,1.873,0,0,0,1.335-.553L23.685,2.75A1,1,0,0,0,23.685,1.336Z"/><path d="M21.9,9.016a1,1,0,0,0-1.162.807l-.128.709A3,3,0,0,1,17.657,13H5.418l-.94-8H11a1,1,0,0,0,0-2H4.242L4.2,2.648A3,3,0,0,0,1.222,0H1A1,1,0,0,0,1,2h.222a1,1,0,0,1,.993.883l1.376,11.7A5,5,0,0,0,8.557,19H19a1,1,0,0,0,0-2H8.557a3,3,0,0,1-2.829-2H17.657a5,5,0,0,0,4.921-4.113l.128-.71A1,1,0,0,0,21.9,9.016Z"/></svg></div>
+        <div class="benefit-text">
+          <strong>Evita errores al comprar</strong>
+          <span>Te orientamos para elegir materiales que realmente sirvan para tu proyecto.</span>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 24h-8a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2z"/><path d="m7 20h-6a1 1 0 0 1 0-2h6a1 1 0 0 1 0 2z"/><path d="m5 16h-4a1 1 0 0 1 0-2h4a1 1 0 0 1 0 2z"/><path d="m13 23.955a1 1 0 0 1 -.089-2 10 10 0 1 0 -10.87-10.865 1 1 0 0 1 -1.992-.18 12 12 0 0 1 23.951 1.09 11.934 11.934 0 0 1 -10.91 11.951c-.03.003-.061.004-.09.004z"/><path d="m12 6a1 1 0 0 0 -1 1v5a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414l-2.707-2.707v-4.586a1 1 0 0 0 -1-1z"/></svg></div>
+        <div class="benefit-text">
+          <strong>Ahorra tiempo</strong>
+          <span>Encuentra más rápido lo que necesitas sin recorrer varias tiendas.</span>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19,0H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V5A5.006,5.006,0,0,0,19,0Zm3,19a3,3,0,0,1-3,3H5a3,3,0,0,1-3-3V5A3,3,0,0,1,5,2H19a3,3,0,0,1,3,3Z"/><path d="M9.333,15.919,5.414,12A1,1,0,0,0,4,12H4a1,1,0,0,0,0,1.414l3.919,3.919a2,2,0,0,0,2.829,0L20,8.081a1,1,0,0,0,0-1.414h0a1,1,0,0,0-1.414,0Z"/></svg></div>
+        <div class="benefit-text">
+          <strong>Compra con confianza</strong>
+          <span>Recibe una recomendación inicial antes de tomar una decisión.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OPCIONES -->
+<section class="opciones-section" id="opcionesSection">
+  <div class="opciones-header">
+    <div class="s-label">Elige cómo quieres que te ayudemos</div>
+    <h2>Dos formas de recibir asesoría</h2>
+  </div>
+  <div class="opciones-grid">
+    <div class="opcion-card rapida active" id="cardRapida" onclick="selectOpcion('rapida')">
+      <span class="card-icon-big"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m16.713,13.804c.384.393.381,1.02-.009,1.406-.074.073-1.84,1.79-4.704,1.79s-4.63-1.716-4.704-1.79c-.392-.389-.396-1.021-.007-1.414.39-.392,1.021-.396,1.415-.007.046.045,1.28,1.21,3.296,1.21s3.25-1.166,3.302-1.215c.396-.382,1.028-.374,1.411.02Zm-8.213-2.804c.828,0,1.5-.672,1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5,1.5.672,1.5,1.5,1.5Zm7-3c-.828,0-1.5.672-1.5,1.5s.672,1.5,1.5,1.5,1.5-.672,1.5-1.5-.672-1.5-1.5-1.5Zm8.5,4.34v6.66c0,2.757-2.243,5-5,5h-5.917C6.082,24,.471,19.208.029,12.854c-.24-3.476,1.027-6.878,3.479-9.333C5.962,1.065,9.371-.205,12.836.029c6.261.425,11.164,5.833,11.164,12.312Zm-2,0c0-5.431-4.085-9.962-9.299-10.316-.229-.016-.458-.023-.687-.023-2.656,0-5.209,1.048-7.091,2.933-2.043,2.046-3.1,4.883-2.898,7.782.372,5.38,5.023,9.285,11.058,9.285h5.917c1.654,0,3-1.346,3-3v-6.66Z"/></svg></span>
+      <h3>Asesoría rápida</h3>
+      <p>Responde unas preguntas básicas y recibe una orientación inicial sobre las categorías o materiales que podrían servirte.</p>
+      <span class="opcion-hint">Ideal si no sabes por dónde empezar.</span>
+      <button class="btn-opcion rapida">Iniciar asesoría rápida →</button>
+    </div>
+    <div class="opcion-card personalizada" id="cardPersonalizada" onclick="selectOpcion('personalizada')">
+      <span class="card-icon-big"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23,15h-.667c-.25,0-.498,.019-.745,.057l-7.046-5.284,1.688-1.616c.399-.382,.413-1.016,.031-1.414-.383-.399-1.017-.412-1.414-.031l-4.173,3.995c-.208,.208-.491,.315-.788,.29-.298-.024-.56-.175-.739-.425-.274-.38-.19-.975,.168-1.334l4.703-4.429c.891-.837,2.284-1.042,3.374-.495l2.316,1.158c.69,.345,1.464,.527,2.235,.527h1.056c.553,0,1-.447,1-1s-.447-1-1-1h-1.056c-.463,0-.928-.109-1.342-.316l-2.314-1.158c-1.824-.913-4.153-.574-5.641,.828l-.618,.582-.7-.638c-.919-.837-2.109-1.298-3.39-1.298-.771,0-1.54,.182-2.227,.525l-2.314,1.158c-.415,.207-.88,.316-1.343,.316H1c-.553,0-1,.447-1,1s.447,1,1,1h1.056c.771,0,1.545-.183,2.236-.527l2.316-1.158c1.022-.514,2.458-.375,3.374,.462l.587,.535-2.646,2.492c-1.073,1.072-1.244,2.767-.398,3.938,.52,.723,1.553,1.259,2.444,1.259,.793,0,1.554-.312,2.104-.863l1.006-.963,6.346,4.759c-.031,.022-6.198,4.646-6.198,4.646-.723,.562-1.732,.562-2.47-.011l-6.091-4.568c-.859-.645-1.925-1-3-1h-.667c-.553,0-1,.447-1,1s.447,1,1,1h.667c.645,0,1.284,.213,1.8,.6l6.077,4.558c.725,.564,1.594,.846,2.461,.846,.862,0,1.723-.279,2.437-.835l6.093-4.568c.515-.387,1.154-.6,1.799-.6h.667c.553,0,1-.447,1-1s-.447-1-1-1Z"/></svg></span>
+      <h3>Asesoría personalizada</h3>
+      <p>Cuéntanos con más detalle qué estás confeccionando y te contactaremos por WhatsApp para ayudarte a elegir mejor.</p>
+      <span class="opcion-hint">Ideal para proyectos más específicos.</span>
+      <button class="btn-opcion personalizada">Solicitar asesoría personalizada →</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENIDO -->
+<div class="content-section">
+
+  <!-- CHATBOT -->
+  <div class="content-pane active" id="paneRapida">
+    <div class="chat-layout">
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="chat-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg></div>
+          <div class="chat-header-info">
+            <h3>Asistente Russitex</h3>
+            <p>Especialista en materiales para confección</p>
+          </div>
+          <div class="online-dot"></div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg bot">
+            <div class="msg-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg></div>
+            <div>
+              <div class="msg-bubble">¡Hola! Soy el asistente de Russitex. Puedo ayudarte a encontrar los materiales correctos para tu proyecto. ¿Qué estás confeccionando?</div>
+              <div class="msg-time">ahora</div>
+            </div>
+          </div>
+          <div class="typing-indicator" id="typingIndicator">
+            <div class="msg-avatar" style="width:28px;height:28px;border-radius:50%;background:var(--azul-claro);display:flex;align-items:center;justify-content:center;font-size:0.78rem;"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg></div>
+            <div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+          </div>
+        </div>
+        <div class="quick-suggestions" id="quickSuggestions">
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">¿Qué entretelas tienen?</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">Precios de forros</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">Materiales para chaqueta</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">¿Tienen hombreras?</button>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chatInput" placeholder="Pregunta sobre materiales, precios o usos..." maxlength="300">
+          <button class="chat-send" onclick="sendMessage()">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.916,8.727L3.965.282C2.951-.211,1.756-.041.917.713.076,1.47-.216,2.646.172,3.708c.017.043,4.411,8.296,4.411,8.296,0,0-4.313,8.251-4.328,8.293-.387,1.063-.092,2.237.749,2.993.521.467,1.179.708,1.841.708.409,0,.819-.092,1.201-.279l17.872-8.438c1.285-.603,2.083-1.859,2.082-3.278,0-1.42-.801-2.675-2.084-3.275ZM2.032,2.967c-.122-.415.138-.69.223-.768.089-.079.414-.324.838-.116.005.002,17.974,8.455,17.974,8.455.239.112.438.27.591.462H6.315L2.032,2.967Zm19.034,10.504L3.178,21.917c-.425.209-.749-.035-.838-.116-.086-.076-.346-.353-.223-.769l4.202-8.032h15.345c-.153.195-.355.357-.597.471Z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="chat-info">
+        <div class="chat-info-card">
+          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.904,16c.828,0,1.5,.672,1.5,1.5s-.672,1.5-1.5,1.5-1.5-.672-1.5-1.5,.672-1.5,1.5-1.5Zm1-2c0-.561,.408-1.225,.928-1.512,1.5-.826,2.307-2.523,2.009-4.223-.283-1.613-1.607-2.938-3.221-3.221-1.182-.204-2.38,.112-3.289,.874-.907,.763-1.428,1.879-1.428,3.063,0,.553,.448,1,1,1s1-.447,1-1c0-.592,.26-1.15,.714-1.532,.461-.386,1.052-.542,1.657-.435,.787,.138,1.458,.81,1.596,1.596,.153,.871-.241,1.705-1.004,2.125-1.156,.637-1.963,1.979-1.963,3.264,0,.553,.448,1,1,1s1-.447,1-1Zm11.096,5v-6.66C24,5.861,19.096,.454,12.836,.028,9.361-.202,5.961,1.066,3.509,3.521,1.057,5.977-.211,9.378,.03,12.854c.44,6.354,6.052,11.146,13.054,11.146h5.917c2.757,0,5-2.243,5-5ZM12.701,2.024c5.215,.354,9.299,4.885,9.299,10.315v6.66c0,1.654-1.346,3-3,3h-5.917c-6.035,0-10.686-3.904-11.059-9.284-.201-2.899,.855-5.735,2.899-7.781,1.882-1.885,4.435-2.934,7.092-2.934,.228,0,.457,.008,.685,.023Z"/></svg>Puedes preguntar sobre</h4>
+          <ul>
+            <li>Qué material usar según tu prenda</li>
+            <li>Tipos de entretelas y sus diferencias</li>
+            <li>Forros disponibles y precios</li>
+            <li>Hombreras, guatas y pretinas</li>
+            <li>Tizas, cierres y otros insumos</li>
+            <li>Unidades de venta y disponibilidad</li>
+          </ul>
+        </div>
+        <div class="chat-info-card">
+          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12,24C5.383,24,0,18.617,0,12S5.383,0,12,0s12,5.383,12,12-5.383,12-12,12Zm0-22C6.486,2,2,6.486,2,12s4.486,10,10,10,10-4.486,10-10S17.514,2,12,2Zm5,10c0-.553-.447-1-1-1h-3V6c0-.553-.448-1-1-1s-1,.447-1,1v6c0,.553,.448,1,1,1h4c.553,0,1-.447,1-1Z"/></svg>Horario de atención</h4>
+          <ul>
+            <li>Asistente IA: disponible 24/7</li>
+            <li>Asesores humanos: Lun–Vie 10–6 p.m.</li>
+            <li>Sábados: 10 a.m. – 5 p.m.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div class="content-pane" id="panePersonalizada">
+    <div class="form-layout">
+      <div class="form-card">
+        <!-- Estado: formulario -->
+        <div id="formContent">
+          <h2>Cuéntanos sobre tu proyecto</h2>
+          <p>Entre más detalles nos compartas, mejor podremos orientarte. Puedes contarnos qué prenda estás haciendo, qué tela usarás o subir una imagen de referencia.</p>
+          <div class="form-fields">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nombre completo <span class="req">*</span></label>
+                <input type="text" class="form-input" id="f-nombre" placeholder="Tu nombre">
+              </div>
+              <div class="form-group">
+                <label class="form-label">WhatsApp <span class="req">*</span></label>
+                <input type="tel" class="form-input" id="f-wa" placeholder="Ej: 300 123 4567">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">¿Qué estás confeccionando? <span class="req">*</span></label>
+              <input type="text" class="form-input" id="f-prenda" placeholder="Ej: chaqueta, pantalón, vestido, camisa, uniforme, arreglo de prenda, proyecto universitario">
+            </div>
+            <div class="form-group">
+              <label class="form-label">¿Qué necesitas lograr? <span class="req">*</span></label>
+              <input type="text" class="form-input" id="f-logro" placeholder="Ej: dar estructura, forrar una prenda, reforzar una zona, mejorar el acabado, marcar tela, cerrar una prenda">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tipo de tela <span class="opt">(si lo sabes)</span></label>
+              <input type="text" class="form-input" id="f-tela" placeholder="Ej: liviana, gruesa, elástica, rígida, delicada">
+              <span class="form-hint">No es obligatorio — si no sabes, cuéntanos y te ayudamos a identificarla.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Imagen de referencia <span class="opt">(opcional)</span></label>
+              <div class="img-upload-area" id="imgUploadArea" onclick="document.getElementById('imgFileInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                <div class="img-upload-placeholder" id="imgPlaceholder">
+                  <div class="img-upload-icon">
+                    <svg width="26" height="26" fill="none" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <p class="img-upload-text"><strong>Arrastra tu imagen aquí</strong><br>o haz clic para seleccionarla</p>
+                  <p class="img-upload-hint">Foto de la prenda, tela o referencia visual · PNG, JPG · máx. 10 MB</p>
+                </div>
+                <div class="img-preview-wrap" id="imgPreviewWrap" style="display:none;">
+                  <img id="imgPreview" src="" alt="Vista previa">
+                  <button class="img-remove-btn" onclick="removeImage(event)">✕</button>
+                  <div class="img-preview-name" id="imgPreviewName"></div>
+                </div>
+              </div>
+              <input type="file" id="imgFileInput" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Comentarios adicionales <span class="opt">(opcional)</span></label>
+              <textarea class="form-textarea" id="f-comentarios" placeholder="Cualquier detalle adicional que nos ayude a orientarte mejor..."></textarea>
+            </div>
+          </div>
+          <button class="btn-wa-submit" onclick="enviarFormulario()">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.85,.03C9.38-.21,5.97,1.06,3.51,3.52,1.06,5.97-.21,9.38,.03,12.85c.43,6.25,5.84,11.15,12.31,11.15h6.66c2.94,0,5-2.4,5-5.85v-5.82C24,5.87,19.1,.46,12.85,.03Zm9.15,18.12c0,2.3-1.21,3.85-3,3.85h-6.66c-5.42,0-9.95-4.08-10.31-9.28-.2-2.9,.86-5.74,2.9-7.79,1.88-1.88,4.43-2.93,7.09-2.93,.23,0,.47,0,.7,.02,5.21,.36,9.28,4.89,9.28,10.31v5.82Z"/></svg>
+            Enviar solicitud de asesoría
+          </button>
+          <p class="form-note">Al enviar, serás redirigido a WhatsApp con tu solicitud lista. Si adjuntaste imagen, podrás enviarla desde el chat.</p>
+        </div>
+        <!-- Estado: confirmación -->
+        <div class="form-confirm" id="formConfirm">
+          <div class="confirm-circle">✅</div>
+          <h3>¡Listo! Recibimos tu solicitud</h3>
+          <p>Te contactaremos por WhatsApp para ayudarte a elegir los materiales adecuados para tu proyecto.</p>
+          <div class="confirm-actions">
+            <button class="btn-catalog" onclick="window.location.href='#'">← Volver al catálogo</button>
+            <a href="https://wa.me/573138909118" class="btn-confirm-wa" target="_blank">
+              💬 Escribir por WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-info">
+        <div class="form-info-card">
+          <h4>¿Cómo funciona?</h4>
+          <div class="how-step">
+            <div class="step-num">1</div>
+            <div class="step-text"><strong>Completa el formulario</strong><span>Cuéntanos tu proyecto con el mayor detalle posible.</span></div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">2</div>
+            <div class="step-text"><strong>Te redirige a WhatsApp</strong><span>Al enviar, abre WhatsApp con tu solicitud ya escrita y lista para enviar.</span></div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">3</div>
+            <div class="step-text"><strong>Recibe tu orientación</strong><span>Un asesor de Russitex te responde con los materiales exactos que necesitas.</span></div>
+          </div>
+        </div>
+        <div class="chat-info-card">
+          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12,24C5.383,24,0,18.617,0,12S5.383,0,12,0s12,5.383,12,12-5.383,12-12,12Zm0-22C6.486,2,2,6.486,2,12s4.486,10,10,10,10-4.486,10-10S17.514,2,12,2Zm5,10c0-.553-.447-1-1-1h-3V6c0-.553-.448-1-1-1s-1,.447-1,1v6c0,.553,.448,1,1,1h4c.553,0,1-.447,1-1Z"/></svg>Horario de atención</h4>
+          <ul>
+            <li>Lunes a viernes: 10 a.m. – 6 p.m.</li>
+            <li>Sábados: 10 a.m. – 5 p.m.</li>
+            <li>Domingos y festivos: cerrado</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-header">
+    <div class="s-label">Preguntas frecuentes</div>
+    <h2>Todo sobre la asesoría</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        ¿La asesoría tiene costo?
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">No. Orientarte para que elijas bien tus materiales es parte de lo que hacemos en Russitex. La asesoría, tanto rápida como personalizada, es completamente gratuita.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        ¿Me pueden decir exactamente qué material comprar?
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Podemos orientarte según tu proyecto, pero algunos detalles dependen de la tela que uses, el acabado que buscas y la disponibilidad del producto en el momento. Por eso recomendamos contarnos el mayor detalle posible.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        ¿Puedo recibir asesoría presencial?
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">Sí. También puedes visitarnos en nuestra tienda física en Bogotá durante el horario de atención y te atendemos directamente en el mostrador.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        ¿Qué pasa si no sé el nombre del material que necesito?
+        <div class="faq-icon">+</div>
+      </div>
+      <div class="faq-a">No se necesita. Cuéntanos qué quieres lograr con tu prenda y nosotros te decimos qué material aplica. Para eso está la asesoría.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER (aprobado) -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <span class="f-logo">Russi<span>tex</span></span>
+      <p class="footer-desc">Materiales para confección en Bogotá, Colombia.</p>
+      <p class="footer-slogan">39 años siendo tu mano amiga en confección.</p>
+    </div>
+    <div class="f-col">
+      <h4>Información</h4>
+      <ul>
+        <li><a href="#">Preguntas frecuentes</a></li>
+        <li><a href="#">Políticas de envío</a></li>
+        <li><a href="#">Cambios y devoluciones</a></li>
+        <li><a href="#">Términos y condiciones</a></li>
+        <li><a href="#">Política de privacidad</a></li>
+      </ul>
+    </div>
+    <div class="f-col">
+      <h4>Contacto</h4>
+      <div class="f-contact">
+        <div class="f-ci-item"><span class="f-ci"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.045,0c-.027-.001-6.063-.001-6.09,0-2.736,.024-4.955,2.258-4.955,4.999v14c0,2.757,2.243,5,5,5h6c2.757,0,5-2.243,5-5V5C20,2.258,17.781,.025,15.045,0Zm2.955,18.999c0,1.654-1.346,3-3,3h-6c-1.654,0-3-1.346-3-3V5c0-1.453,1.038-2.667,2.411-2.942l.694,1.389c.169,.339,.516,.553,.895,.553h4c.379,0,.725-.214,.895-.553l.694-1.389c1.373,.274,2.411,1.489,2.411,2.942v14Zm-5,1h-2c-.552,0-1-.448-1-1h0c0-.552,.448-1,1-1h2c.552,0,1,.448,1,1h0c0,.552-.448,1-1,1Z"/></svg></span><div>WhatsApp: <a href="https://wa.me/573138909118">+57 313 890 9118</a></div></div>
+        <div class="f-ci-item"><span class="f-ci"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,22A10,10,0,1,1,22,12,10.011,10.011,0,0,1,12,22Z"/><path d="M12,6a1,1,0,0,0-1,1v4.325L7.629,13.437a1,1,0,0,0,1.062,1.7l3.84-2.4A1,1,0,0,0,13,11.879V7A1,1,0,0,0,12,6Z"/></svg></span><div>Lun–Vie: 10:00 a.m. – 6:00 p.m.<br>Sábados: 10:00 a.m. – 5:00 p.m.</div></div>
+        <div class="f-ci-item"><span class="f-ci"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12,6a4,4,0,1,0,4,4A4,4,0,0,0,12,6Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,12Z"/><path d="M12,24a5.271,5.271,0,0,1-4.311-2.2c-3.811-5.257-5.744-9.209-5.744-11.747a10.055,10.055,0,0,1,20.11,0c0,2.538-1.933,6.49-5.744,11.747A5.271,5.271,0,0,1,12,24ZM12,2.181a7.883,7.883,0,0,0-7.874,7.874c0,2.01,1.893,5.727,5.329,10.466a3.145,3.145,0,0,0,5.09,0c3.436-4.739,5.329-8.456,5.329-10.466A7.883,7.883,0,0,0,12,2.181Z"/></svg></span><div>Bogotá, Colombia</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>© 2026 Russitex. Todos los derechos reservados.</p></div>
+</footer>
+
+<!-- FLOATING WA (aprobado) -->
+<a href="https://wa.me/573138909118" class="wa-float" target="_blank" rel="noopener">
+  <span class="wa-float-tooltip">¿Tienes dudas? Escríbenos</span>
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.054 23.25a.75.75 0 00.916.927l5.487-1.493A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.713 9.713 0 01-4.978-1.365l-.356-.213-3.696 1.006 1.006-3.696-.213-.356A9.713 9.713 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/></svg>
+  <span class="wa-float-badge">1</span>
+</a>
+
+<script>
+// ── SELECCIÓN DE OPCIÓN ──
+function selectOpcion(tipo) {
+  document.querySelectorAll('.opcion-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.content-pane').forEach(p => p.classList.remove('active'));
+  const key = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+  document.getElementById('card' + key).classList.add('active');
+  document.getElementById('pane' + key).classList.add('active');
+  setTimeout(() => {
+    document.getElementById('pane' + key).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
+}
+
+// ── CHATBOT ──
+const SYSTEM_PROMPT = `Eres el asistente virtual de Russitex, almacén familiar de materiales para confección en Bogotá, Colombia, con 39 años de experiencia. SOLO respondes sobre productos y materiales del inventario de Russitex.
+
+INVENTARIO:
+Forros: Arabesco $12.000/m, Brioni $8.000/m, Estampado $10.000/m, Estampado grueso $9.244/m
+Entretelas: Entretela $7.143/m, Doble punto $8.000/m (negro/blanco/beige), Doble punto 90gr $9.000/m, Galleta $5.042/m, Granulada $19.328/m, Cuello camisa $14.000/m, Poliéster $8.000/m
+Hombreras: $4.500/par, Algodón 2 capas $2.941/par, En algodón $4.500/par, Espuma blanca $1.200/par, Negra $3.782/par
+Guatas: Guata $10.000/m, Fusionable $17.000/m
+Tizas: Caja $7.143, Blanca ×50 $31.092, Color ×50 $36.555, Color pequeña $11.000
+Cierres: Cremallera cobre 20cm $1.200/ud
+Otros: Banrol $1.500, Bayetilla $10.000/m, Borraflojo $2.500, Interlón $3.782/m, Interlón telfor $5.000/m, Liencillo $10.084/m, Lona calima $25.000/m, Portavestido $7.143/m, Pretina $2.269/m, Sido $23.000/m, Valencina $7.143/m
+
+Si preguntan algo fuera del catálogo, responde amablemente que solo puedes ayudar con los productos de Russitex. Sé conciso, amigable y útil. Máximo 3-4 oraciones.`;
+
+let chatHistory = [], isTyping = false;
+
+function getTime() { return new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }); }
+
+function formatBotMessage(text) {
+  let t = String(text)
+    .replace(/\r\n/g, '\n')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  // Viñetas: al inicio de línea o en formato "texto - **item**" en una sola línea
+  t = t.replace(/\n\s*[-•]\s+/g, '\n• ');
+  t = t.replace(/\s+-\s+(?=<strong>)/g, '\n• ');
+  // Si hay lista, separar la pregunta final en su propio párrafo
+  if (t.indexOf('\n• ') !== -1) {
+    t = t.replace(/\s(¿[^¿]*\?)\s*$/, '\n\n$1');
+    t = t.replace(/:\s*\n• /g, ':\n\n• ');
+  }
+  t = t.replace(/\n{2,}/g, '<br><br>').replace(/\n/g, '<br>');
+  return t;
+}
+
+function addMessage(text, role) {
+  const msgs = document.getElementById('chatMessages');
+  const typing = document.getElementById('typingIndicator');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `<div class="msg-avatar">${role === 'bot' ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,13A1.5,1.5,0,1,1,16,11.5,1.5,1.5,0,0,1,14.5,13Zm9.425,5.144A5,5,0,0,1,19,24H15a1,1,0,0,1-1-1V20.737A7.959,7.959,0,0,1,12,21a7.84,7.84,0,0,1-2-.27V23a1,1,0,0,1-1,1H5A5,5,0,0,1,.075,18.144l.3-1.74a2.939,2.939,0,0,1,5.337-1.138C6.976,17.124,9.409,19,12,19h0c3.13,0,6.214-2.779,7.13-5.376a1.03,1.03,0,0,1,.959-.667l.432.007A1.461,1.461,0,0,0,22,11.5a1.5,1.5,0,0,0-1.23-1.474,1,1,0,0,1-.816-.879A7.977,7.977,0,0,0,12,2C6.423,2,4.892,5.628,3.662,8.544c-.224.527-.435,1.03-.662,1.483A13.354,13.354,0,0,0,13.186,4.419a1,1,0,0,1,1.628,1.162,15.089,15.089,0,0,1-4.956,4.467,1.5,1.5,0,1,1-1.725.84,15.807,15.807,0,0,1-7.257,1.1A1,1,0,0,1,.5,10.136,6.372,6.372,0,0,0,1.819,7.767C3.124,4.674,5.1,0,12,0a9.972,9.972,0,0,1,9.85,8.274A3.5,3.5,0,0,1,24,11.5a3.428,3.428,0,0,1-.854,2.257c.007.026.025.047.03.075ZM8,19.94a11.088,11.088,0,0,1-3.941-3.552.946.946,0,0,0-.783-.424H3.259a.945.945,0,0,0-.911.782l-.3,1.739A3,3,0,0,0,5,22H8Zm13.955-1.455-.628-3.613a3.384,3.384,0,0,1-.579.086A11.033,11.033,0,0,1,16,19.952V22h3a3,3,0,0,0,2.955-3.514Z"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><g id="_01_align_center" data-name="01 align center"><path d="M21,24H19V18.957A2.96,2.96,0,0,0,16.043,16H7.957A2.96,2.96,0,0,0,5,18.957V24H3V18.957A4.963,4.963,0,0,1,7.957,14h8.086A4.963,4.963,0,0,1,21,18.957Z"/><path d="M12,12a6,6,0,1,1,6-6A6.006,6.006,0,0,1,12,12ZM12,2a4,4,0,1,0,4,4A4,4,0,0,0,12,2Z"/></g></svg>'}</div><div><div class="msg-bubble">${role === 'bot' ? formatBotMessage(text) : text}</div><div class="msg-time">${getTime()}</div></div>`;
+  msgs.insertBefore(div, typing);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping(show) {
+  document.getElementById('typingIndicator').classList.toggle('visible', show);
+  document.getElementById('chatMessages').scrollTop = 99999;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || isTyping) return;
+  input.value = '';
+  isTyping = true;
+  document.getElementById('quickSuggestions').style.display = 'none';
+  addMessage(text, 'user');
+  chatHistory.push({ role: 'user', content: text });
+  showTyping(true);
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: SYSTEM_PROMPT, messages: chatHistory })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Lo siento, hubo un error. Intenta de nuevo.';
+    chatHistory.push({ role: 'assistant', content: reply });
+    showTyping(false);
+    addMessage(reply, 'bot');
+  } catch {
+    showTyping(false);
+    addMessage('Error de conexión. Por favor intenta de nuevo.', 'bot');
+  }
+  isTyping = false;
+}
+
+function sendSuggestion(btn) { document.getElementById('chatInput').value = btn.textContent; sendMessage(); }
+document.getElementById('chatInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+// ── IMAGE UPLOAD ──
+let uploadedImageName = '';
+function showImagePreview(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  if (file.size > 10 * 1024 * 1024) { alert('La imagen no debe superar 10 MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('imgPreview').src = e.target.result;
+    document.getElementById('imgPreviewName').textContent = '📎 ' + file.name;
+    document.getElementById('imgPlaceholder').style.display = 'none';
+    document.getElementById('imgPreviewWrap').style.display = 'block';
+    document.getElementById('imgUploadArea').classList.add('has-image');
+    uploadedImageName = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+function handleFileSelect(e) { showImagePreview(e.target.files[0]); }
+function handleDragOver(e) { e.preventDefault(); document.getElementById('imgUploadArea').classList.add('drag-over'); }
+function handleDragLeave() { document.getElementById('imgUploadArea').classList.remove('drag-over'); }
+function handleDrop(e) { e.preventDefault(); document.getElementById('imgUploadArea').classList.remove('drag-over'); showImagePreview(e.dataTransfer.files[0]); }
+function removeImage(e) {
+  e.stopPropagation();
+  document.getElementById('imgPreview').src = '';
+  document.getElementById('imgPlaceholder').style.display = 'flex';
+  document.getElementById('imgPreviewWrap').style.display = 'none';
+  document.getElementById('imgUploadArea').classList.remove('has-image');
+  document.getElementById('imgFileInput').value = '';
+  uploadedImageName = '';
+}
+
+// ── FORMULARIO ──
+function enviarFormulario() {
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const wa = document.getElementById('f-wa').value.trim();
+  const prenda = document.getElementById('f-prenda').value.trim();
+  const logro = document.getElementById('f-logro').value.trim();
+  if (!nombre || !wa || !prenda || !logro) {
+    alert('Por favor completa los campos obligatorios: nombre, WhatsApp, qué confeccionas y qué necesitas lograr.');
+    return;
+  }
+  const tela = document.getElementById('f-tela').value.trim();
+  const comentarios = document.getElementById('f-comentarios').value.trim();
+  let msg = `Hola, me llamo ${nombre}.\nEstoy confeccionando: ${prenda}.\nNecesito lograr: ${logro}.`;
+  if (tela) msg += `\nTipo de tela: ${tela}.`;
+  if (uploadedImageName) msg += `\nImagen de referencia adjunta: ${uploadedImageName}.`;
+  if (comentarios) msg += `\nComentarios: ${comentarios}.`;
+  msg += `\n¿Pueden orientarme con los materiales?`;
+  window.open(`https://wa.me/573138909118?text=${encodeURIComponent(msg)}`, '_blank');
+  // Mostrar confirmación
+  document.getElementById('formContent').style.display = 'none';
+  document.getElementById('formConfirm').classList.add('visible');
+}
+
+// ── FAQ ──
+function toggleFaq(el) {
+  const answer = el.nextElementSibling;
+  const isOpen = answer.classList.contains('open');
+  document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-q').forEach(q => q.classList.remove('open'));
+  if (!isOpen) { answer.classList.add('open'); el.classList.add('open'); }
+}
+</script>
+
+<script>
+  /* Refresh visual: navegación móvil + panel de filtros (no altera la lógica de filtrado) */
+  (function(){
+    var nt=document.getElementById('navToggle'), nav=document.getElementById('mainNav');
+    if(nt&&nav){
+      nt.addEventListener('click',function(){
+        var o=nav.classList.toggle('open');
+        nt.setAttribute('aria-expanded', o?'true':'false');
+      });
+
+      // "Catálogo" como acordeón (solo cuando la hamburguesa está activa)
+      var catWrap=nav.querySelector('.nav-catalog-wrap');
+      var catLink=catWrap?catWrap.querySelector('a'):null;
+      if(catWrap&&catLink){
+        catLink.addEventListener('click',function(e){
+          if(getComputedStyle(nt).display!=='none'){
+            e.preventDefault();
+            e.stopPropagation();
+            catWrap.classList.toggle('open');
+          }
+        });
+      }
+
+      // Cerrar el menú al elegir un enlace, EXCEPTO el de "Catálogo" (acordeón)
+      nav.querySelectorAll('a').forEach(function(a){
+        if(a===catLink) return;
+        a.addEventListener('click',function(){
+          nav.classList.remove('open');
+          if(catWrap) catWrap.classList.remove('open');
+          nt.setAttribute('aria-expanded','false');
+        });
+      });
+
+      // Categorías de texto (tablet/móvil): cierran el menú (esta página no tiene filtros)
+      nav.querySelectorAll('.mega-mobile-cat[data-filter]').forEach(function(a){
+        a.addEventListener('click',function(e){
+          e.preventDefault();
+          nav.classList.remove('open');
+          if(catWrap) catWrap.classList.remove('open');
+          nt.setAttribute('aria-expanded','false');
+        });
+      });
+    }
+    var ft=document.getElementById('filtrosToggle'), sb=document.querySelector('.sidebar');
+    if(ft&&sb){
+      ft.addEventListener('click',function(){
+        var o=sb.classList.toggle('open');
+        ft.setAttribute('aria-expanded', o?'true':'false');
+      });
+    }
+  })();
+</script>
+
+<script>
+  /* Búsqueda en cabecera: abrir/cerrar desplegable (solo UI; sin lógica de backend) */
+  (function(){
+    var btn=document.getElementById('searchToggle'),
+        panel=document.getElementById('headerSearch'),
+        input=document.getElementById('headerSearchInput'),
+        closeBtn=document.getElementById('headerSearchClose'),
+        navEl=document.getElementById('mainNav'),
+        navBtn=document.getElementById('navToggle');
+    if(!btn||!panel) return;
+    function open(){
+      panel.classList.add('open'); btn.classList.add('active'); btn.setAttribute('aria-expanded','true');
+      if(navEl){ navEl.classList.remove('open'); if(navBtn) navBtn.setAttribute('aria-expanded','false'); }
+      setTimeout(function(){ if(input) input.focus(); }, 60);
+    }
+    function close(){
+      panel.classList.remove('open'); btn.classList.remove('active'); btn.setAttribute('aria-expanded','false');
+    }
+    function toggle(){ panel.classList.contains('open') ? close() : open(); }
+    btn.addEventListener('click', function(e){ e.preventDefault(); toggle(); });
+    if(closeBtn) closeBtn.addEventListener('click', close);
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+    if(navBtn) navBtn.addEventListener('click', function(){ close(); });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Russitex — Materiales para confección en Bogotá</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ── Colores de marca (Manual Russitex) ── */
+  --azul-oficio:  #2C5C7C;   /* principal */
+  --azul-profundo:#1C3D54;   /* titulares largos / fondos oscuros */
+  --ladrillo:     #A95445;   /* acento · la mano amiga · CTA */
+  --ladrillo-osc: #8F4537;   /* hover del ladrillo */
+  --arena:        #D8C2A1;   /* apoyo · bloques cálidos */
+  --crema:        #FDFBF7;   /* fondo principal */
+  --crema-osc:    #F1EADC;   /* bloque cálido alterno (derivado) */
+  --tinta:        #3B302A;   /* texto · casi-negro cálido */
+  --gris-calido:  #6E665C;   /* texto secundario */
+  --linea:        #E0D8CB;   /* divisores · bordes */
+  --azul-claro:   #E8EFF4;   /* tinte suave de azul para hover/chip */
+  /* ── Estados (solo señales) ── */
+  --verde:        #5B7A52;   /* disponible / confirmado */
+  --rojo:         #9E3B2E;   /* error / agotado */
+  --ambar:        #D89A3C;   /* aviso / pocas unidades */
+  /* ── Plataforma ── */
+  --verde-wa:     #25D366;
+
+  /* ── Radios ── */
+  --r-sm: 10px; --r-md: 14px; --r-lg: 18px; --r-xl: 22px; --r-pill: 100px;
+
+  /* ── Sombras cálidas (basadas en tinta) ── */
+  --sh-sm: 0 2px 8px rgba(59,48,42,0.06);
+  --sh-md: 0 6px 20px rgba(59,48,42,0.10);
+  --sh-lg: 0 16px 38px rgba(59,48,42,0.14);
+
+  /* ── Tipografía ── */
+  --f-head: 'Fraunces', Georgia, serif;
+  --f-body: 'Mulish', system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--f-body);
+  background: var(--crema);
+  color: var(--tinta);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Accesibilidad: foco visible ── */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--ladrillo);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── TOPBAR ROTANTE HORIZONTAL ── */
+.topbar {
+  background: var(--azul-profundo);
+  height: 38px; overflow: hidden;
+  position: relative;
+}
+.topbar-inner { position: relative; width: 100%; height: 100%; }
+.topbar-msg {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.78rem; color: rgba(255,255,255,0.82);
+  letter-spacing: 0.02em; white-space: nowrap;
+  padding: 0 1rem; text-align: center;
+  opacity: 0;
+}
+.topbar-msg strong { color: #fff; font-weight: 600; }
+.topbar-msg:nth-child(1) { animation: slideMsg 10s ease-in-out 0s infinite; }
+.topbar-msg:nth-child(2) { animation: slideMsg 10s ease-in-out 5s infinite; }
+
+@keyframes slideMsg {
+  0%   { opacity: 0; transform: translateX(60px); }
+  8%   { opacity: 1; transform: translateX(0); }
+  42%  { opacity: 1; transform: translateX(0); }
+  50%  { opacity: 0; transform: translateX(-60px); }
+  100% { opacity: 0; transform: translateX(60px); }
+}
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(250,246,238,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--linea);
+}
+.header-inner {
+  display: flex; align-items: center;
+  padding: 0 5%; height: 68px; gap: 2rem;
+}
+.logo {
+  font-family: var(--f-head);
+  font-size: 1.6rem; font-weight: 600;
+  color: var(--azul-oficio); text-decoration: none;
+  letter-spacing: -0.01em; white-space: nowrap;
+}
+.logo span { color: var(--ladrillo); }
+nav { display: flex; gap: 1.7rem; flex: 1; }
+nav a {
+  text-decoration: none; color: var(--tinta);
+  font-size: 0.92rem; font-weight: 500;
+  white-space: nowrap; transition: color 0.2s;
+  position: relative;
+}
+nav a::after {
+  content: ''; position: absolute; left: 0; right: 100%; bottom: -4px;
+  height: 2px; background: var(--ladrillo); transition: right 0.25s ease;
+}
+nav a:hover { color: var(--azul-oficio); }
+nav a:hover::after { right: 0; }
+.header-icons { display: flex; align-items: center; gap: 0.3rem; }
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--azul-oficio); transition: background 0.2s, color 0.2s;
+}
+.icon-btn:hover { background: var(--azul-claro); }
+.icon-btn svg { width: 19px; height: 19px; }
+.cart-btn { position: relative; }
+.cart-badge {
+  position: absolute; top: 3px; right: 3px;
+  min-width: 17px; height: 17px; padding: 0 4px; border-radius: 100px;
+  background: var(--ladrillo); color: #fff;
+  font-size: 0.6rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-toggle {
+  display: none;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: none; border: none; cursor: pointer;
+  align-items: center; justify-content: center;
+  color: var(--azul-oficio);
+}
+.nav-toggle svg { width: 22px; height: 22px; }
+
+/* ── BÚSQUEDA EN CABECERA (desplegable) ── */
+.icon-btn.active { background: var(--azul-claro); color: var(--azul-oficio); }
+.header-search {
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: rgba(250,246,238,0.98); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--linea); box-shadow: var(--sh-md);
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height 0.28s ease, opacity 0.2s ease;
+}
+.header-search.open { max-height: 130px; opacity: 1; }
+.header-search-inner {
+  max-width: 720px; margin: 0 auto; padding: 0.9rem 5%;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.header-search-box { position: relative; flex: 1; }
+.header-search-box > svg {
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; color: var(--gris-calido); pointer-events: none;
+}
+.header-search-input {
+  width: 100%; height: 46px; padding: 0 16px 0 46px;
+  border: 1.5px solid var(--linea); border-radius: var(--r-pill);
+  background: #fff; font-family: var(--f-body); font-size: 0.98rem; color: var(--tinta);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.header-search-input:focus { border-color: var(--azul-oficio); box-shadow: 0 0 0 3px rgba(44,92,124,0.12); }
+.header-search-input::placeholder { color: var(--gris-calido); }
+.header-search-close {
+  width: 44px; height: 44px; border-radius: 50%; border: none; background: none; cursor: pointer;
+  color: var(--azul-oficio); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.2s;
+}
+.header-search-close:hover { background: var(--azul-claro); }
+.header-search-close svg { width: 20px; height: 20px; }
+
+/* ── FLOATING WHATSAPP ── */
+.wa-float {
+  position: fixed; bottom: 26px; right: 26px; z-index: 999;
+  width: 58px; height: 58px;
+  background: var(--verde-wa);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 22px rgba(37,211,102,0.40);
+  cursor: pointer; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: waPop 0.5s 0.8s ease both;
+}
+.wa-float:hover {
+  transform: scale(1.08);
+  box-shadow: 0 10px 30px rgba(37,211,102,0.50);
+}
+.wa-float svg { width: 31px; height: 31px; fill: #fff; }
+.wa-float-badge {
+  position: absolute; top: -2px; right: -2px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--rojo); color: #fff;
+  font-size: 0.65rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--crema);
+}
+.wa-float-tooltip {
+  position: absolute; right: 70px; bottom: 50%;
+  transform: translateY(50%);
+  background: var(--tinta); color: #fff;
+  font-size: 0.8rem; font-weight: 500;
+  padding: 0.45rem 0.85rem; border-radius: 8px;
+  white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity 0.2s;
+  box-shadow: var(--sh-md);
+}
+.wa-float-tooltip::after {
+  content: ''; position: absolute; left: 100%; top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent; border-left-color: var(--tinta);
+}
+.wa-float:hover .wa-float-tooltip { opacity: 1; }
+
+@keyframes waPop {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* ── HERO ── */
+.hero {
+  display: grid; grid-template-columns: 55% 45%;
+  min-height: 86vh;
+}
+.hero-left {
+  background: var(--azul-oficio);
+  padding: 5rem 5% 5rem 8%;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.hero-left::before {
+  content: ''; position: absolute;
+  width: 420px; height: 420px; border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  bottom: -120px; left: -110px; pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.88); border-radius: var(--r-pill);
+  padding: 0.35rem 1rem; font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  width: fit-content; margin-bottom: 1.6rem;
+  animation: fadeUp 0.6s ease both;
+}
+.hero-eyebrow::before { content: '●'; color: var(--arena); font-size: 0.5rem; }
+.hero-title {
+  font-family: var(--f-head);
+  font-size: clamp(2.3rem, 4vw, 3.5rem);
+  font-weight: 600; line-height: 1.1;
+  color: #fff; margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+  animation: fadeUp 0.6s 0.08s ease both;
+}
+.hero-slogan {
+  font-family: var(--f-head); font-style: italic;
+  font-size: 1.1rem; font-weight: 400;
+  color: rgba(255,255,255,0.7); margin-bottom: 1.2rem;
+  animation: fadeUp 0.6s 0.14s ease both;
+}
+.hero-desc {
+  font-size: 1.05rem; color: rgba(255,255,255,0.78);
+  line-height: 1.7; max-width: 460px; margin-bottom: 2.4rem;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+.hero-btns {
+  display: flex; gap: 0.9rem; flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.26s ease both;
+}
+.btn-primary {
+  background: var(--ladrillo); color: #fff;
+  border: none; cursor: pointer; border-radius: var(--r-pill);
+  padding: 0.9rem 2rem;
+  font-family: var(--f-body);
+  font-size: 0.95rem; font-weight: 700;
+  box-shadow: 0 6px 18px rgba(169,84,69,0.30);
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover { background: var(--ladrillo-osc); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(169,84,69,0.38); }
+.btn-primary:active { transform: translateY(0); }
+.btn-ghost {
+  background: transparent; color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.45); cursor: pointer;
+  border-radius: var(--r-pill); padding: 0.9rem 2rem;
+  font-family: var(--f-body);
+  font-size: 0.95rem; font-weight: 600; transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+.hero-stats {
+  display: flex; gap: 2.2rem; margin-top: 3.4rem;
+  padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.16);
+  flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.32s ease both;
+}
+.stat { display: flex; flex-direction: column; gap: 0.2rem; }
+.stat-num {
+  font-family: var(--f-head);
+  font-size: 2rem; font-weight: 600; color: #fff; line-height: 1;
+}
+.stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.6); line-height: 1.35; }
+.hero-right {
+  position: relative; overflow: hidden; background: var(--crema-osc);
+  display: grid; grid-template-rows: 60% 40%; gap: 3px;
+}
+.img-block {
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 0.55rem;
+  font-size: 0.8rem; font-weight: 500;
+}
+.img-block:first-child { background: #DCE7EF; color: var(--azul-oficio); }
+.img-block:last-child  { background: var(--arena); color: var(--tinta); }
+.img-block svg { opacity: 0.5; width: 42px; height: 42px; }
+.hero-float-card {
+  position: absolute; bottom: 1.5rem; left: 1.5rem;
+  background: #fff; border-radius: var(--r-md);
+  padding: 0.95rem 1.25rem;
+  box-shadow: var(--sh-lg);
+  display: flex; align-items: center; gap: 0.85rem;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.float-icon {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--azul-claro); display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0; color: var(--azul-oficio);
+}
+.float-icon svg { width: 22px; height: 22px; }
+.float-text small { font-size: 0.74rem; color: var(--gris-calido); display: block; }
+.float-text strong { font-size: 0.92rem; color: var(--azul-oficio); font-weight: 700; }
+
+/* ── SECTION SHELL ── */
+.section { padding: 5rem 8%; }
+.s-label {
+  font-size: 0.74rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ladrillo); margin-bottom: 0.7rem;
+}
+.s-title {
+  font-family: var(--f-head);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 600; line-height: 1.18; color: var(--azul-profundo);
+  letter-spacing: -0.01em;
+}
+.s-title em { font-style: italic; color: var(--ladrillo); }
+.s-sub { font-size: 1rem; color: var(--gris-calido); line-height: 1.65; margin-top: 0.7rem; max-width: 540px; }
+
+/* ── CATEGORÍAS GALERÍA ── */
+.categorias { background: #fff; padding-bottom: 4rem; }
+.cat-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;
+}
+.ver-todo {
+  color: var(--azul-oficio); text-decoration: none; font-size: 0.9rem; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  white-space: nowrap; transition: gap 0.2s, color 0.2s;
+}
+.ver-todo:hover { gap: 0.6rem; color: var(--ladrillo); }
+.cat-gallery-wrap {
+  overflow-x: auto; overflow-y: visible;
+  margin: 0 -8%; padding: 0.5rem 8% 1.2rem;
+  scrollbar-width: none;
+  cursor: grab;
+}
+.cat-gallery-wrap::-webkit-scrollbar { display: none; }
+.cat-gallery-wrap.dragging { cursor: grabbing; user-select: none; }
+.cat-gallery { display: flex; gap: 1.1rem; width: max-content; }
+.cat-card img { -webkit-user-drag: none; user-select: none; }
+.cat-card {
+  position: relative; overflow: hidden;
+  width: 224px; height: 296px;
+  border-radius: var(--r-xl); flex-shrink: 0;
+  cursor: pointer; text-decoration: none; display: block;
+  box-shadow: var(--sh-sm);
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.cat-card:hover { box-shadow: var(--sh-lg); transform: translateY(-4px); }
+.cat-card img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.5s ease; display: block;
+}
+.cat-card:hover img { transform: scale(1.07); }
+.cat-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(28,61,84,0.85) 0%, rgba(28,61,84,0.12) 55%, transparent 100%);
+  transition: background 0.3s;
+}
+.cat-card:hover .cat-overlay {
+  background: linear-gradient(to top, rgba(28,61,84,0.92) 0%, rgba(28,61,84,0.32) 60%, transparent 100%);
+}
+.cat-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.4rem 1.2rem 1.3rem; }
+.cat-name {
+  font-family: var(--f-head);
+  font-size: 1.1rem; font-weight: 600;
+  color: #fff; display: block; margin-bottom: 0.5rem; line-height: 1.2;
+}
+.cat-cta {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.82);
+  transform: translateY(6px); opacity: 0; transition: all 0.25s;
+}
+.cat-card:hover .cat-cta { opacity: 1; transform: translateY(0); }
+.cat-cta::after { content: ' →'; }
+.cat-card-all {
+  width: 150px; height: 296px; border-radius: var(--r-xl); flex-shrink: 0;
+  background: var(--azul-claro); border: 1.5px dashed var(--azul-oficio);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 0.7rem; cursor: pointer; text-decoration: none; transition: all 0.25s;
+}
+.cat-card-all:hover { background: var(--azul-oficio); transform: translateY(-4px); }
+.cat-card-all:hover .cat-all-label { color: #fff; }
+.cat-card-all:hover .cat-all-icon { background: rgba(255,255,255,0.18); color: #fff; }
+.cat-all-icon {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: #fff; display: flex; align-items: center;
+  justify-content: center; color: var(--azul-oficio); transition: all 0.25s;
+}
+.cat-all-icon svg { width: 22px; height: 22px; }
+.cat-all-label {
+  font-size: 0.82rem; font-weight: 700; color: var(--azul-oficio);
+  text-align: center; line-height: 1.4; transition: color 0.25s; padding: 0 0.6rem;
+}
+
+/* ── ASESORÍA ── */
+.asesoria { background: var(--azul-oficio); }
+.asesoria .s-title { color: #fff; }
+.asesoria .s-sub { color: rgba(255,255,255,0.72); }
+.asesoria .s-label { color: var(--arena); }
+.asesoria-cards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; margin-top: 2.6rem;
+}
+.asesoria-card {
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.16);
+  border-radius: var(--r-xl); padding: 2.4rem;
+  transition: all 0.25s;
+}
+.asesoria-card:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.32);
+  transform: translateY(-3px);
+}
+.asesoria-card .a-icon {
+  width: 56px; height: 56px; border-radius: var(--r-md);
+  background: rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.2rem; color: #fff;
+}
+.asesoria-card .a-icon svg { width: 28px; height: 28px; }
+.asesoria-card h3 {
+  font-family: var(--f-head);
+  font-size: 1.35rem; font-weight: 600; color: #fff; margin-bottom: 0.6rem;
+}
+.asesoria-card p { font-size: 0.95rem; color: rgba(255,255,255,0.72); line-height: 1.65; margin-bottom: 1.8rem; }
+
+/* Chatbot steps (estilos conservados) */
+.chatbot-preview {
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--r-md); padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem;
+}
+.chat-step { display: flex; align-items: center; gap: 0.7rem; font-size: 0.85rem; color: rgba(255,255,255,0.72); }
+.chat-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(255,255,255,0.16); color: #fff;
+  font-size: 0.68rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.form-preview {
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--r-md); padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.7rem;
+}
+.form-field { display: flex; flex-direction: column; gap: 0.25rem; }
+.form-field label { font-size: 0.74rem; color: rgba(255,255,255,0.55); font-weight: 500; }
+.form-field-bar { height: 32px; background: rgba(255,255,255,0.1); border-radius: 8px; border: 1px solid rgba(255,255,255,0.16); }
+.form-field-bar.textarea { height: 52px; }
+
+.btn-card-white {
+  background: #fff; color: var(--azul-oficio);
+  border: none; cursor: pointer; border-radius: var(--r-pill);
+  padding: 0.75rem 1.7rem;
+  font-family: var(--f-body);
+  font-size: 0.9rem; font-weight: 700; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+}
+.btn-card-white:hover { transform: translateY(-2px); box-shadow: var(--sh-md); }
+.btn-card-outline {
+  background: transparent; color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.45); cursor: pointer;
+  border-radius: var(--r-pill); padding: 0.75rem 1.7rem;
+  font-family: var(--f-body);
+  font-size: 0.9rem; font-weight: 600; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+}
+.btn-card-outline:hover { border-color: #fff; background: rgba(255,255,255,0.12); }
+
+/* ── BENEFICIOS ── */
+.beneficios { background: #fff; }
+.beneficios-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem; margin-top: 2.9rem;
+}
+.bene-card {
+  padding: 2rem 1.6rem; border: 1.5px solid var(--linea);
+  border-radius: var(--r-lg); transition: all 0.25s; background: #fff;
+}
+.bene-card:hover { border-color: var(--azul-oficio); background: var(--crema); transform: translateY(-4px); box-shadow: var(--sh-md); }
+.bene-icon {
+  width: 56px; height: 56px; border-radius: var(--r-md);
+  background: var(--azul-claro); color: var(--azul-oficio);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.2rem; transition: all 0.25s;
+}
+.bene-icon svg { width: 28px; height: 28px; }
+.bene-card:hover .bene-icon { background: var(--azul-oficio); color: #fff; }
+.bene-card h3 { font-family: var(--f-head); font-size: 1.12rem; font-weight: 600; color: var(--azul-profundo); margin-bottom: 0.5rem; }
+.bene-card p { font-size: 0.92rem; color: var(--gris-calido); line-height: 1.6; }
+
+/* ── SOBRE NOSOTROS ── */
+.sobre {
+  background: var(--crema-osc);
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+.sobre-left {
+  padding: 5rem 5% 5rem 8%;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.sobre-text {
+  font-size: 1.02rem; color: var(--gris-calido); line-height: 1.8;
+  margin-top: 1.2rem; margin-bottom: 2rem; max-width: 440px;
+}
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--azul-oficio); color: #fff; border: none; cursor: pointer;
+  border-radius: var(--r-pill); padding: 0.8rem 1.8rem;
+  font-family: var(--f-body); font-size: 0.92rem; font-weight: 700;
+  transition: all 0.2s; width: fit-content; text-decoration: none;
+}
+.btn-secondary:hover { background: var(--azul-profundo); transform: translateY(-2px); box-shadow: var(--sh-md); }
+.sobre-right {
+  padding: 5rem 8% 5rem 5%;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.timeline { display: flex; flex-direction: column; }
+.tl-item { display: flex; gap: 1.2rem; padding-bottom: 1.9rem; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-left { display: flex; flex-direction: column; align-items: center; width: 36px; flex-shrink: 0; }
+.tl-dot { width: 13px; height: 13px; border-radius: 50%; background: var(--ladrillo); margin-top: 4px; flex-shrink: 0; box-shadow: 0 0 0 4px rgba(169,84,69,0.15); }
+.tl-line { width: 2px; flex: 1; background: var(--linea); margin-top: 4px; }
+.tl-item:last-child .tl-line { display: none; }
+.tl-year { font-family: var(--f-head); font-size: 1.05rem; font-weight: 700; color: var(--ladrillo); margin-bottom: 0.15rem; }
+.tl-text { font-size: 0.92rem; color: var(--gris-calido); line-height: 1.55; }
+
+/* ── FOOTER ── */
+footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 8% 2rem; }
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1.4fr 1.6fr;
+  gap: 4rem; padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.f-logo {
+  font-family: var(--f-head); font-size: 1.6rem; font-weight: 600;
+  color: #fff; display: block; margin-bottom: 0.8rem;
+}
+.f-logo span { color: var(--arena); }
+.footer-desc { font-size: 0.92rem; line-height: 1.7; margin-bottom: 0.4rem; }
+.footer-slogan { font-size: 0.86rem; font-style: italic; font-family: var(--f-head); color: rgba(255,255,255,0.5); }
+.f-col h4 {
+  color: #fff; font-size: 0.74rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1.1rem;
+}
+.f-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+.f-col ul a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+.f-col ul a:hover { color: var(--arena); }
+.f-contact { display: flex; flex-direction: column; gap: 1.05rem; }
+.f-ci-item { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.9rem; }
+.f-ci { color: var(--arena); margin-top: 0.05rem; flex-shrink: 0; display: flex; }
+.f-ci svg { width: 18px; height: 18px; }
+.f-ci-item a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
+.f-ci-item a:hover { color: #fff; }
+.footer-bottom {
+  padding-top: 1.6rem; display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 0.5rem;
+}
+.footer-bottom p { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ════════════════════════════════════════════
+   RESPONSIVE
+   Desktop ≥1200 · Tablet 768–1199 · Móvil 360–767
+   ════════════════════════════════════════════ */
+
+/* ── Tablet y por debajo (≤1199px) ── */
+@media (max-width: 1199px) {
+  .section { padding: 4rem 6%; }
+  .sobre-left { padding: 4rem 6% 4rem 6%; }
+  .sobre-right { padding: 0 6% 4rem; }
+  .hero-left { padding: 4rem 6%; }
+  .cat-gallery-wrap { margin: 0 -6%; padding: 0.5rem 6% 1.2rem; }
+  .beneficios-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { gap: 2.5rem; }
+  /* Header tablet: logo izquierda · iconos agrupados a la derecha con hamburguesa */
+  .header-inner { padding: 0 6%; gap: 1rem; }
+  .header-icons { margin-left: auto; gap: 0.35rem; }
+  .nav-toggle { display: flex; }
+  nav#mainNav {
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; gap: 0; flex: none;
+    background: var(--crema); border-bottom: 1px solid var(--linea);
+    box-shadow: var(--sh-md); max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease; padding: 0 6%;
+  }
+  nav#mainNav.open { max-height: 380px; padding: 0.4rem 6% 1rem; }
+  nav#mainNav a { padding: 0.9rem 0; border-bottom: 1px solid var(--linea); font-size: 1rem; }
+  nav#mainNav a:last-child { border-bottom: none; }
+  nav#mainNav a::after { display: none; }
+}
+
+/* ── Hero / Sobre apilan en pantallas medianas ── */
+@media (max-width: 960px) {
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-right { grid-template-rows: none; grid-template-columns: 1fr 1fr; height: 240px; }
+  .hero-right .hero-float-card { left: 1.2rem; bottom: 1.2rem; }
+  .sobre { grid-template-columns: 1fr; }
+  /* Tablet apilado: el párrafo aprovecha más ancho (el botón sigue debajo, alineado a la izquierda) */
+  .sobre-text { max-width: 720px; }
+  .sobre-right { padding-top: 0; }
+}
+
+/* ── Móvil (≤767px) ── */
+@media (max-width: 767px) {
+  body { font-size: 16px; }
+  .section { padding: 3rem 6%; }
+  .hero-left { padding: 3.2rem 6%; }
+  .hero-title { font-size: clamp(2rem, 8vw, 2.6rem); }
+  .hero-desc { font-size: 1rem; }
+  .hero-stats { gap: 1.6rem; margin-top: 2.6rem; }
+
+  /* Header móvil: padding lateral seguro, iconos agrupados a la derecha */
+  .header-inner { padding: 0 6%; gap: 1rem; }
+
+  /* Grids */
+  .asesoria-cards { grid-template-columns: 1fr; }
+  .asesoria-card { padding: 1.8rem; }
+  .footer-grid { grid-template-columns: 1fr; gap: 2.2rem; text-align: left; }
+  .footer-bottom { justify-content: center; }
+
+  .cat-header { align-items: flex-start; }
+
+  .wa-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
+  .wa-float svg { width: 28px; height: 28px; }
+  .wa-float-tooltip { display: none; }
+  .cat-card { width: 180px; height: 250px; }
+  .cat-card-all { width: 130px; height: 250px; }
+}
+
+/* ── Móvil pequeño (≤479px) ── */
+@media (max-width: 479px) {
+  .beneficios-grid { grid-template-columns: 1fr; }
+  .hero-right { grid-template-columns: 1fr; height: 200px; }
+  .hero-right .img-block:last-child { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR ROTANTE HORIZONTAL -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-msg">
+      📦 <strong>Envíos el mismo día en Bogotá</strong> &nbsp;—&nbsp; Haz tu pedido antes de las 12:00 p.m.
+    </div>
+    <div class="topbar-msg">
+      🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">Russi<span>tex</span></a>
+    <nav id="mainNav">
+      <a href="#">Inicio</a>
+      <a href="#">Catálogo</a>
+      <a href="#">Asesoría</a>
+      <a href="#">Sobre nosotros</a>
+      <a href="#">Contacto</a>
+    </nav>
+    <div class="header-icons">
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" title="Menú"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <button class="icon-btn" id="searchToggle" title="Buscar" aria-label="Buscar" aria-expanded="false">
+        <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn" title="Mi cuenta">
+        <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn cart-btn" title="Carrito">
+        <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2"/><path d="M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="2"/></svg>
+        <span class="cart-badge">0</span>
+      </button>
+    </div>
+  </div>
+  <div class="header-search" id="headerSearch">
+    <div class="header-search-inner">
+      <div class="header-search-box">
+        <svg fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" class="header-search-input" id="headerSearchInput" placeholder="Buscar material..." aria-label="Buscar material">
+      </div>
+      <button class="header-search-close" id="headerSearchClose" aria-label="Cerrar búsqueda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Bogotá, Colombia · Microempresa familiar</div>
+    <h1 class="hero-title">Materiales para<br>confección<br>en Bogotá</h1>
+    <p class="hero-slogan">39 años siendo tu mano amiga en confección.</p>
+    <p class="hero-desc">Encuentra forros, entretelas, hombreras, guatas, tizas y otros insumos para tus proyectos de confección, con asesoría cercana y experiencia familiar.</p>
+    <div class="hero-btns">
+      <button class="btn-primary">Ver catálogo →</button>
+      <button class="btn-ghost">Pedir asesoría</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">39</span>
+        <span class="stat-label">años de<br>experiencia</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">+50</span>
+        <span class="stat-label">materiales<br>disponibles</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">&lt;5'</span>
+        <span class="stat-label">respuesta por<br>WhatsApp</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="img-block">
+      <svg width="40" height="40" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M3 15l5-5 4 4 2-2 5 5" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span>Foto interior del almacén</span>
+    </div>
+    <div class="img-block">
+      <svg width="40" height="40" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M3 15l5-5 4 4 2-2 5 5" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span>Detalle de materiales</span>
+    </div>
+    <div class="hero-float-card">
+      <div class="float-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M14 18V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1"/><path d="M14 9h4l3 3v5a1 1 0 0 1-1 1h-1"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="M9 18h6"/></svg></div>
+      <div class="float-text">
+        <small>Pedidos antes de las 12 p.m.</small>
+        <strong>Envíos el mismo día</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORÍAS -->
+<section class="section categorias">
+  <div class="cat-header">
+    <div>
+      <div class="s-label">Nuestros materiales</div>
+      <h2 class="s-title">Encuentra lo que necesitas<br>para <em>confeccionar</em></h2>
+      <p class="s-sub">Explora nuestras principales categorías de materiales.</p>
+    </div>
+    <a href="#" class="ver-todo">Ver catálogo completo →</a>
+  </div>
+  <div class="cat-gallery-wrap" id="catGallery">
+    <div class="cat-gallery">
+
+      <a href="#" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=440&q=80" alt="Forros" loading="lazy">
+        <div class="cat-overlay"></div>
+        <div class="cat-info"><span class="cat-name">Forros</span><span class="cat-cta">Ver productos</span></div>
+      </a>
+
+      <a href="#" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=440&q=80" alt="Entretelas" loading="lazy">
+        <div class="cat-overlay"></div>
+        <div class="cat-info"><span class="cat-name">Entretelas</span><span class="cat-cta">Ver productos</span></div>
+      </a>
+
+      <a href="#" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1586495777744-4e6232bf2176?w=440&q=80" alt="Hombreras" loading="lazy">
+        <div class="cat-overlay"></div>
+        <div class="cat-info"><span class="cat-name">Hombreras</span><span class="cat-cta">Ver productos</span></div>
+      </a>
+
+      <a href="#" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1544441893-675973e31985?w=440&q=80" alt="Guatas" loading="lazy">
+        <div class="cat-overlay"></div>
+        <div class="cat-info"><span class="cat-name">Guatas</span><span class="cat-cta">Ver productos</span></div>
+      </a>
+
+      <a href="#" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b4a4a?w=440&q=80" alt="Tizas" loading="lazy">
+        <div class="cat-overlay"></div>
+        <div class="cat-info"><span class="cat-name">Tizas</span><span class="cat-cta">Ver productos</span></div>
+      </a>
+
+      <a href="#" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=440&q=80" alt="Pretinas" loading="lazy">
+        <div class="cat-overlay"></div>
+        <div class="cat-info"><span class="cat-name">Pretinas</span><span class="cat-cta">Ver productos</span></div>
+      </a>
+
+      <a href="#" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?w=440&q=80" alt="Cierres" loading="lazy">
+        <div class="cat-overlay"></div>
+        <div class="cat-info"><span class="cat-name">Cierres</span><span class="cat-cta">Ver productos</span></div>
+      </a>
+
+      <a href="#" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1612404730960-5c71577fca11?w=440&q=80" alt="Botones" loading="lazy">
+        <div class="cat-overlay"></div>
+        <div class="cat-info"><span class="cat-name">Botones</span><span class="cat-cta">Ver productos</span></div>
+      </a>
+
+      <a href="#" class="cat-card-all">
+        <div class="cat-all-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        <span class="cat-all-label">Ver todos los materiales</span>
+      </a>
+
+    </div>
+  </div>
+
+  <script>
+    const gallery = document.getElementById('catGallery');
+
+    /* Auto-scroll horizontal: avanza cada 3s con una animación suave y reinicia al llegar al final */
+    var AUTO_DELAY = 3000;
+    var ANIM_DURATION = 750;
+    var autoTimer = null;
+    var raf = null;
+
+    function getStep(){
+      var card = gallery.querySelector('.cat-card, .cat-card-all');
+      return card ? card.offsetWidth + 18 : 240; /* ancho de tarjeta + gap (1.1rem) */
+    }
+
+    function easeInOutCubic(t){
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function animateScrollTo(target, duration){
+      if (raf) cancelAnimationFrame(raf);
+      var start = gallery.scrollLeft;
+      var change = target - start;
+      var startTime = null;
+      function frame(ts){
+        if (!startTime) startTime = ts;
+        var progress = Math.min((ts - startTime) / duration, 1);
+        gallery.scrollLeft = start + change * easeInOutCubic(progress);
+        raf = progress < 1 ? requestAnimationFrame(frame) : null;
+      }
+      raf = requestAnimationFrame(frame);
+    }
+
+    function tick(){
+      var maxScroll = gallery.scrollWidth - gallery.clientWidth;
+      var target = gallery.scrollLeft >= maxScroll - 5
+        ? 0
+        : Math.min(gallery.scrollLeft + getStep(), maxScroll);
+      animateScrollTo(target, ANIM_DURATION);
+    }
+    function startAuto(){
+      stopAuto();
+      autoTimer = setInterval(tick, AUTO_DELAY);
+    }
+    function stopAuto(){
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+    }
+
+    /* Pausar cuando el usuario interactúa, reanudar al salir */
+    ['mouseenter', 'touchstart'].forEach(function(evt){
+      gallery.addEventListener(evt, stopAuto, { passive: true });
+    });
+    ['mouseleave', 'touchend'].forEach(function(evt){
+      gallery.addEventListener(evt, startAuto, { passive: true });
+    });
+
+    /* Arrastrar con el mouse para desplazar la galería manualmente */
+    (function(){
+      var isDown = false, startX = 0, startScroll = 0, moved = 0;
+
+      gallery.addEventListener('mousedown', function(e){
+        isDown = true; moved = 0;
+        startX = e.pageX;
+        startScroll = gallery.scrollLeft;
+        gallery.classList.add('dragging');
+        stopAuto();
+      });
+
+      window.addEventListener('mousemove', function(e){
+        if (!isDown) return;
+        e.preventDefault();
+        var delta = e.pageX - startX;
+        moved = Math.max(moved, Math.abs(delta));
+        gallery.scrollLeft = startScroll - delta;
+      });
+
+      function endDrag(){
+        if (!isDown) return;
+        isDown = false;
+        gallery.classList.remove('dragging');
+        startAuto();
+      }
+      window.addEventListener('mouseup', endDrag);
+
+      /* Si hubo arrastre real, evitar que el clic navegue a la tarjeta */
+      gallery.addEventListener('click', function(e){
+        if (moved > 6) { e.preventDefault(); e.stopPropagation(); }
+      }, true);
+
+      gallery.addEventListener('dragstart', function(e){ e.preventDefault(); });
+    })();
+
+    startAuto();
+  </script>
+</section>
+
+<!-- ASESORÍA -->
+<section class="section asesoria">
+  <div class="s-label">Estamos para ayudarte</div>
+  <h2 class="s-title">¿No sabes qué material<br>necesitas?</h2>
+  <p class="s-sub">Cuéntanos qué estás confeccionando y te orientamos para elegir los materiales correctos.</p>
+
+  <div class="asesoria-cards">
+
+    <!-- CHATBOT -->
+    <div class="asesoria-card">
+      <span class="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg></span>
+      <h3>Asesoría rápida</h3>
+      <p>¿Tienes una duda puntual o no sabes por dónde empezar? Nuestro asistente te orienta al instante con preguntas cortas sobre tu proyecto.</p>
+      <p style="font-size:0.82rem; color:rgba(255,255,255,0.45); margin-bottom:1.5rem;">Ideal para consultas rápidas sin necesidad de registro.</p>
+      <button class="btn-card-white">Iniciar asesoría →</button>
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="asesoria-card">
+      <span class="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/></svg></span>
+      <h3>Asesoría personalizada</h3>
+      <p>¿Tu proyecto es más específico o necesitas una orientación detallada? Diligencia el formulario y un asesor de Russitex te contactará directamente.</p>
+      <p style="font-size:0.82rem; color:rgba(255,255,255,0.45); margin-bottom:1.5rem;">Incluye descripción del proyecto, materiales y presupuesto.</p>
+      <button class="btn-card-outline">Ir al formulario →</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- BENEFICIOS -->
+<section class="section beneficios">
+  <div class="s-label">Nuestro diferencial</div>
+  <h2 class="s-title">¿Por qué comprar<br>en <em>Russitex?</em></h2>
+  <p class="s-sub">No solo vendemos materiales: acompañamos tus proyectos de confección.</p>
+  <div class="beneficios-grid">
+    <div class="bene-card">
+      <span class="bene-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg></span>
+      <h3>Asesoría cercana</h3>
+      <p>Te orientamos para que elijas el material correcto según tu proyecto, sin gastar de más ni perder tiempo.</p>
+    </div>
+    <div class="bene-card">
+      <span class="bene-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M2 7h20l-1.5 4.5a2 2 0 0 1-2 1.5h-13a2 2 0 0 1-2-1.5Z"/><path d="M4 13v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M2 7l1.5-3A2 2 0 0 1 5.4 3h13.2a2 2 0 0 1 1.9 1L22 7"/><path d="M10 21v-5h4v5"/></svg></span>
+      <h3>Experiencia familiar</h3>
+      <p>39 años de conocimiento acumulado en materiales para confección, transmitido de generación en generación.</p>
+    </div>
+    <div class="bene-card">
+      <span class="bene-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span>
+      <h3>Compra fácil</h3>
+      <p>Explora el catálogo y paga como prefieras: PSE, Nequi, Daviplata, efectivo, tarjeta de crédito o débito.</p>
+    </div>
+    <div class="bene-card">
+      <span class="bene-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+      <h3>Atención en Bogotá</h3>
+      <p>Compra online o visítanos en nuestra tienda física. Toca los materiales antes de decidir.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE NOSOTROS -->
+<section class="sobre">
+  <div class="sobre-left">
+    <div class="s-label">Quiénes somos</div>
+    <h2 class="s-title">Una historia familiar<br>dedicada a la <em>confección</em></h2>
+    <p class="sobre-text">Russitex nació de la sastrería familiar y creció como un almacén especializado en materiales para confección. Hoy seguimos acompañando a estudiantes, sastres, diseñadores y talleres con atención cercana y conocimiento práctico.</p>
+    <a href="#" class="btn-secondary">Conoce nuestra historia →</a>
+  </div>
+  <div class="sobre-right">
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div><div class="tl-year">1987</div><div class="tl-text">Apertura del almacén familiar en Bogotá, nacido desde la sastrería</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div><div class="tl-year">2000s</div><div class="tl-text">Crecimiento como proveedor de referencia para sastres y diseñadores</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div><div class="tl-year">2020s</div><div class="tl-text">Incorporación de catálogo digital, asesorías online y domicilios</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><div class="tl-dot"></div></div>
+        <div><div class="tl-year">Hoy</div><div class="tl-text">Microempresa familiar con 39 años de oficio y presencia digital en crecimiento</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <span class="f-logo">Russi<span>tex</span></span>
+      <p class="footer-desc">Materiales para confección en Bogotá, Colombia.</p>
+      <p class="footer-slogan">39 años siendo tu mano amiga en confección.</p>
+    </div>
+    <div class="f-col">
+      <h4>Información</h4>
+      <ul>
+        <li><a href="#">Preguntas frecuentes</a></li>
+        <li><a href="#">Políticas de envío</a></li>
+        <li><a href="#">Cambios y devoluciones</a></li>
+        <li><a href="#">Términos y condiciones</a></li>
+        <li><a href="#">Política de privacidad</a></li>
+      </ul>
+    </div>
+    <div class="f-col">
+      <h4>Contacto</h4>
+      <div class="f-contact">
+        <div class="f-ci-item">
+          <span class="f-ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.4 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></span>
+          <div>WhatsApp: <a href="https://wa.me/573138909118">+57 313 890 9118</a></div>
+        </div>
+        <div class="f-ci-item">
+          <span class="f-ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <div>Lun–Vie: 10:00 a.m. – 6:00 p.m.<br>Sábados: 10:00 a.m. – 5:00 p.m.</div>
+        </div>
+        <div class="f-ci-item">
+          <span class="f-ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <div>Bogotá, Colombia</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Russitex. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<!-- BOTÓN FLOTANTE WHATSAPP -->
+<a href="https://wa.me/573138909118" class="wa-float" target="_blank" rel="noopener" title="Escríbenos por WhatsApp">
+  <span class="wa-float-tooltip">¿Tienes dudas? Escríbenos</span>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.054 23.25a.75.75 0 00.916.927l5.487-1.493A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.713 9.713 0 01-4.978-1.365l-.356-.213-3.696 1.006 1.006-3.696-.213-.356A9.713 9.713 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
+  </svg>
+  <span class="wa-float-badge">1</span>
+</a>
+
+<script>
+  (function(){
+    var t=document.getElementById('navToggle'), n=document.getElementById('mainNav');
+    if(t&&n){
+      t.addEventListener('click',function(){
+        var open=n.classList.toggle('open');
+        t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      n.querySelectorAll('a').forEach(function(a){
+        a.addEventListener('click',function(){ n.classList.remove('open'); t.setAttribute('aria-expanded','false'); });
+      });
+    }
+  })();
+</script>
+<script>
+  /* Búsqueda en cabecera: abrir/cerrar desplegable (solo UI; sin lógica de backend) */
+  (function(){
+    var btn=document.getElementById('searchToggle'),
+        panel=document.getElementById('headerSearch'),
+        input=document.getElementById('headerSearchInput'),
+        closeBtn=document.getElementById('headerSearchClose'),
+        navEl=document.getElementById('mainNav'),
+        navBtn=document.getElementById('navToggle');
+    if(!btn||!panel) return;
+    function open(){
+      panel.classList.add('open'); btn.classList.add('active'); btn.setAttribute('aria-expanded','true');
+      if(navEl){ navEl.classList.remove('open'); if(navBtn) navBtn.setAttribute('aria-expanded','false'); }
+      setTimeout(function(){ if(input) input.focus(); }, 60);
+    }
+    function close(){
+      panel.classList.remove('open'); btn.classList.remove('active'); btn.setAttribute('aria-expanded','false');
+    }
+    function toggle(){ panel.classList.contains('open') ? close() : open(); }
+    btn.addEventListener('click', function(e){ e.preventDefault(); toggle(); });
+    if(closeBtn) closeBtn.addEventListener('click', close);
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+    if(navBtn) navBtn.addEventListener('click', function(){ close(); });
+  })();
+</script>
+</body>
+</html>

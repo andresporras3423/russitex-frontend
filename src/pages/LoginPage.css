@@ -1,0 +1,135 @@
+/* Reinicia las restricciones de layout de #root (heredadas de index.css)
+   para que esta página pueda ocupar todo el ancho del viewport. */
+#root:has(.login-page) {
+  width: 100%;
+  max-width: 100%;
+  border-inline: none;
+  text-align: initial;
+}
+
+.login-page {
+  --azul: #2F5F8F; --azul-oscuro: #1e3f5f; --azul-claro: #EAF1F8;
+  --terracota: #A0523A; --terracota-cl: #c9694f; --terracota-bg: #fdf0ec;
+  --crema: #FAF7F2; --crema-osc: #F0EBE2;
+  --carbon: #2C2C2C; --gris: #6b7280; --gris-claro: #E4DED6;
+  --verde-wa: #25D366;
+
+  font-family: 'DM Sans', sans-serif;
+  background: var(--crema);
+  color: var(--carbon);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPBAR ── */
+.login-page .topbar { background: var(--azul-oscuro); height: 36px; overflow: hidden; position: relative; }
+.login-page .topbar-inner { position: relative; width: 100%; height: 100%; }
+.login-page .topbar-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: rgba(255,255,255,0.85); letter-spacing: 0.02em; white-space: nowrap; opacity: 0; }
+.login-page .topbar-msg strong { color: white; font-weight: 600; }
+.login-page .topbar-msg:nth-child(1) { animation: loginSlideMsg 10s ease-in-out 0s infinite; }
+.login-page .topbar-msg:nth-child(2) { animation: loginSlideMsg 10s ease-in-out 5s infinite; }
+@keyframes loginSlideMsg { 0%{opacity:0;transform:translateX(60px)} 8%{opacity:1;transform:translateX(0)} 42%{opacity:1;transform:translateX(0)} 50%{opacity:0;transform:translateX(-60px)} 100%{opacity:0;transform:translateX(60px)} }
+
+/* ── HEADER ── */
+.login-page header { background: white; border-bottom: 1px solid var(--gris-claro); padding: 0 8%; height: 66px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.login-page .logo { font-family: 'Playfair Display', serif; font-size: 1.55rem; font-weight: 700; color: var(--azul); text-decoration: none; letter-spacing: -0.02em; }
+.login-page .logo span { color: var(--terracota); }
+.login-page .header-back { display: flex; align-items: center; gap: 0.4rem; font-size: 0.83rem; color: var(--gris); text-decoration: none; transition: color 0.2s; background: none; border: none; cursor: pointer; }
+.login-page .header-back:hover { color: var(--azul); }
+
+/* ── MAIN ── */
+.login-page .auth-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem 1rem; }
+.login-page .auth-card { background: white; border-radius: 24px; border: 1px solid var(--gris-claro); padding: 2.8rem; width: 100%; max-width: 440px; box-shadow: 0 8px 40px rgba(0,0,0,0.07); animation: loginFadeUp 0.4s ease both; }
+
+/* ── TABS ── */
+.login-page .auth-tabs { display: flex; background: var(--crema-osc); border-radius: 12px; padding: 4px; margin-bottom: 2rem; }
+.login-page .auth-tab { flex: 1; padding: 0.65rem; border: none; background: none; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; color: var(--gris); cursor: pointer; transition: all 0.22s; }
+.login-page .auth-tab.active { background: white; color: var(--azul); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+/* ── PANE ── */
+.login-page .auth-pane { display: none; animation: loginFadeUp 0.3s ease both; }
+.login-page .auth-pane.active { display: block; }
+
+.login-page .auth-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--azul-oscuro); margin-bottom: 0.4rem; }
+.login-page .auth-subtitle { font-size: 0.85rem; color: var(--gris); line-height: 1.6; margin-bottom: 1.8rem; }
+
+/* ── SOCIAL BUTTONS ── */
+.login-page .social-buttons { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1.4rem; }
+.login-page .btn-social { display: flex; align-items: center; gap: 0.9rem; width: 100%; padding: 0.8rem 1.2rem; background: white; border: 1.5px solid var(--gris-claro); border-radius: 11px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; color: var(--carbon); cursor: pointer; transition: all 0.2s; }
+.login-page .btn-social:hover { border-color: var(--azul); background: var(--azul-claro); }
+.login-page .btn-social:disabled { opacity: 0.6; cursor: not-allowed; }
+.login-page .btn-social-icon { width: 22px; height: 22px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+
+/* ── DIVIDER ── */
+.login-page .auth-divider { display: flex; align-items: center; gap: 0.8rem; margin: 1.4rem 0; }
+.login-page .auth-divider::before, .login-page .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--gris-claro); }
+.login-page .auth-divider span { font-size: 0.75rem; color: var(--gris); white-space: nowrap; }
+
+/* ── FORM ── */
+.login-page .form-fields { display: flex; flex-direction: column; gap: 1.1rem; margin-bottom: 1.4rem; }
+.login-page .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.login-page .form-label { font-size: 0.78rem; font-weight: 600; color: var(--carbon); }
+.login-page .form-input { padding: 0.8rem 1rem; border: 1.5px solid var(--gris-claro); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--carbon); outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: var(--crema); width: 100%; }
+.login-page .form-input:focus { border-color: var(--azul); background: white; box-shadow: 0 0 0 3px rgba(47,95,143,0.07); }
+.login-page .form-input::placeholder { color: var(--gris); }
+
+/* Password field with toggle */
+.login-page .input-wrap { position: relative; }
+.login-page .input-wrap .form-input { padding-right: 2.8rem; }
+.login-page .pwd-toggle { position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--gris); padding: 0; display: flex; align-items: center; transition: color 0.2s; }
+.login-page .pwd-toggle:hover { color: var(--azul); }
+
+.login-page .form-footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: -0.4rem; }
+.login-page .remember-label { display: flex; align-items: center; gap: 0.45rem; font-size: 0.78rem; color: var(--gris); cursor: pointer; }
+.login-page .remember-label input { accent-color: var(--azul); }
+.login-page .forgot-link { font-size: 0.78rem; color: var(--azul); text-decoration: none; font-weight: 500; background: none; border: none; cursor: pointer; padding: 0; }
+.login-page .forgot-link:hover { text-decoration: underline; }
+
+/* ── SUBMIT ── */
+.login-page .btn-submit { width: 100%; padding: 0.95rem; background: var(--azul); color: white; border: none; cursor: pointer; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.93rem; font-weight: 700; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.login-page .btn-submit:hover { background: var(--azul-oscuro); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(47,95,143,0.2); }
+.login-page .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ── SWITCH LINK ── */
+.login-page .auth-switch { text-align: center; margin-top: 1.4rem; font-size: 0.82rem; color: var(--gris); }
+.login-page .auth-switch a { color: var(--azul); font-weight: 600; text-decoration: none; }
+.login-page .auth-switch a:hover { text-decoration: underline; }
+
+/* ── PASSWORD STRENGTH ── */
+.login-page .pwd-strength { margin-top: 0.4rem; }
+.login-page .pwd-strength-bar { display: flex; gap: 3px; height: 3px; margin-bottom: 0.3rem; }
+.login-page .pwd-bar-seg { flex: 1; border-radius: 2px; background: var(--gris-claro); transition: background 0.3s; }
+.login-page .pwd-bar-seg.weak { background: #e53935; }
+.login-page .pwd-bar-seg.medium { background: #f59e0b; }
+.login-page .pwd-bar-seg.strong { background: #2e7d5e; }
+.login-page .pwd-strength-label { font-size: 0.72rem; color: var(--gris); }
+
+/* ── TERMS ── */
+.login-page .terms-note { font-size: 0.74rem; color: var(--gris); line-height: 1.55; text-align: center; margin-top: 1rem; }
+.login-page .terms-note a { color: var(--azul); text-decoration: none; }
+.login-page .terms-note a:hover { text-decoration: underline; }
+
+/* ── FEEDBACK ── */
+.login-page .auth-feedback { font-size: 0.8rem; border-radius: 10px; padding: 0.7rem 0.9rem; margin-bottom: 1.1rem; }
+.login-page .auth-feedback.error { background: var(--terracota-bg); color: var(--terracota); }
+.login-page .auth-feedback.success { background: #eaf6f0; color: #2e7d5e; }
+
+/* ── FOOTER ── */
+.login-page footer { background: var(--carbon); color: rgba(255,255,255,0.65); padding: 1.5rem 8%; flex-shrink: 0; }
+.login-page .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.login-page .footer-bottom p { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+.login-page .footer-links { display: flex; gap: 1.5rem; }
+.login-page .footer-links a { font-size: 0.78rem; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.login-page .footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+/* ── FLOATING WA ── */
+.login-page .wa-float { position: fixed; bottom: 28px; right: 28px; z-index: 999; width: 60px; height: 60px; background: var(--verde-wa); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 24px rgba(37,211,102,0.45); cursor: pointer; text-decoration: none; transition: transform 0.2s; animation: loginWaPop 0.5s 1s cubic-bezier(.34,1.56,.64,1) both; }
+.login-page .wa-float:hover { transform: scale(1.1); }
+.login-page .wa-float svg { width: 32px; height: 32px; fill: white; }
+.login-page .wa-float-tooltip { position: absolute; right: 72px; bottom: 50%; transform: translateY(50%); background: var(--carbon); color: white; font-size: 0.78rem; font-weight: 500; padding: 0.4rem 0.85rem; border-radius: 8px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+.login-page .wa-float-tooltip::after { content:''; position:absolute; left:100%; top:50%; transform:translateY(-50%); border:5px solid transparent; border-left-color:var(--carbon); }
+.login-page .wa-float:hover .wa-float-tooltip { opacity: 1; }
+
+@keyframes loginWaPop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+@keyframes loginFadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
