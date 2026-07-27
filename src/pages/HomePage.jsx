@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import SiteHeader from '../components/SiteHeader'
 import './HomePage.css'
 
 const categorias = [
@@ -22,17 +23,7 @@ function easeInOutCubic(t) {
 
 export default function HomePage() {
   const navigate = useNavigate()
-  const [navOpen, setNavOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
   const galleryRef = useRef(null)
-  const searchInputRef = useRef(null)
-
-  useEffect(() => {
-    if (searchOpen) {
-      const t = setTimeout(() => searchInputRef.current?.focus(), 60)
-      return () => clearTimeout(t)
-    }
-  }, [searchOpen])
 
   // Carrusel: auto-scroll cada 3s + arrastre manual con el mouse.
   // Réplica del script original de russitex-home.html, adaptado a un ref de React.
@@ -135,73 +126,22 @@ export default function HomePage() {
 
   return (
     <div className="home-page">
-      <div className="topbar">
-        <div className="topbar-inner">
-          <div className="topbar-msg">📦 <strong>Envíos el mismo día en Bogotá</strong> &nbsp;—&nbsp; Haz tu pedido antes de las 12:00 p.m.</div>
-          <div className="topbar-msg">🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong></div>
-        </div>
-      </div>
-
-      <header>
-        <div className="header-inner">
-          <a href="#" className="logo">Russi<span>tex</span></a>
-          <nav id="mainNav" className={navOpen ? 'open' : ''}>
-            <a href="#" onClick={() => setNavOpen(false)}>Inicio</a>
-            <a href="#" onClick={() => setNavOpen(false)}>Catálogo</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); setNavOpen(false); navigate('/asesoria') }}>Asesoría</a>
-            <a href="#" onClick={() => setNavOpen(false)}>Sobre nosotros</a>
-            <a href="#" onClick={() => setNavOpen(false)}>Contacto</a>
-          </nav>
-          <div className="header-icons">
-            <button
-              className="nav-toggle"
-              aria-label="Abrir menú"
-              aria-expanded={navOpen}
-              title="Menú"
-              onClick={() => { setNavOpen((v) => !v); setSearchOpen(false) }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
-            </button>
-            <button
-              className={`icon-btn ${searchOpen ? 'active' : ''}`}
-              title="Buscar"
-              aria-label="Buscar"
-              aria-expanded={searchOpen}
-              onClick={() => { setSearchOpen((v) => !v); setNavOpen(false) }}
-            >
-              <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" /><path d="M20 20l-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-            </button>
-            <button className="icon-btn" title="Mi cuenta">
-              <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-            </button>
-            <button className="icon-btn cart-btn" title="Carrito">
-              <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" strokeWidth="2" /><path d="M16 10a4 4 0 01-8 0" stroke="currentColor" strokeWidth="2" /></svg>
-              <span className="cart-badge">0</span>
-            </button>
-          </div>
-        </div>
-        <div className={`header-search ${searchOpen ? 'open' : ''}`}>
-          <div className="header-search-inner">
-            <div className="header-search-box">
-              <svg fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" /><path d="M20 20l-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-              <input ref={searchInputRef} type="text" className="header-search-input" placeholder="Buscar material..." aria-label="Buscar material" />
-            </div>
-            <button className="header-search-close" aria-label="Cerrar búsqueda" onClick={() => setSearchOpen(false)}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-            </button>
-          </div>
-        </div>
-      </header>
+      <SiteHeader activeLink="inicio" />
 
       <section className="hero">
         <div className="hero-left">
-          <div className="hero-eyebrow">Bogotá, Colombia · Microempresa familiar</div>
-          <h1 className="hero-title">Materiales para<br />confección<br />en Bogotá</h1>
+          <h1 className="hero-title">Materiales para confección<br className="br-hero" /> en Bogotá</h1>
           <p className="hero-slogan">39 años siendo tu mano amiga en confección.</p>
           <p className="hero-desc">Encuentra forros, entretelas, hombreras, guatas, tizas y otros insumos para tus proyectos de confección, con asesoría cercana y experiencia familiar.</p>
           <div className="hero-btns">
+            <div className="hero-float-card">
+              <div className="float-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><path d="M14 18V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1" /><path d="M14 9h4l3 3v5a1 1 0 0 1-1 1h-1" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /><path d="M9 18h6" /></svg></div>
+              <div className="float-text">
+                <small>Cobertura en toda Bogotá</small>
+                <strong>Domicilios con seguimiento</strong>
+              </div>
+            </div>
             <button className="btn-primary">Ver catálogo →</button>
-            <button className="btn-ghost" onClick={() => navigate('/asesoria')}>Pedir asesoría</button>
           </div>
           <div className="hero-stats">
             <div className="stat"><span className="stat-num">39</span><span className="stat-label">años de<br />experiencia</span></div>
@@ -219,13 +159,6 @@ export default function HomePage() {
             <svg width="40" height="40" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" /><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" /><path d="M3 15l5-5 4 4 2-2 5 5" stroke="currentColor" strokeWidth="1.5" /></svg>
             <span>Detalle de materiales</span>
           </div>
-          <div className="hero-float-card">
-            <div className="float-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><path d="M14 18V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1" /><path d="M14 9h4l3 3v5a1 1 0 0 1-1 1h-1" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /><path d="M9 18h6" /></svg></div>
-            <div className="float-text">
-              <small>Pedidos antes de las 12 p.m.</small>
-              <strong>Envíos el mismo día</strong>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -236,7 +169,6 @@ export default function HomePage() {
             <h2 className="s-title">Encuentra lo que necesitas<br />para <em>confeccionar</em></h2>
             <p className="s-sub">Explora nuestras principales categorías de materiales.</p>
           </div>
-          <a href="#" className="ver-todo">Ver catálogo completo →</a>
         </div>
         <div className="cat-gallery-wrap" ref={galleryRef}>
           <div className="cat-gallery">

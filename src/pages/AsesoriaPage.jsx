@@ -1,26 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import SiteHeader from '../components/SiteHeader'
 import './AsesoriaPage.css'
 import {
-  ICON_FORROS, ICON_ENTRETELAS, ICON_HOMBRERAS, ICON_GUATAS, ICON_TIZAS,
-  ICON_CIERRES, ICON_OTROS, ICON_TODOS, ICON_MEGA_VER_TODO,
   ICON_BENEFIT_1, ICON_BENEFIT_2, ICON_BENEFIT_3,
   ICON_BOT, ICON_USER, ICON_CHAT_SEND, ICON_QUESTIONS, ICON_CLOCK, ICON_WA_SUBMIT,
   ICON_FOOTER_WA, ICON_FOOTER_LOCATION, ICON_WA_FLOAT,
-} from './asesoriaIcons'
+} from './catalogIcons'
 
 const API_URL = import.meta.env.VITE_API_URL
-
-const MEGA_CATS = [
-  { filter: 'forros', icon: ICON_FORROS, name: 'Forros', count: '4 productos' },
-  { filter: 'entretelas', icon: ICON_ENTRETELAS, name: 'Entretelas', count: '7 productos' },
-  { filter: 'hombreras', icon: ICON_HOMBRERAS, name: 'Hombreras', count: '5 productos' },
-  { filter: 'guatas', icon: ICON_GUATAS, name: 'Guatas', count: '2 productos' },
-  { filter: 'tizas', icon: ICON_TIZAS, name: 'Tizas', count: '4 productos' },
-  { filter: 'cierres', icon: ICON_CIERRES, name: 'Cierres', count: '1 producto' },
-  { filter: 'otros', icon: ICON_OTROS, name: 'Otros materiales', count: '11 productos' },
-  { filter: 'todos', icon: ICON_TODOS, name: 'Ver todo', count: '34 productos' },
-]
 
 const QUICK_SUGGESTIONS = [
   '¿Qué entretelas tienen?',
@@ -58,9 +46,6 @@ function formatBotMessage(text) {
 export default function AsesoriaPage() {
   const navigate = useNavigate()
 
-  const [navOpen, setNavOpen] = useState(false)
-  const [catalogOpen, setCatalogOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
   const [opcion, setOpcion] = useState('rapida')
 
   const [messages, setMessages] = useState([
@@ -77,19 +62,11 @@ export default function AsesoriaPage() {
   const [dragOver, setDragOver] = useState(false)
   const [formSubmitted, setFormSubmitted] = useState(false)
 
-  const searchInputRef = useRef(null)
   const chatMessagesRef = useRef(null)
   const fileInputRef = useRef(null)
   const paneRapidaRef = useRef(null)
   const panePersonalizadaRef = useRef(null)
   const prevOpcion = useRef(opcion)
-
-  useEffect(() => {
-    if (searchOpen) {
-      const t = setTimeout(() => searchInputRef.current?.focus(), 60)
-      return () => clearTimeout(t)
-    }
-  }, [searchOpen])
 
   useEffect(() => {
     if (prevOpcion.current === opcion) return
@@ -176,96 +153,9 @@ export default function AsesoriaPage() {
     setFormSubmitted(true)
   }
 
-  function closeMobileNav() {
-    setNavOpen(false)
-    setCatalogOpen(false)
-  }
-
   return (
     <div className="asesoria-page">
-      <div className="topbar">
-        <div className="topbar-inner">
-          <div className="topbar-set topbar-set-desktop">
-            <div className="topbar-msg">📦 En Bogotá, pide antes de las 12 p.m. y <strong>recibe el mismo día.</strong></div>
-            <div className="topbar-msg">🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong></div>
-          </div>
-          <div className="topbar-set topbar-set-mobile">
-            <div className="topbar-msg">📦 Bogotá: pide antes de las 12 pm y <strong>recibe hoy</strong></div>
-            <div className="topbar-msg">🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong></div>
-          </div>
-        </div>
-      </div>
-
-      <header>
-        <div className="header-inner">
-          <a href="#" className="logo" onClick={(e) => { e.preventDefault(); navigate('/') }}>Russi<span>tex</span></a>
-          <nav id="mainNav" className={navOpen ? 'open' : ''}>
-            <a href="#" onClick={(e) => { e.preventDefault(); closeMobileNav(); navigate('/') }}>Inicio</a>
-
-            <div className={`nav-catalog-wrap ${catalogOpen ? 'open' : ''}`}>
-              <a href="#" onClick={(e) => { e.preventDefault(); setCatalogOpen((v) => !v) }}>
-                Catálogo
-                <svg className="mega-cat-arrow" width="10" height="6" fill="none" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
-              </a>
-
-              <div className="mega-menu">
-                <div className="mega-menu-title">Explorar por categoría</div>
-                <div className="mega-cats">
-                  {MEGA_CATS.map((cat) => (
-                    <a href="#" className="mega-cat" data-filter={cat.filter} key={cat.filter}>
-                      <span className="mega-cat-icon" dangerouslySetInnerHTML={{ __html: cat.icon }} />
-                      <span className="mega-cat-name">{cat.name}</span>
-                      <span className="mega-cat-count">{cat.count}</span>
-                    </a>
-                  ))}
-                </div>
-                <div className="mega-footer">
-                  <a href="#" className="mega-ver-todo">Ver todos los materiales <span dangerouslySetInnerHTML={{ __html: ICON_MEGA_VER_TODO }} /></a>
-                </div>
-              </div>
-
-              <div className="mega-mobile">
-                {MEGA_CATS.map((cat) => (
-                  <a href="#" className="mega-mobile-cat" data-filter={cat.filter} key={cat.filter} onClick={(e) => { e.preventDefault(); closeMobileNav() }}>
-                    {cat.filter === 'todos' ? 'Todos los materiales' : cat.name}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <a href="#" className="active" onClick={(e) => { e.preventDefault(); closeMobileNav() }}>Asesoría</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); closeMobileNav() }}>Sobre nosotros</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); closeMobileNav() }}>Contacto</a>
-          </nav>
-
-          <div className="header-icons">
-            <button className="nav-toggle" aria-label="Abrir menú" aria-expanded={navOpen} title="Menú" onClick={() => { setNavOpen((v) => !v); setSearchOpen(false) }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
-            </button>
-            <button className={`icon-btn ${searchOpen ? 'active' : ''}`} title="Buscar" aria-label="Buscar" aria-expanded={searchOpen} onClick={() => { setSearchOpen((v) => !v); setNavOpen(false) }}>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.707,22.293l-5.969-5.969a10.016,10.016,0,1,0-1.414,1.414l5.969,5.969a1,1,0,0,0,1.414-1.414ZM10,18a8,8,0,1,1,8-8A8.009,8.009,0,0,1,10,18Z" /></svg>
-            </button>
-            <button className="icon-btn">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12,12A6,6,0,1,0,6,6,6.006,6.006,0,0,0,12,12ZM12,2A4,4,0,1,1,8,6,4,4,0,0,1,12,2Z" /><path d="M12,14a9.01,9.01,0,0,0-9,9,1,1,0,0,0,2,0,7,7,0,0,1,14,0,1,1,0,0,0,2,0A9.01,9.01,0,0,0,12,14Z" /></svg>
-            </button>
-            <button className="icon-btn cart-btn">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.713,4.077A2.993,2.993,0,0,0,20.41,3H4.242L4.2,2.649A3,3,0,0,0,1.222,0H1A1,1,0,0,0,1,2h.222a1,1,0,0,1,.993.883l1.376,11.7A5,5,0,0,0,8.557,19H19a1,1,0,0,0,0-2H8.557a3,3,0,0,1-2.82-2h11.92a5,5,0,0,0,4.921-4.113l.785-4.354A2.994,2.994,0,0,0,22.713,4.077ZM21.4,6.178l-.786,4.354A3,3,0,0,1,17.657,13H5.419L4.478,5H20.41A1,1,0,0,1,21.4,6.178Z" /><circle cx="7" cy="22" r="2" /><circle cx="17" cy="22" r="2" /></svg>
-              <span className="cart-badge">0</span>
-            </button>
-          </div>
-        </div>
-        <div className={`header-search ${searchOpen ? 'open' : ''}`}>
-          <div className="header-search-inner">
-            <div className="header-search-box">
-              <svg fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" /><path d="M20 20l-3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-              <input ref={searchInputRef} type="text" className="header-search-input" placeholder="Buscar material..." aria-label="Buscar material" />
-            </div>
-            <button className="header-search-close" aria-label="Cerrar búsqueda" onClick={() => setSearchOpen(false)}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-            </button>
-          </div>
-        </div>
-      </header>
+      <SiteHeader activeLink="asesoria" />
 
       <div className="breadcrumb-bar">
         <div className="breadcrumb">
