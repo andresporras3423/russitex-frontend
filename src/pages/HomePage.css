@@ -403,39 +403,6 @@
 .home-page .tl-year { font-family: var(--f-head); font-size: 1.05rem; font-weight: 700; color: var(--ladrillo); margin-bottom: 0.15rem; }
 .home-page .tl-text { font-size: 0.92rem; color: var(--gris-calido); line-height: 1.55; }
 
-/* ── FOOTER ── */
-.home-page footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 8% 2rem; }
-.home-page .footer-grid {
-  display: grid; grid-template-columns: 2fr 1.4fr 1.6fr;
-  gap: 4rem; padding-bottom: 2.5rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.home-page .f-logo {
-  font-family: var(--f-head); font-size: 1.6rem; font-weight: 600;
-  color: #fff; display: block; margin-bottom: 0.8rem;
-}
-.home-page .f-logo span { color: var(--arena); }
-.home-page .footer-desc { font-size: 0.92rem; line-height: 1.7; margin-bottom: 0.4rem; }
-.home-page .footer-slogan { font-size: 0.86rem; font-style: italic; font-family: var(--f-head); color: rgba(255,255,255,0.5); }
-.home-page .f-col h4 {
-  color: #fff; font-size: 0.74rem; font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1.1rem;
-}
-.home-page .f-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
-.home-page .f-col ul a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
-.home-page .f-col ul a:hover { color: var(--arena); }
-.home-page .f-contact { display: flex; flex-direction: column; gap: 1.05rem; }
-.home-page .f-ci-item { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.9rem; }
-.home-page .f-ci { color: var(--arena); margin-top: 0.05rem; flex-shrink: 0; display: flex; }
-.home-page .f-ci svg { width: 18px; height: 18px; }
-.home-page .f-ci-item a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
-.home-page .f-ci-item a:hover { color: #fff; }
-.home-page .footer-bottom {
-  padding-top: 1.6rem; display: flex; justify-content: space-between;
-  align-items: center; flex-wrap: wrap; gap: 0.5rem;
-}
-.home-page .footer-bottom p { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
-
 /* ── ANIMATIONS ── */
 @keyframes homeFadeUp {
   from { opacity: 0; transform: translateY(18px); }
@@ -452,7 +419,6 @@
   .home-page .hero-left { padding: 3.4rem 6%; }
   .home-page .cat-gallery-wrap { margin: 0 -6%; padding: 0.5rem 6% 1.2rem; }
   .home-page .beneficios-grid { grid-template-columns: repeat(2, 1fr); }
-  .home-page .footer-grid { gap: 2.5rem; }
 }
 
 @media (max-width: 960px) {
@@ -474,8 +440,6 @@
   .home-page .hero-stats { gap: 1.6rem; margin-top: 2.6rem; }
   .home-page .asesoria-cards { grid-template-columns: 1fr; }
   .home-page .asesoria-card { padding: 1.8rem; }
-  .home-page .footer-grid { grid-template-columns: 1fr; gap: 2.2rem; text-align: left; }
-  .home-page .footer-bottom { justify-content: center; }
   .home-page .cat-header { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
   .home-page .wa-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
   .home-page .wa-float svg { width: 28px; height: 28px; }

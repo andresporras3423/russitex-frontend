@@ -278,26 +278,6 @@
 }
 .asesoria-page .btn-wa-direct:hover { background: #1ebe5b; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,211,102,0.35); }
 
-/* ── FOOTER ── */
-.asesoria-page footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 8% 2rem; }
-.asesoria-page .footer-grid { display: grid; grid-template-columns: 2fr 1.4fr 1.6fr; gap: 4rem; padding-bottom: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.asesoria-page .f-logo { font-family: var(--f-head); font-size: 1.6rem; font-weight: 600; color: #fff; display: block; margin-bottom: 0.8rem; }
-.asesoria-page .f-logo span { color: var(--arena); }
-.asesoria-page .footer-desc { font-size: 0.92rem; line-height: 1.7; margin-bottom: 0.4rem; }
-.asesoria-page .footer-slogan { font-size: 0.86rem; font-style: italic; font-family: var(--f-head); color: rgba(255,255,255,0.5); }
-.asesoria-page .f-col h4 { color: #fff; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1.1rem; }
-.asesoria-page .f-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
-.asesoria-page .f-col ul a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
-.asesoria-page .f-col ul a:hover { color: var(--arena); }
-.asesoria-page .f-contact { display: flex; flex-direction: column; gap: 1.05rem; }
-.asesoria-page .f-ci-item { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.9rem; }
-.asesoria-page .f-ci { color: var(--arena); margin-top: 0.05rem; flex-shrink: 0; display: flex; }
-.asesoria-page .f-ci svg { width: 18px; height: 18px; }
-.asesoria-page .f-ci-item a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
-.asesoria-page .f-ci-item a:hover { color: #fff; }
-.asesoria-page .footer-bottom { padding-top: 1.6rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-.asesoria-page .footer-bottom p { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
-
 /* ── FLOATING WA ── */
 .asesoria-page .wa-float {
   position: fixed; bottom: 26px; right: 26px; z-index: 999;
@@ -338,8 +318,6 @@
 @media (max-width: 767px) {
   .asesoria-page { font-size: 16px; }
   .asesoria-page .page-banner { padding: 2.2rem 6%; }
-  .asesoria-page .footer-grid { grid-template-columns: 1fr; gap: 2.2rem; }
-  .asesoria-page .footer-bottom { justify-content: center; }
   .asesoria-page .wa-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
   .asesoria-page .wa-float svg { width: 28px; height: 28px; }
   .asesoria-page .wa-float-tooltip { display: none; }

@@ -1,17 +1,22 @@
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SiteHeader from '../components/SiteHeader'
+import SiteFooter from '../components/SiteFooter'
 import './HomePage.css'
 
+// "filter" mapea al valor de categoría real del catálogo (src/pages/CatalogPage.jsx).
+// Pretinas y Botones no son categorías propias en el catálogo (Pretina vive dentro de
+// "Otros materiales", y no hay productos de Botones todavía), así que esas dos tarjetas
+// llevan al catálogo completo en vez de a un filtro que no existe.
 const categorias = [
-  { nombre: 'Forros', img: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=440&q=80' },
-  { nombre: 'Entretelas', img: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=440&q=80' },
-  { nombre: 'Hombreras', img: 'https://images.unsplash.com/photo-1586495777744-4e6232bf2176?w=440&q=80' },
-  { nombre: 'Guatas', img: 'https://images.unsplash.com/photo-1544441893-675973e31985?w=440&q=80' },
-  { nombre: 'Tizas', img: 'https://images.unsplash.com/photo-1594938298603-c8148c4b4a4a?w=440&q=80' },
-  { nombre: 'Pretinas', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=440&q=80' },
-  { nombre: 'Cierres', img: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=440&q=80' },
-  { nombre: 'Botones', img: 'https://images.unsplash.com/photo-1612404730960-5c71577fca11?w=440&q=80' },
+  { nombre: 'Forros', filter: 'forros', img: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=440&q=80' },
+  { nombre: 'Entretelas', filter: 'entretelas', img: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=440&q=80' },
+  { nombre: 'Hombreras', filter: 'hombreras', img: 'https://images.unsplash.com/photo-1586495777744-4e6232bf2176?w=440&q=80' },
+  { nombre: 'Guatas', filter: 'guatas', img: 'https://images.unsplash.com/photo-1544441893-675973e31985?w=440&q=80' },
+  { nombre: 'Tizas', filter: 'tizas', img: 'https://images.unsplash.com/photo-1594938298603-c8148c4b4a4a?w=440&q=80' },
+  { nombre: 'Pretinas', filter: 'otros', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=440&q=80' },
+  { nombre: 'Cierres', filter: 'cierres', img: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=440&q=80' },
+  { nombre: 'Botones', filter: null, img: 'https://images.unsplash.com/photo-1612404730960-5c71577fca11?w=440&q=80' },
 ]
 
 const AUTO_DELAY = 3000
@@ -141,7 +146,7 @@ export default function HomePage() {
                 <strong>Domicilios con seguimiento</strong>
               </div>
             </div>
-            <button className="btn-primary">Ver catálogo →</button>
+            <button className="btn-primary" onClick={() => navigate('/catalogo')}>Ver catálogo →</button>
           </div>
           <div className="hero-stats">
             <div className="stat"><span className="stat-num">39</span><span className="stat-label">años de<br />experiencia</span></div>
@@ -173,13 +178,18 @@ export default function HomePage() {
         <div className="cat-gallery-wrap" ref={galleryRef}>
           <div className="cat-gallery">
             {categorias.map((cat) => (
-              <a href="#" className="cat-card" key={cat.nombre}>
+              <a
+                href="#"
+                className="cat-card"
+                key={cat.nombre}
+                onClick={(e) => { e.preventDefault(); navigate(cat.filter ? `/catalogo?cat=${cat.filter}` : '/catalogo') }}
+              >
                 <img src={cat.img} alt={cat.nombre} loading="lazy" />
                 <div className="cat-overlay"></div>
                 <div className="cat-info"><span className="cat-name">{cat.nombre}</span><span className="cat-cta">Ver productos</span></div>
               </a>
             ))}
-            <a href="#" className="cat-card-all">
+            <a href="#" className="cat-card-all" onClick={(e) => { e.preventDefault(); navigate('/catalogo') }}>
               <div className="cat-all-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg></div>
               <span className="cat-all-label">Ver todos los materiales</span>
             </a>
@@ -268,45 +278,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer>
-        <div className="footer-grid">
-          <div>
-            <span className="f-logo">Russi<span>tex</span></span>
-            <p className="footer-desc">Materiales para confección en Bogotá, Colombia.</p>
-            <p className="footer-slogan">39 años siendo tu mano amiga en confección.</p>
-          </div>
-          <div className="f-col">
-            <h4>Información</h4>
-            <ul>
-              <li><a href="#">Preguntas frecuentes</a></li>
-              <li><a href="#">Políticas de envío</a></li>
-              <li><a href="#">Cambios y devoluciones</a></li>
-              <li><a href="#">Términos y condiciones</a></li>
-              <li><a href="#">Política de privacidad</a></li>
-            </ul>
-          </div>
-          <div className="f-col">
-            <h4>Contacto</h4>
-            <div className="f-contact">
-              <div className="f-ci-item">
-                <span className="f-ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.4 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z" /></svg></span>
-                <div>WhatsApp: <a href="https://wa.me/573138909118">+57 313 890 9118</a></div>
-              </div>
-              <div className="f-ci-item">
-                <span className="f-ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg></span>
-                <div>Lun–Vie: 10:00 a.m. – 6:00 p.m.<br />Sábados: 10:00 a.m. – 5:00 p.m.</div>
-              </div>
-              <div className="f-ci-item">
-                <span className="f-ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg></span>
-                <div>Bogotá, Colombia</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <p>© 2026 Russitex. Todos los derechos reservados.</p>
-        </div>
-      </footer>
+      <SiteFooter />
 
       <a href="https://wa.me/573138909118" className="wa-float" target="_blank" rel="noopener noreferrer" title="Escríbenos por WhatsApp">
         <span className="wa-float-tooltip">¿Tienes dudas? Escríbenos</span>

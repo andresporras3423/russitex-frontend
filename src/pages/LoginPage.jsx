@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 import SiteHeader from '../components/SiteHeader'
+import SiteFooter from '../components/SiteFooter'
 import './LoginPage.css'
-import {
-  ICON_CLOCK, ICON_FOOTER_WA, ICON_FOOTER_LOCATION, ICON_WA_FLOAT,
-} from './catalogIcons'
+import { ICON_WA_FLOAT } from './catalogIcons'
 
 function calcularFortaleza(val) {
   if (!val) return { score: 0, label: 'Ingresa una contraseña' }
@@ -209,34 +208,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <footer>
-        <div className="footer-grid">
-          <div>
-            <span className="f-logo">Russi<span>tex</span></span>
-            <p className="footer-desc">Materiales para confección en Bogotá, Colombia.</p>
-            <p className="footer-slogan">39 años siendo tu mano amiga en confección.</p>
-          </div>
-          <div className="f-col">
-            <h4>Información</h4>
-            <ul>
-              <li><a href="#">Preguntas frecuentes</a></li>
-              <li><a href="#">Políticas de envío</a></li>
-              <li><a href="#">Cambios y devoluciones</a></li>
-              <li><a href="#">Términos y condiciones</a></li>
-              <li><a href="#">Política de privacidad</a></li>
-            </ul>
-          </div>
-          <div className="f-col">
-            <h4>Contacto</h4>
-            <div className="f-contact">
-              <div className="f-ci-item"><span className="f-ci" dangerouslySetInnerHTML={{ __html: ICON_FOOTER_WA }} /><div>WhatsApp: <a href="https://wa.me/573138909118">+57 313 890 9118</a></div></div>
-              <div className="f-ci-item"><span className="f-ci" dangerouslySetInnerHTML={{ __html: ICON_CLOCK }} /><div>Lun–Vie: 10:00 a.m. – 6:00 p.m.<br />Sábados: 10:00 a.m. – 5:00 p.m.</div></div>
-              <div className="f-ci-item"><span className="f-ci" dangerouslySetInnerHTML={{ __html: ICON_FOOTER_LOCATION }} /><div>Bogotá, Colombia</div></div>
-            </div>
-          </div>
-        </div>
-        <div className="footer-bottom"><p>© 2026 Russitex. Todos los derechos reservados.</p></div>
-      </footer>
+      <SiteFooter />
 
       <a href="https://wa.me/573138909118" className="wa-float" target="_blank" rel="noopener noreferrer">
         <span className="wa-float-tooltip">¿Tienes dudas? Escríbenos</span>

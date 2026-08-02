@@ -71,6 +71,16 @@ header nav a.active::after {
   padding: 1.6rem; opacity: 0; pointer-events: none;
   transform: translateY(8px); transition: opacity 0.22s ease, transform 0.22s ease; z-index: 400;
 }
+/* El menú se separa 16px del enlace (decisión de diseño). Ese hueco dejaba
+   al mouse "fuera" de ambos elementos y cerraba el menú al bajar. Este
+   puente invisible cubre el hueco para que el hover no se interrumpa,
+   sin alterar el aspecto. */
+.mega-menu::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: -16px; height: 16px;
+}
 .nav-catalog-wrap:hover .mega-menu { opacity: 1; pointer-events: all; transform: translateY(0); }
 .mega-menu-title {
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
@@ -186,7 +196,12 @@ header nav a.active::after {
 @media (max-width: 767px) {
   .topbar-set-desktop { display: none; }
   .topbar-set-mobile { display: block; }
-  .topbar-set-mobile .topbar-msg { font-size: 0.72rem; padding: 0 0.75rem; }
+  /* En móvil el texto viene de la base y puede ser más largo que el
+     original: dejamos que se ajuste en vez de recortarse. */
+  .topbar-set-mobile .topbar-msg {
+    font-size: 0.68rem; padding: 0 0.6rem;
+    white-space: normal; line-height: 1.25; text-wrap: balance;
+  }
   .topbar-set-mobile .topbar-msg:nth-child(1) { animation: siteHeaderSlideMsg 10s ease-in-out 0s infinite; }
   .topbar-set-mobile .topbar-msg:nth-child(2) { animation: siteHeaderSlideMsg 10s ease-in-out 5s infinite; }
   .header-inner { padding: 0 6%; gap: 1rem; }

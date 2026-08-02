@@ -1,22 +1,33 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import { useTiendaInfo } from '../hooks/useTiendaInfo'
 import {
   ICON_FORROS, ICON_ENTRETELAS, ICON_HOMBRERAS, ICON_GUATAS, ICON_TIZAS,
   ICON_CIERRES, ICON_OTROS, ICON_TODOS, ICON_MEGA_VER_TODO,
 } from '../pages/catalogIcons'
 import './SiteHeader.css'
 
+const API_URL = import.meta.env.VITE_API_URL
+
+// Los conteos NO se escriben acá: se calculan con los productos que
+// devuelve /api/productos, para que no queden desactualizados cuando
+// se agregue o quite un producto en Alegra.
 const MEGA_CATS = [
-  { filter: 'forros', icon: ICON_FORROS, name: 'Forros', count: '4 productos' },
-  { filter: 'entretelas', icon: ICON_ENTRETELAS, name: 'Entretelas', count: '7 productos' },
-  { filter: 'hombreras', icon: ICON_HOMBRERAS, name: 'Hombreras', count: '5 productos' },
-  { filter: 'guatas', icon: ICON_GUATAS, name: 'Guatas', count: '2 productos' },
-  { filter: 'tizas', icon: ICON_TIZAS, name: 'Tizas', count: '4 productos' },
-  { filter: 'cierres', icon: ICON_CIERRES, name: 'Cierres', count: '1 producto' },
-  { filter: 'otros', icon: ICON_OTROS, name: 'Otros materiales', count: '11 productos' },
-  { filter: 'todos', icon: ICON_TODOS, name: 'Ver todo', count: '34 productos' },
+  { filter: 'forros', icon: ICON_FORROS, name: 'Forros' },
+  { filter: 'entretelas', icon: ICON_ENTRETELAS, name: 'Entretelas' },
+  { filter: 'hombreras', icon: ICON_HOMBRERAS, name: 'Hombreras' },
+  { filter: 'guatas', icon: ICON_GUATAS, name: 'Guatas' },
+  { filter: 'tizas', icon: ICON_TIZAS, name: 'Tizas' },
+  { filter: 'cierres', icon: ICON_CIERRES, name: 'Cierres' },
+  { filter: 'otros', icon: ICON_OTROS, name: 'Otros materiales' },
+  { filter: 'todos', icon: ICON_TODOS, name: 'Ver todo' },
 ]
+
+function textoConteo(n) {
+  if (n === null || n === undefined) return ' '   // espacio, evita que salte el layout
+  return n === 1 ? '1 producto' : `${n} productos`
+}
 
 function getInitials(user) {
   const base = user?.nombre?.trim() || user?.email || ''
@@ -33,6 +44,7 @@ function getPrimerNombre(user) {
 export default function SiteHeader({ activeLink }) {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
+  const tienda = useTiendaInfo()
 
   const [navOpen, setNavOpen] = useState(false)
   const [catalogOpen, setCatalogOpen] = useState(false)
@@ -40,6 +52,26 @@ export default function SiteHeader({ activeLink }) {
   const [userOpen, setUserOpen] = useState(false)
   const searchInputRef = useRef(null)
   const userMenuRef = useRef(null)
+  const navToggleRef = useRef(null)
+
+  // Conteos por categoría para el mega-menú. Si la petición falla, el menú
+  // igual funciona: simplemente no muestra los números.
+  const [conteos, setConteos] = useState(null)
+
+  useEffect(() => {
+    let activo = true
+    fetch(`${API_URL}/api/productos`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('sin catálogo'))))
+      .then((data) => {
+        if (!activo) return
+        const productos = data.productos || []
+        const acc = { todos: productos.length }
+        for (const p of productos) acc[p.categoria] = (acc[p.categoria] || 0) + 1
+        setConteos(acc)
+      })
+      .catch(() => { /* el menú funciona igual sin los conteos */ })
+    return () => { activo = false }
+  }, [])
 
   useEffect(() => {
     if (searchOpen) {
@@ -70,17 +102,35 @@ export default function SiteHeader({ activeLink }) {
     setCatalogOpen(false)
   }
 
+  // En escritorio el mega-menú se ve al hacer hover, así que el click en "Catálogo"
+  // navega directo a la página. En móvil/tablet (donde no hay hover) el click abre el acordeón.
+  function handleCatalogClick(e) {
+    e.preventDefault()
+    const isMobile = navToggleRef.current && getComputedStyle(navToggleRef.current).display !== 'none'
+    if (isMobile) {
+      setCatalogOpen((v) => !v)
+    } else {
+      navigate('/catalogo')
+    }
+  }
+
+  function goToCatalogFilter(filter) {
+    closeMobileNav()
+    if (filter === 'todos') navigate('/catalogo')
+    else navigate(`/catalogo?cat=${filter}`)
+  }
+
   return (
     <>
       <div className="topbar">
         <div className="topbar-inner">
           <div className="topbar-set topbar-set-desktop">
-            <div className="topbar-msg">📦 En Bogotá, pide antes de las 12 p.m. y <strong>recibe el mismo día.</strong></div>
-            <div className="topbar-msg">🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong></div>
+            <div className="topbar-msg">📦 <strong>Entrega el mismo día</strong> — {tienda.envio_mismo_dia ?? 'En Bogotá, para pedidos hechos antes de las 12:00 p.m.'}</div>
+            <div className="topbar-msg">🎁 <strong>Envío gratis</strong> — {tienda.envio_gratis_desde ?? 'Compras superiores a $350.000 COP'}</div>
           </div>
           <div className="topbar-set topbar-set-mobile">
-            <div className="topbar-msg">📦 Bogotá: pide antes de las 12 pm y <strong>recibe hoy</strong></div>
-            <div className="topbar-msg">🎁 <strong>Envío gratis</strong> en compras superiores a <strong>$350.000 COP</strong></div>
+            <div className="topbar-msg">📦 {tienda.envio_mismo_dia ?? 'En Bogotá, para pedidos hechos antes de las 12:00 p.m.'}</div>
+            <div className="topbar-msg">🎁 <strong>Envío gratis</strong> — {tienda.envio_gratis_desde ?? 'Compras superiores a $350.000 COP'}</div>
           </div>
         </div>
       </div>
@@ -92,7 +142,7 @@ export default function SiteHeader({ activeLink }) {
             <a href="#" className={activeLink === 'inicio' ? 'active' : ''} onClick={(e) => { e.preventDefault(); closeMobileNav(); navigate('/') }}>Inicio</a>
 
             <div className={`nav-catalog-wrap ${catalogOpen ? 'open' : ''}`}>
-              <a href="#" onClick={(e) => { e.preventDefault(); setCatalogOpen((v) => !v) }}>
+              <a href="#" className={activeLink === 'catalogo' ? 'active' : ''} onClick={handleCatalogClick}>
                 Catálogo
                 <svg className="mega-cat-arrow" width="10" height="6" fill="none" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
               </a>
@@ -101,21 +151,21 @@ export default function SiteHeader({ activeLink }) {
                 <div className="mega-menu-title">Explorar por categoría</div>
                 <div className="mega-cats">
                   {MEGA_CATS.map((cat) => (
-                    <a href="#" className="mega-cat" data-filter={cat.filter} key={cat.filter}>
+                    <a href="#" className="mega-cat" data-filter={cat.filter} key={cat.filter} onClick={(e) => { e.preventDefault(); goToCatalogFilter(cat.filter) }}>
                       <span className="mega-cat-icon" dangerouslySetInnerHTML={{ __html: cat.icon }} />
                       <span className="mega-cat-name">{cat.name}</span>
-                      <span className="mega-cat-count">{cat.count}</span>
+                      <span className="mega-cat-count">{textoConteo(conteos?.[cat.filter])}</span>
                     </a>
                   ))}
                 </div>
                 <div className="mega-footer">
-                  <a href="#" className="mega-ver-todo">Ver todos los materiales <span dangerouslySetInnerHTML={{ __html: ICON_MEGA_VER_TODO }} /></a>
+                  <a href="#" className="mega-ver-todo" onClick={(e) => { e.preventDefault(); goToCatalogFilter('todos') }}>Ver todos los materiales <span dangerouslySetInnerHTML={{ __html: ICON_MEGA_VER_TODO }} /></a>
                 </div>
               </div>
 
               <div className="mega-mobile">
                 {MEGA_CATS.map((cat) => (
-                  <a href="#" className="mega-mobile-cat" data-filter={cat.filter} key={cat.filter} onClick={(e) => { e.preventDefault(); closeMobileNav() }}>
+                  <a href="#" className="mega-mobile-cat" data-filter={cat.filter} key={cat.filter} onClick={(e) => { e.preventDefault(); goToCatalogFilter(cat.filter) }}>
                     {cat.filter === 'todos' ? 'Todos los materiales' : cat.name}
                   </a>
                 ))}
@@ -128,7 +178,7 @@ export default function SiteHeader({ activeLink }) {
           </nav>
 
           <div className="header-icons">
-            <button className="nav-toggle" aria-label="Abrir menú" aria-expanded={navOpen} title="Menú" onClick={() => { setNavOpen((v) => !v); setSearchOpen(false) }}>
+            <button ref={navToggleRef} className="nav-toggle" aria-label="Abrir menú" aria-expanded={navOpen} title="Menú" onClick={() => { setNavOpen((v) => !v); setSearchOpen(false) }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
             </button>
             <button className={`icon-btn ${searchOpen ? 'active' : ''}`} title="Buscar" aria-label="Buscar" aria-expanded={searchOpen} onClick={() => { setSearchOpen((v) => !v); setNavOpen(false) }}>
