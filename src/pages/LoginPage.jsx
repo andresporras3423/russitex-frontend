@@ -4,7 +4,6 @@ import { useAuth } from '../context/useAuth'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import './LoginPage.css'
-import { ICON_WA_FLOAT } from './catalogIcons'
 
 function calcularFortaleza(val) {
   if (!val) return { score: 0, label: 'Ingresa una contraseña' }
@@ -210,11 +209,6 @@ export default function LoginPage() {
 
       <SiteFooter />
 
-      <a href="https://wa.me/573138909118" className="wa-float" target="_blank" rel="noopener noreferrer">
-        <span className="wa-float-tooltip">¿Tienes dudas? Escríbenos</span>
-        <span dangerouslySetInnerHTML={{ __html: ICON_WA_FLOAT }} />
-        <span className="wa-float-badge">1</span>
-      </a>
     </div>
   )
 }

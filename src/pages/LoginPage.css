@@ -109,38 +109,9 @@
 .login-page .volver-link:hover { color: var(--azul-oficio); }
 .login-page .volver-link svg { width: 15px; height: 15px; stroke: currentColor; }
 
-/* ── FLOATING WA ── */
-.login-page .wa-float {
-  position: fixed; bottom: 26px; right: 26px; z-index: 999;
-  width: 58px; height: 58px; background: var(--verde-wa); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 22px rgba(37,211,102,0.40);
-  cursor: pointer; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
-  animation: loginWaPop 0.5s 0.8s ease both;
-}
-.login-page .wa-float:hover { transform: scale(1.08); box-shadow: 0 10px 30px rgba(37,211,102,0.50); }
-.login-page .wa-float svg { width: 31px; height: 31px; fill: #fff; }
-.login-page .wa-float-badge {
-  position: absolute; top: -2px; right: -2px; width: 20px; height: 20px; border-radius: 50%;
-  background: var(--rojo); color: #fff; font-size: 0.65rem; font-weight: 700;
-  display: flex; align-items: center; justify-content: center; border: 2px solid var(--crema);
-}
-.login-page .wa-float-tooltip {
-  position: absolute; right: 70px; bottom: 50%; transform: translateY(50%);
-  background: var(--tinta); color: #fff; font-size: 0.8rem; font-weight: 500;
-  padding: 0.45rem 0.85rem; border-radius: 8px; white-space: nowrap;
-  pointer-events: none; opacity: 0; transition: opacity 0.2s; box-shadow: var(--sh-md);
-}
-.login-page .wa-float-tooltip::after { content:''; position:absolute; left:100%; top:50%; transform:translateY(-50%); border:5px solid transparent; border-left-color:var(--tinta); }
-.login-page .wa-float:hover .wa-float-tooltip { opacity: 1; }
-@keyframes loginWaPop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
-
 /* ════════ RESPONSIVE ════════ */
 @media (max-width: 767px) {
   .login-page { font-size: 16px; }
-  .login-page .wa-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
-  .login-page .wa-float svg { width: 28px; height: 28px; }
-  .login-page .wa-float-tooltip { display: none; }
 
   .login-page .auth-main { padding: 2rem 6%; }
   .login-page .auth-card { padding: 1.9rem 1.4rem; border-radius: var(--r-lg); }

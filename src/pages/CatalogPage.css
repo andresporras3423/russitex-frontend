@@ -240,32 +240,6 @@
 }
 .catalog-page .empty-state button:hover { background: var(--azul-profundo); transform: translateY(-2px); }
 
-/* ── FLOATING WA ── */
-.catalog-page .wa-float {
-  position: fixed; bottom: 26px; right: 26px; z-index: 999;
-  width: 58px; height: 58px; background: var(--verde-wa); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 22px rgba(37,211,102,0.40);
-  cursor: pointer; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
-  animation: catalogWaPop 0.5s 0.8s ease both;
-}
-.catalog-page .wa-float:hover { transform: scale(1.08); box-shadow: 0 10px 30px rgba(37,211,102,0.50); }
-.catalog-page .wa-float svg { width: 31px; height: 31px; fill: #fff; }
-.catalog-page .wa-float-badge {
-  position: absolute; top: -2px; right: -2px; width: 20px; height: 20px; border-radius: 50%;
-  background: var(--rojo); color: #fff; font-size: 0.65rem; font-weight: 700;
-  display: flex; align-items: center; justify-content: center; border: 2px solid var(--crema);
-}
-.catalog-page .wa-float-tooltip {
-  position: absolute; right: 70px; bottom: 50%; transform: translateY(50%);
-  background: var(--tinta); color: #fff; font-size: 0.8rem; font-weight: 500;
-  padding: 0.45rem 0.85rem; border-radius: 8px; white-space: nowrap;
-  pointer-events: none; opacity: 0; transition: opacity 0.2s; box-shadow: var(--sh-md);
-}
-.catalog-page .wa-float-tooltip::after { content:''; position:absolute; left:100%; top:50%; transform:translateY(-50%); border:5px solid transparent; border-left-color:var(--tinta); }
-.catalog-page .wa-float:hover .wa-float-tooltip { opacity: 1; }
-@keyframes catalogWaPop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
-
 /* ════════ RESPONSIVE ════════ */
 @media (max-width: 1199px) {
   .catalog-page .page-banner { padding: 2.6rem 6%; }
@@ -295,9 +269,6 @@
   .catalog-page .prod-actions { flex-direction: column; }
   .catalog-page .btn-consultar { padding: 0.55rem 0; }
   .catalog-page .catalog-topbar { gap: 0.75rem; }
-  .catalog-page .wa-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
-  .catalog-page .wa-float svg { width: 28px; height: 28px; }
-  .catalog-page .wa-float-tooltip { display: none; }
 }
 
 @media (max-width: 479px) {

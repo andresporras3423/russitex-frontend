@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
+import { useProductos } from '../hooks/useProductos'
 import {
   ICON_FORROS, ICON_ENTRETELAS, ICON_HOMBRERAS, ICON_GUATAS, ICON_TIZAS,
   ICON_CIERRES, ICON_OTROS, ICON_TODOS, ICON_MEGA_VER_TODO,
 } from '../pages/catalogIcons'
 import './SiteHeader.css'
-
-const API_URL = import.meta.env.VITE_API_URL
 
 // Los conteos NO se escriben acá: se calculan con los productos que
 // devuelve /api/productos, para que no queden desactualizados cuando
@@ -45,6 +44,7 @@ export default function SiteHeader({ activeLink }) {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
   const tienda = useTiendaInfo()
+  const productos = useProductos()
 
   const [navOpen, setNavOpen] = useState(false)
   const [catalogOpen, setCatalogOpen] = useState(false)
@@ -56,22 +56,12 @@ export default function SiteHeader({ activeLink }) {
 
   // Conteos por categoría para el mega-menú. Si la petición falla, el menú
   // igual funciona: simplemente no muestra los números.
-  const [conteos, setConteos] = useState(null)
-
-  useEffect(() => {
-    let activo = true
-    fetch(`${API_URL}/api/productos`)
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('sin catálogo'))))
-      .then((data) => {
-        if (!activo) return
-        const productos = data.productos || []
-        const acc = { todos: productos.length }
-        for (const p of productos) acc[p.categoria] = (acc[p.categoria] || 0) + 1
-        setConteos(acc)
-      })
-      .catch(() => { /* el menú funciona igual sin los conteos */ })
-    return () => { activo = false }
-  }, [])
+  const conteos = useMemo(() => {
+    if (productos.length === 0) return null
+    const acc = { todos: productos.length }
+    for (const p of productos) acc[p.categoria] = (acc[p.categoria] || 0) + 1
+    return acc
+  }, [productos])
 
   useEffect(() => {
     if (searchOpen) {
@@ -173,7 +163,7 @@ export default function SiteHeader({ activeLink }) {
             </div>
 
             <a href="#" className={activeLink === 'asesoria' ? 'active' : ''} onClick={(e) => { e.preventDefault(); closeMobileNav(); navigate('/asesoria') }}>Asesoría</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); closeMobileNav() }}>Sobre nosotros</a>
+            <a href="#" className={activeLink === 'sobre-nosotros' ? 'active' : ''} onClick={(e) => { e.preventDefault(); closeMobileNav(); navigate('/sobre-nosotros') }}>Sobre nosotros</a>
             <a href="#" onClick={(e) => { e.preventDefault(); closeMobileNav() }}>Contacto</a>
           </nav>
 

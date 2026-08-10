@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import './CatalogPage.css'
-import { ICON_WA_FLOAT } from './catalogIcons'
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -241,7 +240,7 @@ export default function CatalogPage() {
                   <div className="prod-price">{money(p.price)}</div>
                   <div className="prod-actions">
                     <button className="btn-add">Agregar</button>
-                    <button className="btn-consultar">Consultar</button>
+                    <button className="btn-consultar" onClick={() => navigate(`/producto/${p.id}`)}>Consultar</button>
                   </div>
                 </div>
               </div>
@@ -278,11 +277,6 @@ export default function CatalogPage() {
 
       <SiteFooter />
 
-      <a href="https://wa.me/573138909118" className="wa-float" target="_blank" rel="noopener noreferrer">
-        <span className="wa-float-tooltip">¿Tienes dudas? Escríbenos</span>
-        <span dangerouslySetInnerHTML={{ __html: ICON_WA_FLOAT }} />
-        <span className="wa-float-badge">1</span>
-      </a>
     </div>
   )
 }

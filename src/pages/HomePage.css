@@ -46,53 +46,6 @@
   border-radius: 4px;
 }
 
-/* ── FLOATING WHATSAPP ── */
-.home-page .wa-float {
-  position: fixed; bottom: 26px; right: 26px; z-index: 999;
-  width: 58px; height: 58px;
-  background: var(--verde-wa);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 22px rgba(37,211,102,0.40);
-  cursor: pointer; text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s;
-  animation: homeWaPop 0.5s 0.8s ease both;
-}
-.home-page .wa-float:hover {
-  transform: scale(1.08);
-  box-shadow: 0 10px 30px rgba(37,211,102,0.50);
-}
-.home-page .wa-float svg { width: 31px; height: 31px; fill: #fff; }
-.home-page .wa-float-badge {
-  position: absolute; top: -2px; right: -2px;
-  width: 20px; height: 20px; border-radius: 50%;
-  background: var(--rojo); color: #fff;
-  font-size: 0.65rem; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  border: 2px solid var(--crema);
-}
-.home-page .wa-float-tooltip {
-  position: absolute; right: 70px; bottom: 50%;
-  transform: translateY(50%);
-  background: var(--tinta); color: #fff;
-  font-size: 0.8rem; font-weight: 500;
-  padding: 0.45rem 0.85rem; border-radius: 8px;
-  white-space: nowrap; pointer-events: none;
-  opacity: 0; transition: opacity 0.2s;
-  box-shadow: var(--sh-md);
-}
-.home-page .wa-float-tooltip::after {
-  content: ''; position: absolute; left: 100%; top: 50%;
-  transform: translateY(-50%);
-  border: 5px solid transparent; border-left-color: var(--tinta);
-}
-.home-page .wa-float:hover .wa-float-tooltip { opacity: 1; }
-
-@keyframes homeWaPop {
-  from { transform: scale(0.5); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
-
 /* ── HERO ── */
 .home-page .hero {
   display: grid; grid-template-columns: 55% 45%;
@@ -441,9 +394,6 @@
   .home-page .asesoria-cards { grid-template-columns: 1fr; }
   .home-page .asesoria-card { padding: 1.8rem; }
   .home-page .cat-header { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
-  .home-page .wa-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
-  .home-page .wa-float svg { width: 28px; height: 28px; }
-  .home-page .wa-float-tooltip { display: none; }
   .home-page .cat-card { width: 180px; height: 250px; }
   .home-page .cat-card-all { width: 130px; height: 250px; }
 }
