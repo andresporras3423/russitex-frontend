@@ -48,7 +48,9 @@ const FAQS = [
   },
 ]
 
-const FORM_VACIO = { nombre: '', wa: '', prenda: '', logro: '', tela: '', comentarios: '' }
+const FORM_VACIO = { nombre: '', wa: '', correo: '', prenda: '', logro: '', tela: '', comentarios: '' }
+
+const CORREO_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function AsesoriaPage() {
   const navigate = useNavigate()
@@ -101,10 +103,15 @@ export default function AsesoriaPage() {
   }
 
   async function enviarFormulario() {
-    const { nombre, wa, prenda, logro, tela, comentarios } = form
-    if (!nombre.trim() || !wa.trim() || !prenda.trim() || !logro.trim()) {
+    const { nombre, wa, correo, prenda, logro, tela, comentarios } = form
+    if (!nombre.trim() || !wa.trim() || !correo.trim() || !prenda.trim() || !logro.trim()) {
       setFalloEnvio(false)
-      setError('Completa los campos obligatorios: nombre, WhatsApp, qué confeccionas y qué necesitas lograr.')
+      setError('Completa los campos obligatorios: nombre, celular, correo, qué confeccionas y qué necesitas lograr.')
+      return
+    }
+    if (!CORREO_VALIDO.test(correo.trim())) {
+      setFalloEnvio(false)
+      setError('Escribe un correo electrónico válido para poder responderte.')
       return
     }
 
@@ -116,7 +123,7 @@ export default function AsesoriaPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nombre: nombre.trim(), wa: wa.trim(), prenda: prenda.trim(),
+          nombre: nombre.trim(), wa: wa.trim(), correo: correo.trim(), prenda: prenda.trim(),
           logro: logro.trim(), tela: tela.trim(), comentarios: comentarios.trim(),
           imagen: imagen ? { nombre: imagen.nombre, dataUrl: imagen.dataUrl } : null,
         }),
@@ -187,10 +194,16 @@ export default function AsesoriaPage() {
                         value={form.nombre} onChange={(e) => actualizar('nombre', e.target.value)} />
                     </div>
                     <div className="form-group">
-                      <label className="form-label" htmlFor="f-wa">WhatsApp <span className="req">*</span></label>
+                      <label className="form-label" htmlFor="f-wa">Celular <span className="req">*</span></label>
                       <input id="f-wa" type="tel" className="form-input" placeholder="Ej: 300 123 4567"
                         value={form.wa} onChange={(e) => actualizar('wa', e.target.value)} />
                     </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="f-correo">Correo electrónico <span className="req">*</span></label>
+                    <input id="f-correo" type="email" className="form-input" placeholder="Ej: nombre@correo.com"
+                      value={form.correo} onChange={(e) => actualizar('correo', e.target.value)} />
                   </div>
 
                   <div className="form-group">
@@ -272,8 +285,7 @@ export default function AsesoriaPage() {
                   {enviando ? 'Enviando…' : 'Enviar solicitud de asesoría'}
                 </button>
                 <p className="form-note">
-                  Tu solicitud le llega por correo al almacén, con la imagen que hayas adjuntado.
-                  Te respondemos por WhatsApp al número que nos dejaste.
+                  Al enviar, tu solicitud llega al equipo de Russitex y te responderemos por correo o celular.
                 </p>
               </div>
             ) : (
@@ -281,7 +293,7 @@ export default function AsesoriaPage() {
                 <div className="confirm-circle">✅</div>
                 <h3>¡Listo! Recibimos tu solicitud</h3>
                 <p>
-                  Te contactaremos por WhatsApp para ayudarte a elegir los materiales adecuados para tu proyecto.
+                  Te contactaremos por correo o celular para ayudarte a elegir los materiales adecuados para tu proyecto.
                   {imagenEnviada && ' Tu imagen de referencia llegó junto con la solicitud.'}
                 </p>
                 <div className="confirm-actions">

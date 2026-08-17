@@ -20,20 +20,20 @@
 @keyframes fabIn { from{opacity:0; transform:translateY(18px) scale(.85)} to{opacity:1; transform:translateY(0) scale(1)} }
 .fab-btn { position:relative; width:56px; height:56px; border-radius:50%; border:none; cursor:pointer; box-shadow:var(--sh-lg); display:flex; align-items:center; justify-content:center; text-decoration:none; transition:box-shadow .25s ease, transform .2s ease; }
 .fab-btn:hover { transform:translateY(-2px); }
-.fab-btn.ic-asist:hover { box-shadow:0 8px 28px rgba(44,92,124,.45); }
-.fab-btn.ic-wa:hover { box-shadow:0 8px 28px rgba(37,211,102,.40); }
 .fab-btn svg { width:26px; height:26px; fill:#fff; display:block; }
-.fab-btn.ic-asist { background:var(--azul-oficio); animation:beat 2.4s ease-in-out .6s infinite; }
-.fab-btn.ic-wa { background:var(--verde-wa); animation:wiggle 3.2s ease-in-out .9s infinite; transform-origin:center; box-shadow:0 6px 22px rgba(37,211,102,.40); }
-@keyframes beat { 0%,100%{transform:scale(1)} 10%{transform:scale(1.15)} 22%{transform:scale(1)} 34%{transform:scale(1.08)} 46%{transform:scale(1)} }
-@keyframes wiggle { 0%,84%,100%{transform:rotate(0)} 87%{transform:rotate(-15deg)} 90%{transform:rotate(12deg)} 93%{transform:rotate(-7deg)} 96%{transform:rotate(4deg)} }
+.fab-btn.ic-asist { background:#244C68; box-shadow:0 6px 18px rgba(0,0,0,.35); }
+.fab-btn.ic-asist:hover { box-shadow:0 10px 24px rgba(0,0,0,.45); }
+/* Resplandor blanco leve. Va en un pseudo-elemento para que la sombra del
+   botón y la del halo no compitan por la misma propiedad. */
+.fab-btn.ic-asist::after { content:''; position:absolute; inset:0; border-radius:50%; box-shadow:0 0 10px 2px rgba(255,255,255,.26); pointer-events:none; }
+.fab-btn.ic-asist:hover::after { box-shadow:0 0 13px 3px rgba(255,255,255,.38); }
+.fab-btn.ic-wa { background:var(--verde-wa); box-shadow:0 6px 22px rgba(37,211,102,.40); }
+.fab-btn.ic-wa:hover { box-shadow:0 8px 28px rgba(37,211,102,.40); }
 .fab-tip { position:absolute; right:66px; top:50%; transform:translateY(-50%) translateX(6px); background:var(--tinta); color:#fff; font-size:.72rem; font-weight:600; padding:.35rem .7rem; border-radius:var(--r-sm); white-space:nowrap; opacity:0; visibility:hidden; transition:all .2s; pointer-events:none; font-family:'Mulish', system-ui, sans-serif; }
 .fab-btn:hover .fab-tip { opacity:1; visibility:visible; transform:translateY(-50%) translateX(0); }
 @media (prefers-reduced-motion:reduce) {
   .fab-enter { animation:none; opacity:1 }
-  .fab-btn.ic-asist, .fab-btn.ic-wa { animation:halo 2.8s ease-in-out infinite }
 }
-@keyframes halo { 0%,100%{box-shadow:var(--sh-lg)} 50%{box-shadow:0 0 0 5px rgba(59,48,42,.10), var(--sh-lg)} }
 
 /* ── PANEL DE CHAT ── */
 .chat-panel {
@@ -95,15 +95,10 @@
 
 /* ── RESPONSIVE ── */
 @media (max-width: 767px) {
-  .fab-stack { bottom:16px; right:16px; gap:.7rem; }
   .fab-tip { display:none; }
-  .fab-btn { width:52px; height:52px; }
-  .fab-btn svg { width:24px; height:24px; }
-  /* En celular el chat ocupa la pantalla completa. */
-  .chat-panel { top:0; left:0; right:0; bottom:0; width:100%; height:100%; max-height:100%; border-radius:0; transform:translateY(100%); }
-  .chat-panel.open { transform:translateY(0); }
 }
-@media (max-width: 479px) {
-  .fab-btn { width:48px; height:48px; }
-  .fab-btn svg { width:22px; height:22px; }
+/* En pantallas angostas el panel se ancla arriba a la izquierda para que
+   quepa; de tablet en adelante sigue flotando junto al botón. */
+@media (max-width: 460px) {
+  .chat-panel { top:0; left:0; }
 }

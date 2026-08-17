@@ -230,10 +230,29 @@
 .home-page .asesoria .s-title { color: #fff; }
 .home-page .asesoria .s-sub { color: rgba(255,255,255,0.72); }
 .home-page .asesoria .s-label { color: var(--arena); }
-.home-page .asesoria-cards {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 1.5rem; margin-top: 2.6rem;
+.home-page .section.asesoria { padding-top: 3rem; padding-bottom: 3rem; }
+
+/* Dos columnas: a la izquierda el texto, a la derecha la tarjeta. */
+.home-page .asesoria-layout {
+  display: grid; grid-template-columns: 1fr minmax(0, 520px);
+  gap: 3.5rem; align-items: center;
 }
+.home-page .asesoria-copy .s-title { max-width: 18ch; }
+.home-page .asesoria-copy .s-sub { max-width: 46ch; }
+
+/* Mención del asistente: abre el chat flotante. */
+.home-page .asesoria-hint {
+  margin: 2.2rem 0 0; max-width: 46ch;
+  display: flex; align-items: flex-start; gap: 0.55rem;
+  font-size: 0.92rem; color: var(--arena); cursor: pointer;
+  transition: color 0.2s; line-height: 1.55;
+}
+.home-page .asesoria-hint svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; }
+.home-page .asesoria-hint span { text-decoration: underline; text-decoration-color: rgba(255,255,255,0.3); text-underline-offset: 3px; }
+.home-page .asesoria-hint:hover { color: #fff; }
+.home-page .asesoria-hint:hover span { text-decoration-color: #fff; }
+
+.home-page .asesoria-card-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
 .home-page .asesoria-card {
   background: rgba(255,255,255,0.07);
   border: 1.5px solid rgba(255,255,255,0.16);
@@ -246,15 +265,15 @@
   transform: translateY(-3px);
 }
 .home-page .asesoria-card .a-icon {
-  width: 56px; height: 56px; border-radius: var(--r-md);
+  width: 52px; height: 52px; border-radius: var(--r-md);
   background: rgba(255,255,255,0.12);
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 1.2rem; color: #fff;
+  flex-shrink: 0; color: #fff;
 }
 .home-page .asesoria-card .a-icon svg { width: 28px; height: 28px; }
 .home-page .asesoria-card h3 {
   font-family: var(--f-head);
-  font-size: 1.35rem; font-weight: 600; color: #fff; margin-bottom: 0.6rem;
+  font-size: 1.3rem; font-weight: 600; color: #fff; margin: 0; line-height: 1.2;
 }
 .home-page .asesoria-card p { font-size: 0.95rem; color: rgba(255,255,255,0.72); line-height: 1.65; margin-bottom: 1.8rem; }
 
@@ -374,6 +393,11 @@
   .home-page .beneficios-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+@media (max-width: 991px) {
+  .home-page .asesoria-layout { grid-template-columns: 1fr; gap: 2.2rem; }
+  .home-page .asesoria-copy .s-title { max-width: none; }
+}
+
 @media (max-width: 960px) {
   .home-page .hero { grid-template-columns: 1fr; min-height: auto; }
   .home-page .hero-right { grid-template-rows: none; grid-template-columns: 1fr 1fr; height: 240px; }
@@ -391,7 +415,6 @@
   .home-page .hero-desc { font-size: 1rem; max-width: none; }
   .home-page .hero-title .br-hero { display: none; }
   .home-page .hero-stats { gap: 1.6rem; margin-top: 2.6rem; }
-  .home-page .asesoria-cards { grid-template-columns: 1fr; }
   .home-page .asesoria-card { padding: 1.8rem; }
   .home-page .cat-header { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
   .home-page .cat-card { width: 180px; height: 250px; }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
+import { useChat } from '../context/useChat'
 import {
   ICON_BOT, ICON_USER, ICON_WA_FLOAT, ICON_CHAT_CLOSE, ICON_SEND_PLANE,
 } from '../pages/catalogIcons'
@@ -47,7 +48,8 @@ export default function FloatingActions() {
   const tienda = useTiendaInfo()
   const waLink = tienda.whatsapp_link || WA_POR_DEFECTO
 
-  const [abierto, setAbierto] = useState(false)
+  // El estado vive en ChatProvider para que otras páginas puedan abrirlo.
+  const { abierto, cerrarChat, alternarChat } = useChat()
   const [mensajes, setMensajes] = useState([{ role: 'assistant', content: SALUDO, time: 'Ahora' }])
   const [entrada, setEntrada] = useState('')
   const [escribiendo, setEscribiendo] = useState(false)
@@ -63,10 +65,10 @@ export default function FloatingActions() {
   // Escape cierra el panel, igual que el mockup.
   useEffect(() => {
     if (!abierto) return
-    function onKey(e) { if (e.key === 'Escape') setAbierto(false) }
+    function onKey(e) { if (e.key === 'Escape') cerrarChat() }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [abierto])
+  }, [abierto, cerrarChat])
 
   useEffect(() => {
     if (abierto) {
@@ -109,7 +111,7 @@ export default function FloatingActions() {
 
   function irAlFormulario(e) {
     e.preventDefault()
-    setAbierto(false)
+    cerrarChat()
     navigate('/asesoria#solicitar')
   }
 
@@ -120,7 +122,7 @@ export default function FloatingActions() {
           <button
             type="button"
             className="fab-btn ic-asist"
-            onClick={() => setAbierto((v) => !v)}
+            onClick={alternarChat}
             aria-label="Asistente Russitex"
             aria-expanded={abierto}
           >
@@ -143,7 +145,7 @@ export default function FloatingActions() {
             <h3>Asistente Russitex</h3>
             <p>Respuestas al instante</p>
           </div>
-          <button type="button" className="chat-close" onClick={() => setAbierto(false)} aria-label="Cerrar chat">
+          <button type="button" className="chat-close" onClick={cerrarChat} aria-label="Cerrar chat">
             <span dangerouslySetInnerHTML={{ __html: ICON_CHAT_CLOSE }} />
           </button>
         </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
+import { useChat } from '../context/useChat'
 import './HomePage.css'
 
 // "filter" mapea al valor de categoría real del catálogo (src/pages/CatalogPage.jsx).
@@ -32,6 +33,7 @@ function easeInOutCubic(t) {
 
 export default function HomePage() {
   const navigate = useNavigate()
+  const { abrirChat } = useChat()
   const galleryRef = useRef(null)
 
   // Carrusel: auto-scroll cada 3s + arrastre manual con el mouse.
@@ -205,25 +207,32 @@ export default function HomePage() {
       </section>
 
       <section className="section asesoria">
-        <div className="s-label">Estamos para ayudarte</div>
-        <h2 className="s-title">¿No sabes qué material<br />necesitas?</h2>
-        <p className="s-sub">Cuéntanos qué estás confeccionando y te orientamos para elegir los materiales correctos.</p>
+        <div className="asesoria-layout">
+          <div className="asesoria-copy">
+            <div className="s-label">Estamos para ayudarte</div>
+            <h2 className="s-title">¿No sabes qué material necesitas?</h2>
+            <p className="s-sub">Te ayudamos a acertar con el material, ya sea una consulta rápida o un proyecto que necesita más detalle.</p>
 
-        <div className="asesoria-cards">
-          <div className="asesoria-card">
-            <span className="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /><path d="M8 12h.01" /><path d="M12 12h.01" /><path d="M16 12h.01" /></svg></span>
-            <h3>Asesoría rápida</h3>
-            <p>¿Tienes una duda puntual o no sabes por dónde empezar? Nuestro asistente te orienta al instante con preguntas cortas sobre tu proyecto.</p>
-            <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.45)', marginBottom: '1.5rem' }}>Ideal para consultas rápidas sin necesidad de registro.</p>
-            <button className="btn-card-white" onClick={() => navigate('/asesoria')}>Iniciar asesoría →</button>
+            {/* Abre el chat flotante, que vive en <FloatingActions>. */}
+            <p
+              className="asesoria-hint"
+              role="button"
+              tabIndex={0}
+              onClick={abrirChat}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirChat() } }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></svg>
+              <span>¿Una duda puntual? Habla con nuestro asistente y te responde al instante.</span>
+            </p>
           </div>
 
           <div className="asesoria-card">
-            <span className="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><rect x="8" y="2" width="8" height="4" rx="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><path d="M9 12h6" /><path d="M9 16h6" /></svg></span>
-            <h3>Asesoría personalizada</h3>
-            <p>¿Tu proyecto es más específico o necesitas una orientación detallada? Diligencia el formulario y un asesor de Russitex te contactará directamente.</p>
-            <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.45)', marginBottom: '1.5rem' }}>Incluye descripción del proyecto, materiales y presupuesto.</p>
-            <button className="btn-card-outline" onClick={() => navigate('/asesoria')}>Ir al formulario →</button>
+            <div className="asesoria-card-head">
+              <span className="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><rect x="8" y="2" width="8" height="4" rx="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><path d="M9 12h6" /><path d="M9 16h6" /></svg></span>
+              <h3>Asesoría personalizada</h3>
+            </div>
+            <p>Cuéntanos los detalles de tu proyecto y un asesor de Russitex te contacta directamente para recomendarte lo que necesitas.</p>
+            <button className="btn-card-white" onClick={() => navigate('/asesoria#solicitar')}>Ir al formulario →</button>
           </div>
         </div>
       </section>
