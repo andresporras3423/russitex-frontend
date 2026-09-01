@@ -1,10 +1,3 @@
-#root:has(.detalle-page) {
-  width: 100%;
-  max-width: 100%;
-  border-inline: none;
-  text-align: initial;
-}
-
 .detalle-page {
   --azul-oficio:#2C5C7C; --azul-profundo:#1C3D54; --ladrillo:#A95445; --ladrillo-osc:#8F4537;
   --arena:#D8C2A1; --crema:#FDFBF7; --crema-osc:#F1EADC; --tinta:#3B302A; --gris-calido:#6E665C;
@@ -103,6 +96,35 @@
 }
 .detalle-page .color-swatch:hover .swatch-tooltip { opacity: 1; }
 
+/* ── SELECTOR DE VARIANTES (colores, estampados…) ── */
+.detalle-page .estampado-section { margin-bottom: 1.4rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--linea); }
+.detalle-page .estampado-label { font-size: 0.84rem; font-weight: 700; color: var(--tinta); margin-bottom: 0.9rem; display: flex; align-items: baseline; gap: 0.4rem; flex-wrap: wrap; }
+.detalle-page .estampado-selected { color: var(--azul-oficio); font-weight: 600; font-size: 0.88rem; }
+.detalle-page .estampado-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap: 0.6rem; }
+.detalle-page .est-swatch { border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.45rem; font-family: var(--f-body); }
+.detalle-page .est-thumb { width: 100%; aspect-ratio: 1 / 1; border-radius: 10px; overflow: hidden; outline: 2px solid var(--linea); outline-offset: 2px; box-shadow: var(--sh-sm); transition: transform 0.18s, outline-color 0.18s, outline-width 0.18s; position: relative; }
+.detalle-page .est-thumb img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.detalle-page .est-swatch:hover .est-thumb { transform: translateY(-3px); }
+.detalle-page .est-swatch.active .est-thumb { outline-color: var(--azul-oficio); outline-width: 3px; }
+.detalle-page .est-name { font-size: 0.7rem; color: var(--gris-calido); text-align: center; line-height: 1.2; }
+.detalle-page .est-swatch.active .est-name { color: var(--azul-oficio); font-weight: 700; }
+
+/* Variante sin foto ni color: recuadro neutro, el nombre de abajo la identifica. */
+.detalle-page .est-thumb.sin-imagen {
+  background: repeating-linear-gradient(45deg, var(--crema-osc), var(--crema-osc) 6px, #fff 6px, #fff 12px);
+}
+
+/* Solo las variantes agotadas van tachadas. */
+.detalle-page .est-swatch[data-stock="agotado"] .est-thumb { opacity: 0.5; filter: grayscale(40%); }
+.detalle-page .est-swatch[data-stock="agotado"].active .est-thumb { opacity: 0.82; }
+.detalle-page .est-swatch[data-stock="agotado"] .est-thumb::after {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top right,
+    transparent calc(50% - 1.4px), var(--rojo) calc(50% - 1.4px),
+    var(--rojo) calc(50% + 1.4px), transparent calc(50% + 1.4px));
+}
+.detalle-page .est-swatch[data-stock="agotado"] .est-name { color: var(--gris-calido); text-decoration: line-through; }
+
 /* Presentación única (productos sin variantes de color) */
 .detalle-page .single-presentation {
   display: inline-flex; align-items: center; gap: 0.5rem; align-self: flex-start;
@@ -194,6 +216,8 @@
 .detalle-page .btn-modal-submit { width: 100%; padding: 0.9rem; background: var(--azul-oficio); color: #fff; border: none; cursor: pointer; border-radius: var(--r-sm); font-family: var(--f-body); font-size: 0.92rem; font-weight: 700; transition: background 0.2s; margin-bottom: 1rem; }
 .detalle-page .btn-modal-submit:hover { background: var(--azul-profundo); }
 .detalle-page .modal-privacy { font-size: 0.74rem; color: var(--gris-calido); text-align: center; line-height: 1.5; }
+.detalle-page .modal-error { font-size: 0.8rem; color: #A33A2A; text-align: center; line-height: 1.5; margin: -0.2rem 0 0; }
+.detalle-page .btn-modal-submit:disabled { opacity: 0.6; cursor: default; }
 .detalle-page .modal-confirm { flex-direction: column; align-items: center; text-align: center; gap: 0.8rem; }
 .detalle-page .modal-confirm .confirm-icon { font-size: 3rem; }
 .detalle-page .modal-confirm h3 { font-family: var(--f-head); font-size: 1.25rem; font-weight: 600; color: var(--tinta); }

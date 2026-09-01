@@ -164,7 +164,7 @@ export default function SiteHeader({ activeLink }) {
 
             <a href="#" className={activeLink === 'asesoria' ? 'active' : ''} onClick={(e) => { e.preventDefault(); closeMobileNav(); navigate('/asesoria') }}>Asesoría</a>
             <a href="#" className={activeLink === 'sobre-nosotros' ? 'active' : ''} onClick={(e) => { e.preventDefault(); closeMobileNav(); navigate('/sobre-nosotros') }}>Sobre nosotros</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); closeMobileNav() }}>Contacto</a>
+            <a href="#" className={activeLink === 'contacto' ? 'active' : ''} onClick={(e) => { e.preventDefault(); closeMobileNav(); navigate('/contacto') }}>Contacto</a>
           </nav>
 
           <div className="header-icons">

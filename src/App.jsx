@@ -8,6 +8,7 @@ import CatalogPage from './pages/CatalogPage'
 import SobreNosotrosPage from './pages/SobreNosotrosPage'
 import ProductoDetallePage from './pages/ProductoDetallePage'
 import NuevaContrasenaPage from './pages/NuevaContrasenaPage'
+import ContactoPage from './pages/ContactoPage'
 import FloatingActions from './components/FloatingActions'
 import ScrollToTop from './ScrollToTop'
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/asesoria" element={<AsesoriaPage />} />
             <Route path="/catalogo" element={<CatalogPage />} />
             <Route path="/sobre-nosotros" element={<SobreNosotrosPage />} />
+            <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/producto/:id" element={<ProductoDetallePage />} />
             <Route path="*" element={<HomePage />} />
           </Routes>

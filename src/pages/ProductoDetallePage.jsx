@@ -4,12 +4,14 @@ import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useProductos } from '../hooks/useProductos'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
+import { useAuth } from '../context/useAuth'
 import {
   ICON_CARRITO, ICON_CAJA, ICON_REGLA, ICON_PALETA, ICON_ENVIO,
   ICON_CUIDADOS, ICON_INFO, ICON_FLECHA_DER,
 } from './detalleIcons'
 import './ProductoDetallePage.css'
 
+const API_URL = import.meta.env.VITE_API_URL
 const WA_POR_DEFECTO = 'https://wa.me/573138909118'
 const IMAGEN_POR_DEFECTO = 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80'
 
@@ -43,19 +45,26 @@ function FichaProducto({ id }) {
   const navigate = useNavigate()
   const productos = useProductos()
   const tienda = useTiendaInfo()
+  const { user } = useAuth()
   const waLink = tienda.whatsapp_link || WA_POR_DEFECTO
 
   const producto = useMemo(() => productos.find((p) => String(p.id) === String(id)), [productos, id])
 
   const [cantidad, setCantidad] = useState(1)
-  const [color, setColor] = useState(null)
-  const [avisoColor, setAvisoColor] = useState(false)
+  const [variante, setVariante] = useState(null)
+  const [avisoVariante, setAvisoVariante] = useState(false)
   const [imagenActiva, setImagenActiva] = useState(null)
   const [accAbierto, setAccAbierto] = useState('descripcion')
   const [agregado, setAgregado] = useState(null)
   const [modalAbierto, setModalAbierto] = useState(false)
-  const [correoAviso, setCorreoAviso] = useState('')
+  // null = el cliente todavía no ha tocado el campo. Se guarda así, y no
+  // con el correo de la sesión como valor inicial, porque la sesión llega
+  // asincrónica: al primer render `user` suele ser null todavía. Derivarlo
+  // (más abajo, `correo`) evita tener que sincronizarlo con un efecto.
+  const [correoAviso, setCorreoAviso] = useState(null)
   const [avisoEnviado, setAvisoEnviado] = useState(false)
+  const [enviandoAviso, setEnviandoAviso] = useState(false)
+  const [errorAviso, setErrorAviso] = useState('')
 
   if (productos.length === 0) {
     return (
@@ -81,16 +90,68 @@ function FichaProducto({ id }) {
     )
   }
 
-  // Alegra todavía no lleva inventario real, así que hoy esto es siempre
-  // true. La ficha ya soporta los dos estados: cuando el backend empiece a
-  // devolver `disponible: false`, la página cambia sola.
-  const disponible = producto.disponible !== false
+  // Disponibilidad del producto entero. El backend ya la calculó: tiene en
+  // cuenta el interruptor manual y, si hay variantes, que quede al menos una.
+  const productoDisponible = producto.disponible !== false
 
   const categoriaLabel = CAT_LABELS[producto.categoria] || 'Materiales'
-  const colores = producto.colores || []
-  const tieneColores = colores.length > 0
-  const imagenes = [producto.imagen || IMAGEN_POR_DEFECTO, ...(producto.imagenes || [])]
+
+  // Variantes: colores, estampados... El nombre del grupo lo pone la tienda
+  // en productos_meta.variante_etiqueta, así que no asumimos "Color".
+  const variantes = producto.variantes || []
+  const tieneVariantes = variantes.length > 0
+  const varianteEtiqueta = producto.varianteEtiqueta || 'Opción'
+  const varianteElegida = variantes.find((v) => v.nombre === variante) || null
+
+  // producto_imagenes devuelve objetos { url, alt }. Antes eran cadenas
+  // sueltas, así que se aceptan las dos formas mientras quede algún dato viejo.
+  const urlDe = (i) => (typeof i === 'string' ? i : i?.url)
+  const listaUrls = (arr) => (arr || []).map(urlDe).filter(Boolean)
+
+  // La galería sigue a la variante elegida. Si esa variante no tiene fotos
+  // propias, el backend ya le pasó las del producto; y si no hay ninguna,
+  // queda la foto de la tarjeta del catálogo.
+  const galeria = varianteElegida
+    ? listaUrls(varianteElegida.imagenes)
+    : listaUrls(producto.imagenes)
+  const imagenes = galeria.length > 0 ? galeria : [producto.imagen || IMAGEN_POR_DEFECTO]
   const imagenPrincipal = imagenActiva ?? imagenes[0]
+
+  // Lo que manda en la parte de compra: si eligieron una variante agotada,
+  // la ficha pasa al modo agotado aunque el producto en general sí esté.
+  const disponible = productoDisponible && (!varianteElegida || varianteElegida.disponible)
+
+  // Si el cliente no ha escrito nada, se muestra el correo de su sesión.
+  const correo = correoAviso ?? (user?.email || '')
+
+  // Anota al cliente para el aviso de reingreso. Si hay una variante
+  // elegida se manda su id: quien espera el Beige no debe recibir el
+  // correo porque volvió el Negro. Sin variante elegida, el aviso es del
+  // producto entero y sale cuando vuelva cualquiera de sus opciones.
+  async function pedirAviso(e) {
+    e.preventDefault()
+    setErrorAviso('')
+    setEnviandoAviso(true)
+    try {
+      const res = await fetch(`${API_URL}/api/avisos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          correo,
+          alegraId: producto.id,
+          varianteId: varianteElegida?.id ?? null,
+        }),
+      })
+      const datos = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(datos.error || 'No pudimos guardar tu aviso.')
+      setAvisoEnviado(true)
+    } catch (err) {
+      setErrorAviso(err.message || 'No pudimos guardar tu aviso.')
+    } finally {
+      setEnviandoAviso(false)
+    }
+  }
+
   const descripcionLarga = producto.descripcionLarga || producto.descripcion
 
   const relacionados = productos
@@ -99,22 +160,24 @@ function FichaProducto({ id }) {
     .slice(0, 5)
 
   // El carrito todavía no existe. Cuando exista, acá va la llamada real;
-  // por ahora validamos el color y confirmamos en pantalla, que es lo que
-  // hacía el mockup.
+  // por ahora validamos la variante y confirmamos en pantalla, que es lo
+  // que hacía el mockup.
   function agregarAlCarrito() {
-    if (tieneColores && !color) { setAvisoColor(true); return }
-    const detalle = `${cantidad} ${unidadContable(producto.unidad)}${color ? ` — ${color}` : ''}`
+    if (tieneVariantes && !variante) { setAvisoVariante(true); return }
+    const detalle = `${cantidad} ${unidadContable(producto.unidad)}${variante ? ` — ${variante}` : ''}`
     setAgregado(detalle)
   }
 
   function consultarPorWhatsApp() {
-    const msg = `Hola, quiero consultar por ${producto.nombre}.`
-    window.open(`${waLink}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener')
+    const que = variante ? `${producto.nombre} (${variante})` : producto.nombre
+    window.open(`${waLink}?text=${encodeURIComponent(`Hola, quiero consultar por ${que}.`)}`, '_blank', 'noopener')
   }
 
-  function elegirColor(nombre) {
-    setColor(nombre)
-    setAvisoColor(false)
+  function elegirVariante(v) {
+    setVariante(v.nombre)
+    setAvisoVariante(false)
+    setImagenActiva(null)   // la galería vuelve a la primera foto de la variante
+    setAgregado(null)
   }
 
   const acordeon = [
@@ -130,7 +193,7 @@ function FichaProducto({ id }) {
         </div>
       ),
     },
-    (producto.detalles?.length > 0 || producto.cuidados || tieneColores) && {
+    (producto.detalles?.length > 0 || producto.cuidados || tieneVariantes) && {
       clave: 'material', titulo: 'Detalles del material',
       contenido: (
         <>
@@ -144,12 +207,12 @@ function FichaProducto({ id }) {
               ))}
             </div>
           )}
-          {tieneColores && (
+          {tieneVariantes && (
             <div className="color-samples">
-              {colores.map((c) => (
-                <div className="color-sample" key={c.nombre}>
-                  <div className="sample-dot" style={{ background: c.hex, borderColor: 'rgba(0,0,0,0.15)' }} />
-                  {c.nombre}
+              {variantes.map((v) => (
+                <div className="color-sample" key={v.id ?? v.nombre}>
+                  {v.hex && <div className="sample-dot" style={{ background: v.hex, borderColor: 'rgba(0,0,0,0.15)' }} />}
+                  {v.nombre}{!v.disponible && ' (agotado)'}
                 </div>
               ))}
             </div>
@@ -174,11 +237,13 @@ function FichaProducto({ id }) {
                 <strong>Unidad de venta:</strong> {(producto.unidad || 'unidad').replace(/^por\s+/i, '')}. Elige la cantidad exacta desde el selector.
               </div>
             </div>
-            {tieneColores && (
+            {tieneVariantes && (
               <div className="compra-item">
                 <span className="compra-icon" dangerouslySetInnerHTML={{ __html: ICON_PALETA }} />
                 <div className="compra-text">
-                  <strong>Colores:</strong> disponible en {colores.map((c) => c.nombre.toLowerCase()).join(', ')}. Selecciona el color antes de pedir.
+                  <strong>{varianteEtiqueta}:</strong>{' '}
+                  {variantes.filter((v) => v.disponible).map((v) => v.nombre).join(', ') || 'sin opciones disponibles por ahora'}.
+                  {' '}Elige una antes de pedir.
                 </div>
               </div>
             )}
@@ -254,25 +319,42 @@ function FichaProducto({ id }) {
 
           {producto.descripcion && <p className="prod-desc">{producto.descripcion}</p>}
 
-          {tieneColores ? (
-            <div className="color-section">
-              <div className="color-label">
-                Color <span className="color-selected">{color ? `— ${color}` : '— Selecciona un color'}</span>
+          {tieneVariantes ? (
+            <div className="estampado-section">
+              <div className="estampado-label">
+                {varianteEtiqueta}
+                <span className="estampado-selected">
+                  {variante
+                    ? `— ${variante}${varianteElegida && !varianteElegida.disponible ? ' (agotado)' : ''}`
+                    : `— Selecciona ${varianteEtiqueta.toLowerCase()}`}
+                </span>
               </div>
-              <div className="color-swatches">
-                {colores.map((c) => (
-                  <button
-                    type="button"
-                    className={`color-swatch ${color === c.nombre ? 'active' : ''}`}
-                    style={{ background: c.hex }}
-                    key={c.nombre}
-                    onClick={() => elegirColor(c.nombre)}
-                    aria-label={c.nombre}
-                    aria-pressed={color === c.nombre}
-                  >
-                    <span className="swatch-tooltip">{c.nombre}</span>
-                  </button>
-                ))}
+              <div className="estampado-grid">
+                {variantes.map((v) => {
+                  const primeraFoto = listaUrls(v.imagenes)[0]
+                  const chip = v.swatch || primeraFoto
+                  return (
+                    <button
+                      type="button"
+                      className={`est-swatch ${variante === v.nombre ? 'active' : ''}`}
+                      data-stock={v.disponible ? undefined : 'agotado'}
+                      key={v.id ?? v.nombre}
+                      onClick={() => elegirVariante(v)}
+                      aria-pressed={variante === v.nombre}
+                      aria-label={`${v.nombre}${v.disponible ? '' : ' (agotado)'}`}
+                    >
+                      {/* Si no hay foto ni color, el recuadro queda neutro y
+                          el nombre de abajo es lo que identifica la opción. */}
+                      <span
+                        className={`est-thumb ${chip || v.hex ? '' : 'sin-imagen'}`}
+                        style={!chip && v.hex ? { background: v.hex } : undefined}
+                      >
+                        {chip && <img src={chip} alt="" loading="lazy" />}
+                      </span>
+                      <span className="est-name">{v.nombre}</span>
+                    </button>
+                  )
+                })}
               </div>
             </div>
           ) : (
@@ -298,9 +380,9 @@ function FichaProducto({ id }) {
             </div>
           )}
 
-          {avisoColor && (
+          {avisoVariante && (
             <p className="color-required-msg visible" role="alert">
-              ⚠️ Por favor selecciona un color antes de agregar al carrito.
+              ⚠️ Elige {varianteEtiqueta.toLowerCase()} antes de agregar al carrito.
             </p>
           )}
 
@@ -376,37 +458,39 @@ function FichaProducto({ id }) {
 
       {/* Aviso de reingreso. Solo se llega acá cuando un producto está
           agotado, cosa que hoy no pasa porque Alegra no lleva inventario.
-          PENDIENTE: el correo todavía no se guarda en ninguna parte; hay que
-          crear la tabla y el endpoint antes de que esto salga a producción. */}
+          El correo se guarda en avisos_disponibilidad (POST /api/avisos).
+          El envío no es automático todavía: lo dispara la pantalla de
+          administración cuando exista, o scripts/enviar-avisos.js. */}
       <div className={`modal-overlay ${modalAbierto ? 'open' : ''}`} onClick={() => setModalAbierto(false)}>
         <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Avísame cuando esté disponible">
           <button className="modal-close" onClick={() => setModalAbierto(false)} aria-label="Cerrar">✕</button>
           {!avisoEnviado ? (
-            <form
-              className="modal-form"
-              onSubmit={(e) => { e.preventDefault(); setAvisoEnviado(true) }}
-            >
+            <form className="modal-form" onSubmit={pedirAviso}>
               <div className="modal-icon">🔔</div>
               <h3 className="modal-title">Te avisamos cuando vuelva</h3>
               <p className="modal-sub">
-                Déjanos tu correo y te escribimos apenas {producto.nombre} esté disponible de nuevo.
+                Déjanos tu correo y te escribimos apenas {producto.nombre}
+                {varianteElegida ? ` en ${varianteElegida.nombre}` : ''} esté disponible de nuevo.
               </p>
               <input
                 type="email"
                 className="modal-input"
                 placeholder="tu@correo.com"
-                value={correoAviso}
+                value={correo}
                 onChange={(e) => setCorreoAviso(e.target.value)}
                 required
               />
-              <button type="submit" className="btn-modal-submit">Avísenme</button>
+              <button type="submit" className="btn-modal-submit" disabled={enviandoAviso}>
+                {enviandoAviso ? 'Anotando…' : 'Avísenme'}
+              </button>
+              {errorAviso && <p className="modal-error">{errorAviso}</p>}
               <p className="modal-privacy">Solo lo usamos para este aviso. No enviamos publicidad.</p>
             </form>
           ) : (
             <div className="modal-confirm" style={{ display: 'flex' }}>
               <div className="confirm-icon">✅</div>
               <h3>¡Listo!</h3>
-              <p>Te escribiremos a {correoAviso} apenas vuelva a estar disponible.</p>
+              <p>Te escribiremos a {correo} apenas vuelva a estar disponible.</p>
               <button className="btn-close-confirm" onClick={() => setModalAbierto(false)}>Cerrar</button>
             </div>
           )}

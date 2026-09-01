@@ -15,7 +15,10 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
 .f-contact { display: flex; flex-direction: column; gap: 1.05rem; }
 .f-ci-item { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.9rem; }
 .f-ci { color: var(--arena); margin-top: 0.05rem; flex-shrink: 0; display: flex; }
-.f-ci svg { width: 18px; height: 18px; }
+/* `fill: currentColor` acá y no solo en el atributo del SVG: así cualquier
+   icono que se ponga en el pie toma el color arena, aunque venga sin
+   atributo `fill` (si no, el navegador lo pinta negro). */
+.f-ci svg { width: 18px; height: 18px; fill: currentColor; }
 .f-ci-item a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
 .f-ci-item a:hover { color: #fff; }
 .footer-bottom { padding-top: 1.6rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
