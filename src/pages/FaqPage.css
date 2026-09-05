@@ -1,0 +1,96 @@
+/* Portado de russitex-faq.html (version2 del repo de Paula).
+   Los valores son los suyos tal cual; solo se prefijan con .faq-page
+   para que no se escapen a otras páginas, igual que en el resto. */
+.faq-page {
+  --azul-oficio:#2C5C7C; --azul-profundo:#1C3D54; --ladrillo:#A95445; --ladrillo-osc:#8F4537;
+  --arena:#D8C2A1; --crema:#FDFBF7; --crema-osc:#F1EADC; --tinta:#3B302A; --gris-calido:#6E665C;
+  --linea:#E0D8CB; --azul-claro:#E8EFF4;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:22px; --r-pill:100px;
+  --sh-sm:0 2px 8px rgba(59,48,42,0.06); --sh-md:0 6px 20px rgba(59,48,42,0.10); --sh-lg:0 16px 38px rgba(59,48,42,0.14);
+  --f-head:'Fraunces', Georgia, serif; --f-body:'Mulish', system-ui, sans-serif;
+
+  font-family: var(--f-body);
+  background: var(--crema);
+  color: var(--tinta);
+  line-height: 1.6;
+  /* El recorte horizontal lo hace body en index.css. Acá rompería el
+     position:sticky de la cabecera: un envoltorio con overflow crea su
+     propio ámbito de desplazamiento. */
+}
+.faq-page a:focus-visible, .faq-page button:focus-visible {
+  outline: 2px solid var(--ladrillo); outline-offset: 2px; border-radius: 4px;
+}
+
+/* ── BREADCRUMB ── */
+.faq-page .breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 8%; border-bottom: 1px solid var(--linea); }
+.faq-page .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
+.faq-page .breadcrumb a { color: var(--gris-calido); text-decoration: none; transition: color 0.2s; }
+.faq-page .breadcrumb a:hover { color: var(--azul-oficio); }
+.faq-page .breadcrumb .sep { color: var(--linea); }
+.faq-page .breadcrumb .current { color: var(--tinta); font-weight: 600; }
+
+/* ── BANNER ── */
+.faq-page .page-banner { background: var(--azul-oficio); padding: 3.4rem 8%; position: relative; overflow: hidden; }
+.faq-page .page-banner::before { content: ''; position: absolute; width: 460px; height: 460px; border-radius: 50%; background: rgba(255,255,255,0.04); top: -200px; right: -90px; pointer-events: none; }
+.faq-page .page-banner::after { content: ''; position: absolute; width: 240px; height: 240px; border-radius: 50%; background: rgba(169,84,69,0.16); bottom: -110px; left: 8%; pointer-events: none; }
+.faq-page .banner-inner { position: relative; z-index: 1; max-width: 700px; }
+.faq-page .banner-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--arena); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+.faq-page .banner-eyebrow::before { content: ''; width: 26px; height: 2px; background: var(--arena); }
+.faq-page .banner-title { font-family: var(--f-head); font-size: clamp(2rem, 3.2vw, 2.8rem); font-weight: 600; color: #fff; line-height: 1.12; margin-bottom: 0.8rem; }
+.faq-page .banner-title em { font-style: italic; color: #EAD9C4; }
+.faq-page .banner-sub { font-size: 0.98rem; color: rgba(255,255,255,0.72); line-height: 1.7; max-width: 560px; }
+
+/* En pantallas anchas el subtítulo aprovecha todo el ancho. */
+@media (min-width: 1200px) {
+  .faq-page .banner-inner { max-width: none; }
+  .faq-page .banner-title { max-width: 700px; }
+  .faq-page .banner-sub { max-width: none; }
+}
+
+/* ── LISTA ── */
+.faq-page .faq-layout { padding: 3.6rem 8% 4.5rem; background: var(--crema); }
+.faq-page .faq-content { max-width: 860px; margin: 0 auto; }
+/* scroll-margin-top deja aire por encima al saltar a #grupo-envios y
+   compañía: sin esto la cabecera fija taparía el título del grupo. */
+.faq-page .faq-group { margin-bottom: 2.8rem; scroll-margin-top: 96px; }
+.faq-page .faq-group:last-child { margin-bottom: 0; }
+.faq-page .group-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ladrillo); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem; }
+.faq-page .group-label::after { content: ''; flex: 1; height: 1px; background: var(--linea); }
+
+.faq-page .faq-item { background: #fff; border-radius: var(--r-md); border: 1px solid var(--linea); margin-bottom: 0.7rem; overflow: hidden; transition: box-shadow 0.2s, border-color 0.2s; }
+.faq-page .faq-item:last-child { margin-bottom: 0; }
+.faq-page .faq-item.open { box-shadow: var(--sh-md); border-color: var(--arena); }
+.faq-page .faq-q { display: flex; align-items: center; justify-content: space-between; padding: 1.15rem 1.4rem; cursor: pointer; gap: 1rem; background: none; border: none; width: 100%; text-align: left; font-family: var(--f-body); }
+.faq-page .faq-q-text { font-size: 0.95rem; font-weight: 600; color: var(--tinta); line-height: 1.4; transition: color 0.2s; }
+.faq-page .faq-item.open .faq-q-text { color: var(--azul-oficio); }
+.faq-page .faq-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--crema-osc); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.05rem; color: var(--gris-calido); font-weight: 700; transition: all 0.28s; }
+.faq-page .faq-item.open .faq-icon { background: var(--azul-oficio); color: #fff; transform: rotate(45deg); }
+
+/* El acordeón anima max-height porque height:auto no es animable. El tope
+   tiene que superar a la respuesta más larga o se cortaría al abrir. */
+.faq-page .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.25s ease; }
+.faq-page .faq-a.open { max-height: 700px; padding-bottom: 1.2rem; }
+.faq-page .faq-a-inner { padding: 0 1.4rem; font-size: 0.9rem; color: var(--gris-calido); line-height: 1.8; }
+.faq-page .faq-a-inner a { color: var(--azul-oficio); text-decoration: none; font-weight: 600; cursor: pointer; }
+.faq-page .faq-a-inner a:hover { text-decoration: underline; }
+.faq-page .faq-a-inner strong { color: var(--tinta); }
+
+.faq-page .faq-highlight { background: var(--azul-claro); border-radius: var(--r-sm); padding: 0.75rem 1rem; margin-top: 0.85rem; font-size: 0.85rem; color: var(--azul-profundo); line-height: 1.6; }
+.faq-page .faq-highlight strong { color: var(--azul-profundo); }
+.faq-page .faq-highlight.terracota { background: #F6E7E4; color: var(--ladrillo-osc); }
+.faq-page .faq-highlight.terracota strong { color: var(--ladrillo-osc); }
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .faq-page .breadcrumb-bar { padding: 0.9rem 6%; }
+  .faq-page .page-banner { padding: 2.8rem 6%; }
+  .faq-page .faq-layout { padding: 3rem 6% 3.6rem; }
+}
+@media (max-width: 767px) {
+  .faq-page .faq-layout { padding: 2.4rem 6% 3rem; }
+  .faq-page .faq-group { margin-bottom: 2.2rem; }
+  .faq-page .faq-q { padding: 1rem 1.1rem; }
+  .faq-page .faq-q-text { font-size: 0.9rem; }
+  .faq-page .faq-a-inner { padding: 0 1.1rem; font-size: 0.88rem; }
+  .faq-page .faq-a.open { max-height: 900px; }
+}

@@ -11,7 +11,9 @@
   font-family: 'Mulish', sans-serif;
   background: var(--crema);
   color: var(--carbon);
-  overflow-x: hidden;
+  /* El recorte horizontal lo hace body en index.css. Acá rompería el
+     position:sticky de la cabecera: un envoltorio con overflow crea su
+     propio ámbito de desplazamiento. */
 }
 .sobre-page a:focus-visible, .sobre-page button:focus-visible {
   outline: 2px solid var(--ladrillo); outline-offset: 2px; border-radius: 4px;

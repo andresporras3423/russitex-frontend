@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
 import { ICON_FOOTER_WA, ICON_CLOCK, ICON_FOOTER_LOCATION } from '../pages/catalogIcons'
 import './SiteFooter.css'
@@ -15,6 +16,7 @@ const POR_DEFECTO = {
 }
 
 export default function SiteFooter() {
+  const navigate = useNavigate()
   const info = useTiendaInfo()
   const v = (clave) => info[clave] ?? POR_DEFECTO[clave] ?? ''
 
@@ -30,9 +32,25 @@ export default function SiteFooter() {
         <div className="f-col">
           <h4>Información</h4>
           <ul>
-            <li><a href="#">Preguntas frecuentes</a></li>
-            <li><a href="#">Políticas de envío</a></li>
-            <li><a href="#">Cambios y devoluciones</a></li>
+            {/* Envíos y devoluciones no tienen página propia todavía, pero la
+                FAQ ya los responde, así que apuntan a su grupo. Mejor eso que
+                un enlace muerto; el día que se redacte la política formal se
+                cambia el destino. Términos y privacidad siguen sin nada (RC1-T4). */}
+            <li>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/preguntas-frecuentes') }}>
+                Preguntas frecuentes
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/preguntas-frecuentes#grupo-envios') }}>
+                Políticas de envío
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/preguntas-frecuentes#grupo-devoluciones') }}>
+                Cambios y devoluciones
+              </a>
+            </li>
             <li><a href="#">Términos y condiciones</a></li>
             <li><a href="#">Política de privacidad</a></li>
           </ul>

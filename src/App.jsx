@@ -9,6 +9,7 @@ import SobreNosotrosPage from './pages/SobreNosotrosPage'
 import ProductoDetallePage from './pages/ProductoDetallePage'
 import NuevaContrasenaPage from './pages/NuevaContrasenaPage'
 import ContactoPage from './pages/ContactoPage'
+import FaqPage from './pages/FaqPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
 import FloatingActions from './components/FloatingActions'
 import ScrollToTop from './ScrollToTop'
@@ -33,6 +34,7 @@ function App() {
             <Route path="/catalogo" element={<CatalogPage />} />
             <Route path="/sobre-nosotros" element={<SobreNosotrosPage />} />
             <Route path="/contacto" element={<ContactoPage />} />
+            <Route path="/preguntas-frecuentes" element={<FaqPage />} />
             <Route path="/producto/:id" element={<ProductoDetallePage />} />
             {/* Cualquier URL desconocida. Antes caía en HomePage, así que
                 un enlace mal escrito mostraba el inicio sin avisar de nada. */}
