@@ -1,0 +1,146 @@
+.nf-page {
+  --azul-oficio:#2C5C7C; --azul-profundo:#1C3D54; --ladrillo:#A95445;
+  --arena:#D8C2A1; --crema:#FDFBF7; --crema-osc:#F1EADC; --tinta:#3B302A; --gris-calido:#6E665C;
+  --linea:#E0D8CB;
+  --r-md:14px; --r-pill:100px;
+  --sh-sm:0 2px 8px rgba(59,48,42,0.06); --sh-md:0 6px 20px rgba(59,48,42,0.10);
+  --f-head:'Fraunces', Georgia, serif; --f-body:'Mulish', system-ui, sans-serif;
+
+  font-family: var(--f-body);
+  background: var(--crema);
+  color: var(--tinta);
+  overflow-x: hidden;
+
+  /* Empuja el pie hasta abajo aunque el contenido sea corto: sin esto
+     el footer queda flotando a media pantalla. */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.nf-page a:focus-visible, .nf-page button:focus-visible {
+  outline: 2px solid var(--ladrillo); outline-offset: 2px; border-radius: 4px;
+}
+
+.nf-page .nf-main {
+  flex: 1;
+  padding: 5rem 8% 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* El número grande es decoración, no información: lo dice el texto de
+   abajo. Por eso va con aria-hidden y en un tono suave, para que no
+   grite más que el mensaje. */
+.nf-page .nf-code {
+  font-family: var(--f-head);
+  font-size: clamp(4.5rem, 14vw, 8rem);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--arena);
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+
+.nf-page .nf-title {
+  font-family: var(--f-head);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 600;
+  color: var(--tinta);
+  margin: 0.6rem 0 0;
+}
+
+.nf-page .nf-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--gris-calido);
+  max-width: 440px;
+  margin: 0.9rem 0 0;
+}
+
+.nf-page .nf-ruta {
+  margin-top: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--gris-calido);
+}
+.nf-page .nf-ruta code {
+  background: var(--crema-osc);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--tinta);
+  /* Una ruta larga no puede ensanchar la página. */
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.nf-page .nf-acciones {
+  margin-top: 2rem;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.nf-page .nf-acciones button {
+  padding: 0.85rem 1.8rem;
+  border-radius: var(--r-md);
+  font-family: var(--f-body);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nf-page .nf-btn-primario {
+  background: var(--azul-oficio);
+  color: #fff;
+  border: none;
+  box-shadow: var(--sh-sm);
+}
+.nf-page .nf-btn-primario:hover {
+  background: var(--azul-profundo);
+  transform: translateY(-1px);
+  box-shadow: var(--sh-md);
+}
+.nf-page .nf-btn-secundario {
+  background: transparent;
+  color: var(--tinta);
+  border: 1px solid var(--linea);
+}
+.nf-page .nf-btn-secundario:hover {
+  background: var(--crema-osc);
+  border-color: var(--arena);
+}
+
+.nf-page .nf-sugerencias {
+  margin: 2.6rem 0 0;
+  padding: 1.6rem 0 0;
+  border-top: 1px solid var(--linea);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  width: 100%;
+  max-width: 340px;
+}
+.nf-page .nf-sugerencias a {
+  color: var(--azul-oficio);
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: color 0.2s;
+}
+.nf-page .nf-sugerencias a:hover {
+  color: var(--ladrillo);
+  text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+  .nf-page .nf-main { padding: 3.5rem 6% 4.5rem; }
+  .nf-page .nf-acciones button { width: 100%; }
+}

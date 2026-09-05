@@ -270,7 +270,13 @@ export default function HomePage() {
           <div className="s-label">Quiénes somos</div>
           <h2 className="s-title">Una historia familiar<br />dedicada a la <em>confección</em></h2>
           <p className="sobre-text">Russitex nació de la sastrería familiar y creció como un almacén especializado en materiales para confección. Hoy seguimos acompañando a estudiantes, sastres, diseñadores y talleres con atención cercana y conocimiento práctico.</p>
-          <a href="#" className="btn-secondary">Conoce nuestra historia →</a>
+          <a
+            href="#"
+            className="btn-secondary"
+            onClick={(e) => { e.preventDefault(); navigate('/sobre-nosotros') }}
+          >
+            Conoce nuestra historia →
+          </a>
         </div>
         <div className="sobre-right">
           <div className="timeline">

@@ -9,6 +9,7 @@ import SobreNosotrosPage from './pages/SobreNosotrosPage'
 import ProductoDetallePage from './pages/ProductoDetallePage'
 import NuevaContrasenaPage from './pages/NuevaContrasenaPage'
 import ContactoPage from './pages/ContactoPage'
+import NoEncontradaPage from './pages/NoEncontradaPage'
 import FloatingActions from './components/FloatingActions'
 import ScrollToTop from './ScrollToTop'
 
@@ -21,6 +22,9 @@ function App() {
         <ChatProvider>
           <ScrollToTop />
           <Routes>
+            {/* El inicio necesita su propia ruta. Antes no la tenía: caía en
+                el comodín de abajo, que apuntaba a HomePage. */}
+            <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             {/* A esta ruta llega el enlace del correo de recuperación.
                 Debe coincidir con el redirectTo de routes/auth.js. */}
@@ -30,7 +34,9 @@ function App() {
             <Route path="/sobre-nosotros" element={<SobreNosotrosPage />} />
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/producto/:id" element={<ProductoDetallePage />} />
-            <Route path="*" element={<HomePage />} />
+            {/* Cualquier URL desconocida. Antes caía en HomePage, así que
+                un enlace mal escrito mostraba el inicio sin avisar de nada. */}
+            <Route path="*" element={<NoEncontradaPage />} />
           </Routes>
           {/* Fuera de <Routes> a propósito: se monta una sola vez, así los
               botones salen en todas las páginas y el chat no pierde la
