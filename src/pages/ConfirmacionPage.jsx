@@ -17,23 +17,44 @@ export default function ConfirmacionPage() {
   useEffect(() => {
     let activo = true
     async function consultar() {
+      // Wompi agrega ?id=<transaccionId> a la URL de regreso. Si está, se
+      // verifica el pago DIRECTO con Wompi (no depende del webhook).
+      const txId = new URLSearchParams(window.location.search).get('id')
       let ref = null
       try { ref = localStorage.getItem('russitex_ultima_ref') } catch { /* sin storage */ }
-      if (!ref) { if (activo) { setSinRef(true); setCargando(false) } return }
 
-      // El webhook de Wompi puede tardar un momento; se reintenta unas veces.
-      for (let intento = 0; intento < 4 && activo; intento++) {
+      if (!txId && !ref) { if (activo) { setSinRef(true); setCargando(false) } return }
+
+      // 1) Verificación directa con Wompi (fuente inmediata y confiable).
+      if (txId) {
         try {
-          const r = await fetch(`${API_URL}/api/pagos/estado/${encodeURIComponent(ref)}`)
+          const r = await fetch(`${API_URL}/api/pagos/verificar/${encodeURIComponent(txId)}`)
           if (r.ok) {
             const d = await r.json()
             if (!activo) return
             setPedido(d)
-            if (d.estado === 'APROBADO') { vaciar(); break }
-            if (d.estado && d.estado !== 'PENDIENTE') break
+            if (d.estado === 'APROBADO') { vaciar() }
+            if (d.estado && d.estado !== 'PENDIENTE') { setCargando(false); return }
           }
-        } catch { /* reintenta */ }
-        await new Promise((res) => setTimeout(res, 3000))
+        } catch { /* si falla, se cae al plan por referencia */ }
+      }
+
+      // 2) Respaldo por referencia (por si Wompi no trajo id o quedó PENDIENTE):
+      //    consulta el estado guardado, reintentando por si el webhook llega.
+      if (ref) {
+        for (let intento = 0; intento < 3 && activo; intento++) {
+          try {
+            const r = await fetch(`${API_URL}/api/pagos/estado/${encodeURIComponent(ref)}`)
+            if (r.ok) {
+              const d = await r.json()
+              if (!activo) return
+              setPedido(d)
+              if (d.estado === 'APROBADO') { vaciar(); break }
+              if (d.estado && d.estado !== 'PENDIENTE') break
+            }
+          } catch { /* reintenta */ }
+          await new Promise((res) => setTimeout(res, 3000))
+        }
       }
       if (activo) setCargando(false)
     }
