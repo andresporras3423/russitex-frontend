@@ -1,22 +1,16 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useCart } from '../context/useCart'
 import './CheckoutPage.css'
 
+const API_URL = import.meta.env.VITE_API_URL
 const money = (n) => `$${Number(n).toLocaleString('es-CO')}`
-
-// Provisional: el costo real del domicilio lo devolverá MiPaquete según ciudad
-// cuando se conecte el pago. Por ahora una tarifa fija para poder mostrar el total.
-const ENVIO_DOMICILIO = 10000
 
 function unidadBase(unidad) {
   return (unidad || '').replace(/^(venta\s+por|por)\s+/i, '').trim().toLowerCase()
 }
-
-const DEPARTAMENTOS = ['Cundinamarca', 'Antioquia', 'Valle del Cauca', 'Atlántico']
-const CIUDADES = ['Bogotá D.C.', 'Soacha', 'Chía']
 
 export default function CheckoutPage() {
   const { items, subtotal } = useCart()
@@ -27,22 +21,104 @@ export default function CheckoutPage() {
   const [enviado, setEnviado] = useState(false)       // muestra el aviso "próximamente"
   const [form, setForm] = useState({
     nombre: '', apellido: '', tipodoc: 'C.C.', doc: '', cel: '', correo: '',
-    depto: DEPARTAMENTOS[0], ciudad: CIUDADES[0], dir: '', notas: '',
+    ciudad: '', dir: '', notas: '',
   })
+
+  // Municipios (con código DANE). Se elige en dos pasos: departamento y municipio.
+  const [ciudades, setCiudades] = useState([])
+  const [deptoSel, setDeptoSel] = useState('')          // departamento elegido
+  const [daneDestino, setDaneDestino] = useState(null)  // municipio elegido (código DANE)
+
+  // Cotización del envío en vivo.
+  const [cotizando, setCotizando] = useState(false)
+  const [envioCotizado, setEnvioCotizado] = useState(null)   // { costoTotal, transportadora }
+  const [errorEnvio, setErrorEnvio] = useState('')
 
   const set = (campo) => (e) => setForm((f) => ({ ...f, [campo]: e.target.value }))
 
-  const costoEnvio = envio === 'domicilio' ? ENVIO_DOMICILIO : 0
-  const total = subtotal + costoEnvio
+  // Cargar la lista de municipios una vez.
+  useEffect(() => {
+    let activo = true
+    fetch(`${API_URL}/api/envios/ciudades`)
+      .then((r) => r.json())
+      .then((d) => { if (activo) setCiudades(d.ciudades || []) })
+      .catch(() => {})
+    return () => { activo = false }
+  }, [])
 
-  // Campos mínimos para poder facturar (Alegra) y cobrar (Wompi).
+  // Departamentos únicos, ordenados (primer selector).
+  const departamentos = useMemo(() => {
+    return [...new Set(ciudades.map((c) => c.departamento))].sort((a, b) => a.localeCompare(b, 'es'))
+  }, [ciudades])
+
+  // Municipios del departamento elegido, ordenados (segundo selector).
+  const municipios = useMemo(() => {
+    return ciudades
+      .filter((c) => c.departamento === deptoSel)
+      .sort((a, b) => a.ciudad.localeCompare(b.ciudad, 'es'))
+  }, [ciudades, deptoSel])
+
+  // Al cambiar de departamento se limpia el municipio elegido.
+  function elegirDepartamento(dep) {
+    setDeptoSel(dep)
+    setDaneDestino(null)
+    setForm((f) => ({ ...f, ciudad: '' }))
+  }
+
+  // Al elegir municipio se fija el DANE del destino (dispara la cotización).
+  function elegirMunicipio(dane) {
+    const c = municipios.find((m) => m.dane === dane)
+    setDaneDestino(dane || null)
+    setForm((f) => ({ ...f, ciudad: c ? c.ciudad : '' }))
+  }
+
+  // Cotizar el envío cada vez que hay ciudad + carrito (solo para domicilio).
+  // La lógica va dentro de una función async para no llamar setState en el
+  // cuerpo del efecto (igual que CatalogPage).
+  useEffect(() => {
+    let activo = true
+    async function cotizar() {
+      if (envio !== 'domicilio' || !daneDestino || items.length === 0) {
+        setEnvioCotizado(null); setErrorEnvio(''); setCotizando(false)
+        return
+      }
+      setCotizando(true); setErrorEnvio(''); setEnvioCotizado(null)
+      try {
+        const r = await fetch(`${API_URL}/api/envios/cotizar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            carrito: items.map((i) => ({ productoId: i.productoId, cantidad: i.cantidad })),
+            destino: { codigoDane: daneDestino, valorDeclarado: subtotal },
+          }),
+        })
+        const data = await r.json()
+        if (!activo) return
+        if (data.cotizacion) setEnvioCotizado(data.cotizacion)
+        else setErrorEnvio(data.aviso || 'No hay cobertura de envío para esa ciudad.')
+      } catch {
+        if (activo) setErrorEnvio('No se pudo calcular el envío. Intenta de nuevo.')
+      } finally {
+        if (activo) setCotizando(false)
+      }
+    }
+    cotizar()
+    return () => { activo = false }
+  }, [envio, daneDestino, items, subtotal])
+
+  // Costo del envío: gratis si recoge en tienda; si no, lo que cotizó MiPaquete.
+  const costoEnvio = envio === 'tienda' ? 0 : (envioCotizado?.costoTotal ?? null)
+  const total = subtotal + (costoEnvio || 0)
+
+  // Campos mínimos para facturar (Alegra) y cobrar (Wompi). Para domicilio,
+  // además hace falta una ciudad válida y un envío ya cotizado.
   const formularioValido = useMemo(() => {
-    return (
-      form.nombre.trim() && form.apellido.trim() && form.doc.trim() &&
-      form.cel.trim() && /\S+@\S+\.\S+/.test(form.correo) &&
-      (envio === 'tienda' || form.dir.trim()) && acepta
-    )
-  }, [form, envio, acepta])
+    const datos = form.nombre.trim() && form.apellido.trim() && form.doc.trim() &&
+      form.cel.trim() && /\S+@\S+\.\S+/.test(form.correo) && acepta
+    if (!datos) return false
+    if (envio === 'tienda') return true
+    return Boolean(form.dir.trim() && daneDestino && envioCotizado && !cotizando)
+  }, [form, envio, acepta, daneDestino, envioCotizado, cotizando])
 
   // Carrito vacío: no tiene sentido el checkout.
   if (items.length === 0) {
@@ -67,9 +143,10 @@ export default function CheckoutPage() {
     if (!formularioValido) return
     // TODO (etapa 3 — Wompi): llamar a POST /api/pagos/preparar con
     //   { carrito: items.map(i => ({ productoId, nombre, cantidad, precio })),
-    //     cliente: { nombre: `${nombre} ${apellido}`, email: correo, telefono: cel },
-    //     envio: { ciudad, direccion: dir, departamento: depto } }
-    // y redirigir al widget de Wompi con la firma que devuelve.
+    //     cliente: { nombre: `${form.nombre} ${form.apellido}`, email: form.correo, telefono: form.cel },
+    //     envio: { ciudad: form.ciudad, direccion: form.dir, codigoDane: daneDestino, costo: costoEnvio } }
+    // y redirigir al widget de Wompi con la firma que devuelve. El total ya
+    // incluye el envío cotizado (costoEnvio).
     setEnviado(true)
   }
 
@@ -144,19 +221,31 @@ export default function CheckoutPage() {
             {/* ── DIRECCIÓN ── */}
             <div className="bloque">
               <h2>Dirección de entrega</h2>
-              <p className="bloque-sub">Con el departamento y la ciudad calculamos el costo del envío.</p>
+              <p className="bloque-sub">Elige tu ciudad y con ella calculamos el costo real del envío.</p>
 
               <div className="fila">
                 <div className="campo">
                   <label htmlFor="depto">Departamento</label>
-                  <select id="depto" value={form.depto} onChange={set('depto')}>
-                    {DEPARTAMENTOS.map((d) => <option key={d}>{d}</option>)}
+                  <select
+                    id="depto"
+                    value={deptoSel}
+                    onChange={(e) => elegirDepartamento(e.target.value)}
+                    disabled={envio === 'tienda' || ciudades.length === 0}
+                  >
+                    <option value="">{ciudades.length ? 'Elige un departamento…' : 'Cargando…'}</option>
+                    {departamentos.map((d) => <option key={d} value={d}>{d}</option>)}
                   </select>
                 </div>
                 <div className="campo">
-                  <label htmlFor="ciudad">Ciudad</label>
-                  <select id="ciudad" value={form.ciudad} onChange={set('ciudad')}>
-                    {CIUDADES.map((c) => <option key={c}>{c}</option>)}
+                  <label htmlFor="municipio">Municipio</label>
+                  <select
+                    id="municipio"
+                    value={daneDestino || ''}
+                    onChange={(e) => elegirMunicipio(e.target.value)}
+                    disabled={envio === 'tienda' || !deptoSel}
+                  >
+                    <option value="">{deptoSel ? 'Elige un municipio…' : 'Primero el departamento'}</option>
+                    {municipios.map((m) => <option key={m.dane} value={m.dane}>{m.ciudad}</option>)}
                   </select>
                 </div>
               </div>
@@ -186,9 +275,14 @@ export default function CheckoutPage() {
                 <input type="radio" name="envio" checked={envio === 'domicilio'} onChange={() => setEnvio('domicilio')} />
                 <div className="envio-op-txt">
                   <div className="envio-op-nom">Domicilio</div>
-                  <div className="envio-op-desc">Entrega el mismo día en Bogotá si pides antes de las 12:00 p.m. Si no, al día siguiente.</div>
+                  <div className="envio-op-desc">
+                    Lo entrega una transportadora. El costo se calcula según tu ciudad.
+                    {envioCotizado?.transportadora && ` Vía ${envioCotizado.transportadora}.`}
+                  </div>
                 </div>
-                <div className="envio-op-precio">{money(ENVIO_DOMICILIO)}</div>
+                <div className="envio-op-precio">
+                  {envio !== 'domicilio' ? '' : cotizando ? 'Calculando…' : (costoEnvio != null ? money(costoEnvio) : 'Según ciudad')}
+                </div>
               </label>
 
               <label className={`envio-op ${envio === 'tienda' ? 'sel' : ''}`}>
@@ -245,7 +339,21 @@ export default function CheckoutPage() {
             ))}
 
             <div className="res-fila"><span>Subtotal</span><span>{money(subtotal)}</span></div>
-            <div className="res-fila"><span>Envío</span><span>{costoEnvio === 0 ? 'Gratis' : money(costoEnvio)}</span></div>
+            <div className="res-fila">
+              <span>Envío</span>
+              <span>
+                {envio === 'tienda'
+                  ? 'Gratis'
+                  : cotizando
+                    ? 'Calculando…'
+                    : costoEnvio != null
+                      ? money(costoEnvio)
+                      : <span className="res-nota">Elige tu ciudad</span>}
+              </span>
+            </div>
+            {errorEnvio && envio === 'domicilio' && (
+              <div className="res-fila"><span /><span className="res-nota" style={{ color: 'var(--rojo)' }}>{errorEnvio}</span></div>
+            )}
             <div className="res-fila"><span>IVA</span><span>Incluido</span></div>
 
             <div className="res-total">
