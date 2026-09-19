@@ -13,6 +13,7 @@ import ContactoPage from './pages/ContactoPage'
 import FaqPage from './pages/FaqPage'
 import CartPage from './pages/CartPage'
 import CheckoutPage from './pages/CheckoutPage'
+import ConfirmacionPage from './pages/ConfirmacionPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
 import FloatingActions from './components/FloatingActions'
 import ScrollToTop from './ScrollToTop'
@@ -42,6 +43,7 @@ function App() {
             <Route path="/producto/:id" element={<ProductoDetallePage />} />
             <Route path="/carrito" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/confirmacion" element={<ConfirmacionPage />} />
             {/* Cualquier URL desconocida. Antes caía en HomePage, así que
                 un enlace mal escrito mostraba el inicio sin avisar de nada. */}
             <Route path="*" element={<NoEncontradaPage />} />

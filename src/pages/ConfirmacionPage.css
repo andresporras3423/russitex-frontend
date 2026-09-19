@@ -1,0 +1,45 @@
+/* ═══════════════ CONFIRMACIÓN DE PAGO ═══════════════ */
+
+.confirmacion-page {
+  --azul-oficio:  #2C5C7C;
+  --azul-profundo:#1C3D54;
+  --ladrillo:     #A95445;
+  --crema:        #FDFBF7;
+  --crema-osc:    #F1EADC;
+  --tinta:        #3B302A;
+  --gris-calido:  #6E665C;
+  --linea:        #E0D8CB;
+  --verde:        #5B7A52;
+  --rojo:         #9E3B2E;
+  --r-md: 14px; --r-lg: 18px;
+  --sh-md: 0 6px 20px rgba(59,48,42,0.10);
+  --f-head: 'Fraunces', Georgia, serif;
+  --f-body: 'Mulish', system-ui, sans-serif;
+  font-family: var(--f-body);
+  color: var(--tinta);
+}
+
+.cf-wrap { padding: 3.5rem 8% 5rem; background: var(--crema); min-height: 55vh; display: flex; justify-content: center; }
+.cf-card {
+  background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg);
+  box-shadow: var(--sh-md); padding: 3rem 2.5rem; max-width: 520px; width: 100%; text-align: center;
+}
+.cf-icono { font-size: 3.2rem; line-height: 1; margin-bottom: 1.1rem; }
+.cf-ok { filter: none; }
+.cf-titulo { font-family: var(--f-head); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 600; color: var(--tinta); margin-bottom: 0.8rem; }
+.cf-texto { font-size: 0.95rem; color: var(--gris-calido); line-height: 1.7; max-width: 420px; margin: 0 auto; }
+.cf-texto strong { color: var(--tinta); }
+
+.cf-acciones { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; margin-top: 1.8rem; }
+.cf-btn {
+  display: inline-block; padding: 0.85rem 1.6rem; background: var(--azul-oficio); color: #fff;
+  border-radius: var(--r-md); text-decoration: none; font-weight: 700; font-size: 0.9rem;
+}
+.cf-btn:hover { background: var(--azul-profundo); }
+.cf-btn-sec { background: none; color: var(--tinta); border: 1px solid var(--linea); }
+.cf-btn-sec:hover { background: var(--crema-osc); }
+
+@media (max-width: 600px) {
+  .cf-wrap { padding: 2.5rem 6% 3.5rem; }
+  .cf-card { padding: 2.2rem 1.4rem; }
+}

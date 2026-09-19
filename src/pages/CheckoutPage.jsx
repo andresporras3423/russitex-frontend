@@ -18,7 +18,8 @@ export default function CheckoutPage() {
 
   const [envio, setEnvio] = useState('domicilio')     // 'domicilio' | 'tienda'
   const [acepta, setAcepta] = useState(false)
-  const [enviado, setEnviado] = useState(false)       // muestra el aviso "próximamente"
+  const [pagando, setPagando] = useState(false)       // preparando el pago / redirigiendo
+  const [errorPago, setErrorPago] = useState('')
   const [form, setForm] = useState({
     nombre: '', apellido: '', tipodoc: 'C.C.', doc: '', cel: '', correo: '',
     ciudad: '', dir: '', notas: '',
@@ -139,15 +140,47 @@ export default function CheckoutPage() {
     )
   }
 
-  function pagar() {
-    if (!formularioValido) return
-    // TODO (etapa 3 — Wompi): llamar a POST /api/pagos/preparar con
-    //   { carrito: items.map(i => ({ productoId, nombre, cantidad, precio })),
-    //     cliente: { nombre: `${form.nombre} ${form.apellido}`, email: form.correo, telefono: form.cel },
-    //     envio: { ciudad: form.ciudad, direccion: form.dir, codigoDane: daneDestino, costo: costoEnvio } }
-    // y redirigir al widget de Wompi con la firma que devuelve. El total ya
-    // incluye el envío cotizado (costoEnvio).
-    setEnviado(true)
+  // Prepara el pago en el backend y redirige al checkout web de Wompi.
+  async function pagar() {
+    if (!formularioValido || pagando) return
+    setPagando(true); setErrorPago('')
+    try {
+      const res = await fetch(`${API_URL}/api/pagos/preparar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          carrito: items.map((i) => ({ productoId: i.productoId, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio })),
+          cliente: { nombre: `${form.nombre} ${form.apellido}`.trim(), email: form.correo, telefono: form.cel },
+          envio: {
+            ciudad: form.ciudad, direccion: form.dir, departamento: deptoSel,
+            codigoDane: daneDestino, costo: costoEnvio || 0, transportadora: envioCotizado?.transportadora || null,
+          },
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'No se pudo preparar el pago.')
+
+      // Guardamos la referencia para leer el estado al volver de Wompi.
+      try { localStorage.setItem('russitex_ultima_ref', data.referencia) } catch { /* sin persistencia, no pasa nada */ }
+
+      // Checkout web de Wompi. Se arma la query a mano para no encodear los
+      // dos puntos de "signature:integrity" y "customer-data:...".
+      const p = [
+        `public-key=${encodeURIComponent(data.publicKey)}`,
+        `currency=${data.moneda}`,
+        `amount-in-cents=${data.montoCentavos}`,
+        `reference=${encodeURIComponent(data.referencia)}`,
+        `signature:integrity=${data.firma}`,
+        `redirect-url=${encodeURIComponent(data.redirectUrl)}`,
+        `customer-data:email=${encodeURIComponent(data.email || '')}`,
+        `customer-data:full-name=${encodeURIComponent(data.nombre || '')}`,
+        `customer-data:phone-number=${encodeURIComponent(data.telefono || '')}`,
+      ].join('&')
+      window.location.href = `https://checkout.wompi.co/p/?${p}`
+    } catch (e) {
+      setErrorPago(e.message)
+      setPagando(false)
+    }
   }
 
   return (
@@ -361,20 +394,12 @@ export default function CheckoutPage() {
               <span className="res-total-valor">{money(total)}</span>
             </div>
 
-            {enviado ? (
-              <div className="co-proximamente">
-                💳 El pago con Wompi estará disponible muy pronto. Tus datos y tu pedido quedaron listos;
-                por ahora puedes finalizar la compra escribiéndonos por WhatsApp.
-              </div>
-            ) : (
-              <>
-                <button className="btn-pagar" type="button" onClick={pagar} disabled={!formularioValido}>
-                  Pagar con Wompi
-                </button>
-                {!formularioValido && (
-                  <p className="co-nota-form">Completa tus datos, la dirección y acepta los términos para continuar.</p>
-                )}
-              </>
+            <button className="btn-pagar" type="button" onClick={pagar} disabled={!formularioValido || pagando}>
+              {pagando ? 'Redirigiendo a Wompi…' : 'Pagar con Wompi'}
+            </button>
+            {errorPago && <p className="co-nota-form" style={{ color: 'var(--rojo)' }}>{errorPago}</p>}
+            {!formularioValido && !errorPago && (
+              <p className="co-nota-form">Completa tus datos, la dirección y acepta los términos para continuar.</p>
             )}
             <button className="btn-volver" type="button" onClick={() => navigate('/carrito')}>Volver al carrito</button>
 
