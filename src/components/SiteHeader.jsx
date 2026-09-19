@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import { useCart } from '../context/useCart'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
 import { useProductos } from '../hooks/useProductos'
 import {
@@ -43,6 +44,7 @@ function getPrimerNombre(user) {
 export default function SiteHeader({ activeLink }) {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
+  const { totalArticulos } = useCart()
   const tienda = useTiendaInfo()
   const productos = useProductos()
 
@@ -221,9 +223,9 @@ export default function SiteHeader({ activeLink }) {
                 )}
               </div>
             </div>
-            <button className="icon-btn cart-btn" title="Carrito">
+            <button className="icon-btn cart-btn" title="Carrito" aria-label="Ver carrito" onClick={() => navigate('/carrito')}>
               <svg width="17" height="17" fill="none" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" strokeWidth="2" /><path d="M16 10a4 4 0 01-8 0" stroke="currentColor" strokeWidth="2" /></svg>
-              <span className="cart-badge">0</span>
+              {totalArticulos > 0 && <span className="cart-badge">{totalArticulos}</span>}
             </button>
           </div>
         </div>

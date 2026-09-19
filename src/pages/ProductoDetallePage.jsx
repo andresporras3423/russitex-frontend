@@ -5,6 +5,7 @@ import SiteFooter from '../components/SiteFooter'
 import { useProductos } from '../hooks/useProductos'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
 import { useAuth } from '../context/useAuth'
+import { useCart } from '../context/useCart'
 import {
   ICON_CARRITO, ICON_CAJA, ICON_REGLA, ICON_PALETA, ICON_ENVIO,
   ICON_CUIDADOS, ICON_INFO, ICON_FLECHA_DER,
@@ -46,6 +47,7 @@ function FichaProducto({ id }) {
   const productos = useProductos()
   const tienda = useTiendaInfo()
   const { user } = useAuth()
+  const { agregar } = useCart()
   const waLink = tienda.whatsapp_link || WA_POR_DEFECTO
 
   const producto = useMemo(() => productos.find((p) => String(p.id) === String(id)), [productos, id])
@@ -159,11 +161,25 @@ function FichaProducto({ id }) {
     .sort((a, b) => (a.categoria === producto.categoria ? -1 : 0) - (b.categoria === producto.categoria ? -1 : 0))
     .slice(0, 5)
 
-  // El carrito todavía no existe. Cuando exista, acá va la llamada real;
-  // por ahora validamos la variante y confirmamos en pantalla, que es lo
-  // que hacía el mockup.
+  // Agrega al carrito global y confirma en pantalla. Exige elegir variante si
+  // el producto tiene, y usa la foto que se está viendo (la de la variante) como
+  // miniatura de la línea.
   function agregarAlCarrito() {
     if (tieneVariantes && !variante) { setAvisoVariante(true); return }
+    agregar(
+      {
+        id: producto.id,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        unidad: producto.unidad,
+        imagen: imagenPrincipal || producto.imagen,
+        categoria: producto.categoria,
+      },
+      cantidad,
+      varianteElegida
+        ? { id: varianteElegida.id, nombre: varianteElegida.nombre, hex: varianteElegida.hex }
+        : null
+    )
     const detalle = `${cantidad} ${unidadContable(producto.unidad)}${variante ? ` — ${variante}` : ''}`
     setAgregado(detalle)
   }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
+import { useCart } from '../context/useCart'
 import './CatalogPage.css'
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -36,6 +37,8 @@ const money = (n) => `$${n.toLocaleString('es-CO')}`
 
 export default function CatalogPage() {
   const navigate = useNavigate()
+  const { agregar } = useCart()
+  const [agregado, setAgregado] = useState(null)   // id del producto recién agregado, para el "✓"
   const [searchParams, setSearchParams] = useSearchParams()
   const activeCat = searchParams.get('cat') || 'todos'
 
@@ -69,6 +72,10 @@ export default function CatalogPage() {
             unit: p.unidad,
             price: p.precio,
             img: p.imagen || IMAGEN_POR_DEFECTO,
+            // Se guardan para decidir el botón "Agregar": si tiene variantes hay
+            // que elegir una en el detalle; si está agotado no se puede agregar.
+            disponible: p.disponible !== false,
+            tieneVariantes: (p.variantes || []).length > 0,
           }))
         )
       } catch (e) {
@@ -239,7 +246,27 @@ export default function CatalogPage() {
                   <div className="prod-unit">{p.unit}</div>
                   <div className="prod-price">{money(p.price)}</div>
                   <div className="prod-actions">
-                    <button className="btn-add">Agregar</button>
+                    {!p.disponible ? (
+                      <button className="btn-add" disabled>Agotado</button>
+                    ) : p.tieneVariantes ? (
+                      // Con variantes hay que elegir una: se manda al detalle.
+                      <button className="btn-add" onClick={() => navigate(`/producto/${p.id}`)}>Elegir opción</button>
+                    ) : (
+                      <button
+                        className="btn-add"
+                        onClick={() => {
+                          agregar(
+                            { id: p.id, nombre: p.name, precio: p.price, unidad: p.unit, imagen: p.img, categoria: p.cat },
+                            1,
+                            null
+                          )
+                          setAgregado(p.id)
+                          setTimeout(() => setAgregado((a) => (a === p.id ? null : a)), 1500)
+                        }}
+                      >
+                        {agregado === p.id ? 'Agregado ✓' : 'Agregar'}
+                      </button>
+                    )}
                     <button className="btn-consultar" onClick={() => navigate(`/producto/${p.id}`)}>Consultar</button>
                   </div>
                 </div>

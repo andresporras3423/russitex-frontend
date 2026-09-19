@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ChatProvider } from './context/ChatContext'
+import { CartProvider } from './context/CartContext'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import AsesoriaPage from './pages/AsesoriaPage'
@@ -10,6 +11,8 @@ import ProductoDetallePage from './pages/ProductoDetallePage'
 import NuevaContrasenaPage from './pages/NuevaContrasenaPage'
 import ContactoPage from './pages/ContactoPage'
 import FaqPage from './pages/FaqPage'
+import CartPage from './pages/CartPage'
+import CheckoutPage from './pages/CheckoutPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
 import FloatingActions from './components/FloatingActions'
 import ScrollToTop from './ScrollToTop'
@@ -21,6 +24,7 @@ function App() {
         {/* Envuelve a las páginas y a FloatingActions, para que cualquiera
             pueda abrir el chat aunque el panel lo pinte el componente. */}
         <ChatProvider>
+         <CartProvider>
           <ScrollToTop />
           <Routes>
             {/* El inicio necesita su propia ruta. Antes no la tenía: caía en
@@ -36,6 +40,8 @@ function App() {
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/preguntas-frecuentes" element={<FaqPage />} />
             <Route path="/producto/:id" element={<ProductoDetallePage />} />
+            <Route path="/carrito" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
             {/* Cualquier URL desconocida. Antes caía en HomePage, así que
                 un enlace mal escrito mostraba el inicio sin avisar de nada. */}
             <Route path="*" element={<NoEncontradaPage />} />
@@ -44,6 +50,7 @@ function App() {
               botones salen en todas las páginas y el chat no pierde la
               conversación al navegar. */}
           <FloatingActions />
+         </CartProvider>
         </ChatProvider>
       </AuthProvider>
     </BrowserRouter>
