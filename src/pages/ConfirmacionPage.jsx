@@ -11,7 +11,7 @@ const money = (n) => `$${Number(n).toLocaleString('es-CO')}`
 export default function ConfirmacionPage() {
   const { vaciar } = useCart()
   const [cargando, setCargando] = useState(true)
-  const [pedido, setPedido] = useState(null)   // { referencia, estado, total, cliente }
+  const [pedido, setPedido] = useState(null)   // { referencia, estado, total, cliente, modalidad }
   const [sinRef, setSinRef] = useState(false)
 
   useEffect(() => {
@@ -85,7 +85,9 @@ export default function ConfirmacionPage() {
             <>
               <div className="cf-icono cf-ok">✅</div>
               <h1 className="cf-titulo">¡Pago aprobado!</h1>
-              <p className="cf-texto">Tu pedido <strong>{pedido.referencia}</strong> quedó confirmado{pedido.total ? ` por ${money(pedido.total)}` : ''}. Te enviaremos la guía del envío a tu correo.</p>
+              <p className="cf-texto">Tu pedido <strong>{pedido.referencia}</strong> quedó confirmado{pedido.total ? ` por ${money(pedido.total)}` : ''}. {pedido.modalidad === 'tienda'
+                ? 'Te enviamos el resumen a tu correo y te avisaremos cuando esté listo para recogerlo en la tienda.'
+                : 'Te enviamos el resumen a tu correo y por ahí te avisaremos cómo va tu envío.'}</p>
             </>
           ) : estado === 'PENDIENTE' ? (
             <>
