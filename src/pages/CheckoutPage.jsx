@@ -107,7 +107,8 @@ export default function CheckoutPage() {
     return () => { activo = false }
   }, [envio, daneDestino, items, subtotal])
 
-  // Costo del envío: gratis si recoge en tienda; si no, lo que cotizó MiPaquete.
+  // Costo del envío: gratis si recoge en tienda; si no, lo que cotizó Envia.
+  // (Es solo para mostrarlo: el backend lo vuelve a cotizar al preparar el pago.)
   const costoEnvio = envio === 'tienda' ? 0 : (envioCotizado?.costoTotal ?? null)
   const total = subtotal + (costoEnvio || 0)
 
@@ -150,8 +151,9 @@ export default function CheckoutPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           carrito: items.map((i) => ({ productoId: i.productoId, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio })),
-          cliente: { nombre: `${form.nombre} ${form.apellido}`.trim(), email: form.correo, telefono: form.cel },
+          cliente: { nombre: `${form.nombre} ${form.apellido}`.trim(), email: form.correo, telefono: form.cel, documento: form.doc },
           envio: {
+            modalidad: envio,
             ciudad: form.ciudad, direccion: form.dir, departamento: deptoSel,
             codigoDane: daneDestino, costo: costoEnvio || 0, transportadora: envioCotizado?.transportadora || null,
           },
