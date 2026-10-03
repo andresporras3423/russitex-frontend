@@ -110,6 +110,9 @@ export default function CheckoutPage() {
   // Costo del envío: gratis si recoge en tienda; si no, lo que cotizó Envia.
   // (Es solo para mostrarlo: el backend lo vuelve a cotizar al preparar el pago.)
   const costoEnvio = envio === 'tienda' ? 0 : (envioCotizado?.costoTotal ?? null)
+  // El backend marca envioGratis cuando el subtotal llega al umbral de la tienda.
+  const envioGratis = envio === 'domicilio' && Boolean(envioCotizado?.envioGratis)
+  const textoEnvio = (valor) => (valor === 0 ? 'Gratis' : money(valor))
   const total = subtotal + (costoEnvio || 0)
 
   // Campos mínimos para facturar (Alegra) y cobrar (Wompi). Para domicilio,
@@ -150,7 +153,10 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          carrito: items.map((i) => ({ productoId: i.productoId, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio })),
+          carrito: items.map((i) => ({
+            productoId: i.productoId, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio,
+            variante: i.variante?.nombre || null,   // p. ej. el color: hace falta para despachar
+          })),
           cliente: { nombre: `${form.nombre} ${form.apellido}`.trim(), email: form.correo, telefono: form.cel, documento: form.doc },
           envio: {
             modalidad: envio,
@@ -164,6 +170,24 @@ export default function CheckoutPage() {
 
       // Guardamos la referencia para leer el estado al volver de Wompi.
       try { localStorage.setItem('russitex_ultima_ref', data.referencia) } catch { /* sin persistencia, no pasa nada */ }
+
+      // Datos para la página de confirmación que el backend no devuelve a
+      // propósito (contacto y dirección: no se exponen por una URL) y fotos
+      // de los productos. sessionStorage: solo esta pestaña, se borra al
+      // cerrar el navegador. Wompi vuelve a esta misma pestaña.
+      try {
+        sessionStorage.setItem('russitex_ultimo_checkout', JSON.stringify({
+          referencia: data.referencia,
+          contacto: {
+            nombre: `${form.nombre} ${form.apellido}`.trim(), telefono: form.cel, correo: form.correo,
+            direccion: envio === 'domicilio' ? form.dir : '', ciudad: form.ciudad, departamento: deptoSel,
+          },
+          items: items.map((i) => ({
+            productoId: i.productoId, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio,
+            variante: i.variante?.nombre || null, unidad: i.unidad || '', imagen: i.imagen || null,
+          })),
+        }))
+      } catch { /* sin storage: la confirmación muestra lo que dé el backend */ }
 
       // Checkout web de Wompi. Se arma la query a mano para no encodear los
       // dos puntos de "signature:integrity" y "customer-data:...".
@@ -311,12 +335,14 @@ export default function CheckoutPage() {
                 <div className="envio-op-txt">
                   <div className="envio-op-nom">Domicilio</div>
                   <div className="envio-op-desc">
-                    Lo entrega una transportadora. El costo se calcula según tu ciudad.
+                    {envioGratis
+                      ? 'Tu compra tiene envío gratis a toda Colombia.'
+                      : 'Lo entrega una transportadora. El costo se calcula según tu ciudad.'}
                     {envioCotizado?.transportadora && ` Vía ${envioCotizado.transportadora}.`}
                   </div>
                 </div>
-                <div className="envio-op-precio">
-                  {envio !== 'domicilio' ? '' : cotizando ? 'Calculando…' : (costoEnvio != null ? money(costoEnvio) : 'Según ciudad')}
+                <div className={`envio-op-precio ${envioGratis ? 'gratis' : ''}`}>
+                  {envio !== 'domicilio' ? '' : cotizando ? 'Calculando…' : (costoEnvio != null ? textoEnvio(costoEnvio) : 'Según ciudad')}
                 </div>
               </label>
 
@@ -382,7 +408,7 @@ export default function CheckoutPage() {
                   : cotizando
                     ? 'Calculando…'
                     : costoEnvio != null
-                      ? money(costoEnvio)
+                      ? textoEnvio(costoEnvio)
                       : <span className="res-nota">Elige tu ciudad</span>}
               </span>
             </div>
