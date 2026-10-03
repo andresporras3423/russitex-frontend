@@ -7,6 +7,18 @@ import EyeIcon from '../components/EyeIcon'
 import { calcularFortaleza } from '../lib/password'
 import './LoginPage.css'
 
+// A dónde ir después de entrar: la página que mandó al login (la guarda,
+// p. ej., Mi cuenta en sessionStorage) o el inicio. Se lee una sola vez.
+function destinoTrasLogin() {
+  try {
+    const destino = sessionStorage.getItem('russitex_tras_login')
+    sessionStorage.removeItem('russitex_tras_login')
+    // Solo rutas internas, para no redirigir a otro sitio.
+    if (destino && destino.startsWith('/') && !destino.startsWith('//')) return destino
+  } catch { /* sin storage */ }
+  return '/'
+}
+
 export default function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -32,8 +44,9 @@ export default function LoginPage() {
 
   // Tras un login social (Google/Facebook), Supabase redirige de vuelta a /login
   // con el token en la URL. En cuanto el usuario quede disponible, lo mandamos al inicio.
+  // (o a la página que pidió el login, p. ej. Mi cuenta).
   useEffect(() => {
-    if (user) navigate('/')
+    if (user) navigate(destinoTrasLogin(), { replace: true })
   }, [user, navigate])
 
   async function handleLogin(e) {
@@ -42,7 +55,7 @@ export default function LoginPage() {
     setBusy(true)
     try {
       await login(loginEmail, loginPwd)
-      navigate('/')
+      navigate(destinoTrasLogin(), { replace: true })
     } catch (err) {
       setFeedback({ type: 'error', text: err.message })
     } finally {

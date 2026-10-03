@@ -14,6 +14,7 @@ import FaqPage from './pages/FaqPage'
 import CartPage from './pages/CartPage'
 import CheckoutPage from './pages/CheckoutPage'
 import ConfirmacionPage from './pages/ConfirmacionPage'
+import MiCuentaPage from './pages/MiCuentaPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
 import FloatingActions from './components/FloatingActions'
 import ScrollToTop from './ScrollToTop'
@@ -44,6 +45,8 @@ function App() {
             <Route path="/carrito" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/confirmacion" element={<ConfirmacionPage />} />
+            {/* Una sola ruta: Resumen, Mis pedidos y el detalle comparten la carga de pedidos. */}
+            <Route path="/mi-cuenta/*" element={<MiCuentaPage />} />
             {/* Cualquier URL desconocida. Antes caía en HomePage, así que
                 un enlace mal escrito mostraba el inicio sin avisar de nada. */}
             <Route path="*" element={<NoEncontradaPage />} />
