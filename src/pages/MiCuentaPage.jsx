@@ -62,6 +62,34 @@ const IcoCaja = () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.
 const IcoMoneda = () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,22A10,10,0,1,1,22,12,10.011,10.011,0,0,1,12,22Z" /><path d="M12,5a1,1,0,0,0-1,1v6a1,1,0,0,0,.293.707l3,3a1,1,0,0,0,1.414-1.414L13,11.586V6A1,1,0,0,0,12,5Z" /></svg>
 const IcoCamion = () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19,5H17V4a3,3,0,0,0-3-3H3A3,3,0,0,0,0,4V19H2.041A3.465,3.465,0,0,0,2,19.5a3.5,3.5,0,0,0,7,0,3.465,3.465,0,0,0-.041-.5h6.082a3.465,3.465,0,0,0-.041.5,3.5,3.5,0,0,0,7,0,3.465,3.465,0,0,0-.041-.5H24V10A5.006,5.006,0,0,0,19,5Zm0,2a3,3,0,0,1,3,3v1H17V7ZM7,19.5a1.5,1.5,0,0,1-3,0,1.418,1.418,0,0,1,.093-.5H6.907A1.418,1.418,0,0,1,7,19.5ZM15,17H2V4A1,1,0,0,1,3,3H14a1,1,0,0,1,1,1Zm5,2.5a1.5,1.5,0,0,1-3,0,1.41,1.41,0,0,1,.093-.5h2.814A1.41,1.41,0,0,1,20,19.5ZM22,17H17V13h5Z" /></svg>
 
+const IcoDireccion = () => <svg className="si-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12,6a4,4,0,1,0,4,4A4,4,0,0,0,12,6Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,12Z" /><path d="M12,24a5.271,5.271,0,0,1-4.311-2.2c-3.811-5.257-5.744-9.209-5.744-11.747a10.055,10.055,0,0,1,20.11,0c0,2.538-1.933,6.49-5.744,11.747A5.271,5.271,0,0,1,12,24ZM12,2.181a7.883,7.883,0,0,0-7.874,7.874c0,2.01,1.893,5.727,5.329,10.466a3.145,3.145,0,0,0,5.09,0c3.436-4.739,5.329-8.456,5.329-10.466A7.883,7.883,0,0,0,12,2.181Z" /></svg>
+const IcoUsuario = () => <svg className="si-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12,12A6,6,0,1,0,6,6,6.006,6.006,0,0,0,12,12ZM12,2A4,4,0,1,1,8,6,4,4,0,0,1,12,2Z" /><path d="M12,14a9.01,9.01,0,0,0-9,9,1,1,0,0,0,2,0,7,7,0,0,1,14,0,1,1,0,0,0,2,0A9.01,9.01,0,0,0,12,14Z" /></svg>
+
+// Llamada autenticada al backend. Devuelve { ok, status, datos }.
+async function api(token, ruta, { method = 'GET', body } = {}) {
+  try {
+    const r = await fetch(`${API_URL}${ruta}`, {
+      method,
+      headers: { Authorization: `Bearer ${token}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
+      body: body ? JSON.stringify(body) : undefined,
+    })
+    return { ok: r.ok, status: r.status, datos: await r.json().catch(() => ({})) }
+  } catch {
+    return { ok: false, status: 0, datos: { error: 'No hay conexión con el servidor. Intenta de nuevo.' } }
+  }
+}
+
+// Municipios con código DANE (la misma lista del checkout), una sola vez.
+let promesaCiudades = null
+function cargarCiudades() {
+  if (!promesaCiudades) {
+    promesaCiudades = fetch(`${API_URL}/api/envios/ciudades`)
+      .then((r) => r.json()).then((d) => d.ciudades || [])
+      .catch(() => { promesaCiudades = null; return [] })
+  }
+  return promesaCiudades
+}
+
 // Pide los pedidos de la cuenta. Devuelve { pedidos, error?, noVerificado?, sesionVencida? }.
 async function pedirPedidos(token) {
   try {
@@ -119,7 +147,10 @@ export default function MiCuentaPage() {
 
   const vista = confirmarSalida ? 'salir'
     : referencia ? 'pedido'
-      : resto.startsWith('pedidos') ? 'pedidos' : 'resumen'
+      : resto.startsWith('pedidos') ? 'pedidos'
+        : resto === 'direcciones' ? 'direcciones'
+          : resto === 'detalles' ? 'detalles' : 'resumen'
+  const TITULO = { direcciones: 'Mis direcciones', detalles: 'Detalles de la cuenta' }
   const ir = (ruta) => { setConfirmarSalida(false); navigate(ruta); window.scrollTo(0, 0) }
 
   // Foto y unidad de cada producto, del catálogo.
@@ -132,7 +163,8 @@ export default function MiCuentaPage() {
         <div className="breadcrumb">
           <Link to="/">Inicio</Link><span className="sep">/</span>
           {vista === 'resumen' ? <span className="current">Mi cuenta</span> : <Link to="/mi-cuenta">Mi cuenta</Link>}
-          {vista !== 'resumen' && vista !== 'salir' && <><span className="sep">/</span>
+          {TITULO[vista] && <><span className="sep">/</span><span className="current">{TITULO[vista]}</span></>}
+          {(vista === 'pedidos' || vista === 'pedido') && <><span className="sep">/</span>
             {vista === 'pedidos' ? <span className="current">Mis pedidos</span> : <Link to="/mi-cuenta/pedidos">Mis pedidos</Link>}</>}
           {vista === 'pedido' && <><span className="sep">/</span><span className="current">#{referencia}</span></>}
         </div>
@@ -150,6 +182,8 @@ export default function MiCuentaPage() {
           <nav className="sidebar-nav">
             <button className={`sidebar-item ${vista === 'resumen' ? 'active' : ''}`} onClick={() => ir('/mi-cuenta')}><IcoResumen /> Resumen</button>
             <button className={`sidebar-item ${vista === 'pedidos' || vista === 'pedido' ? 'active' : ''}`} onClick={() => ir('/mi-cuenta/pedidos')}><IcoPedidos /> Mis pedidos</button>
+            <button className={`sidebar-item ${vista === 'direcciones' ? 'active' : ''}`} onClick={() => ir('/mi-cuenta/direcciones')}><IcoDireccion /> Mis direcciones</button>
+            <button className={`sidebar-item ${vista === 'detalles' ? 'active' : ''}`} onClick={() => ir('/mi-cuenta/detalles')}><IcoUsuario /> Detalles de la cuenta</button>
             <button className={`sidebar-item logout ${vista === 'salir' ? 'active' : ''}`} onClick={() => setConfirmarSalida(true)}><IcoSalir /> Cerrar sesión</button>
           </nav>
         </aside>
@@ -157,6 +191,10 @@ export default function MiCuentaPage() {
         <div className="cuenta-content">
           {vista === 'salir' ? (
             <Salir onConfirmar={async () => { await logout(); navigate('/') }} onCancelar={() => setConfirmarSalida(false)} />
+          ) : vista === 'direcciones' ? (
+            token && <Direcciones token={token} />
+          ) : vista === 'detalles' ? (
+            token && <Detalles token={token} />
           ) : loading || pedidos === null ? (
             <p className="cargando">Cargando tus pedidos…</p>
           ) : noVerificado ? (
@@ -331,6 +369,334 @@ function DetallePedido({ pedido, porId, onVolver }) {
         <div className={`pd-chip ${e.color}`}><span className="dot" />{chip} · Wompi</div>
       </div>
     </>
+  )
+}
+
+// ── Ventana genérica (overlay + caja), cierra con Escape o clic afuera ──
+function Modal({ titulo, onCerrar, children, pie }) {
+  useEffect(() => {
+    const alTeclear = (e) => { if (e.key === 'Escape') onCerrar() }
+    document.addEventListener('keydown', alTeclear)
+    return () => document.removeEventListener('keydown', alTeclear)
+  }, [onCerrar])
+  return (
+    <div className="modal-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onCerrar() }}>
+      <div className="modal-box" role="dialog" aria-modal="true" aria-label={titulo}>
+        <div className="modal-header">
+          <h3 className="modal-title">{titulo}</h3>
+          <button className="modal-close" onClick={onCerrar} aria-label="Cerrar">✕</button>
+        </div>
+        <div className="modal-body">{children}</div>
+        <div className="modal-footer">{pie}</div>
+      </div>
+    </div>
+  )
+}
+
+// ── Mis direcciones ──
+function Direcciones({ token }) {
+  const [direcciones, setDirecciones] = useState(null)
+  const [error, setError] = useState('')
+  const [editando, setEditando] = useState(null)   // null | 'nueva' | dirección
+  const [borrando, setBorrando] = useState(null)
+  const [ocupado, setOcupado] = useState(false)
+
+  useEffect(() => {
+    let activo = true
+    api(token, '/api/cuenta/direcciones').then((r) => {
+      if (!activo) return
+      if (r.ok) setDirecciones(r.datos.direcciones)
+      else { setError(r.datos.error || 'No se pudieron cargar tus direcciones.'); setDirecciones([]) }
+    })
+    return () => { activo = false }
+  }, [token])
+
+  // Las acciones devuelven la lista actualizada.
+  async function accion(ruta, opciones) {
+    setOcupado(true)
+    const r = await api(token, ruta, opciones)
+    setOcupado(false)
+    if (r.ok) { setDirecciones(r.datos.direcciones); setError('') }
+    return r
+  }
+
+  async function eliminar() {
+    const r = await accion(`/api/cuenta/direcciones/${borrando.id}`, { method: 'DELETE' })
+    if (!r.ok) setError(r.datos.error || 'No se pudo eliminar la dirección.')
+    setBorrando(null)
+  }
+
+  return (
+    <>
+      <h1 className="sec-title">Mis direcciones</h1>
+      <p className="sec-sub">Guarda tus direcciones de envío y elígelas en el checkout sin volver a escribirlas.</p>
+      {error && <div className="form-error" style={{ marginBottom: '1rem' }}>{error}</div>}
+      {direcciones === null ? <p className="cargando">Cargando tus direcciones…</p> : (
+        <div className="dirs-grid">
+          {direcciones.map((d) => (
+            <div className={`dir-card ${d.principal ? 'principal' : ''}`} key={d.id}>
+              {d.principal && <span className="dir-badge">Principal</span>}
+              <div className="dir-name">{d.destinatario}</div>
+              <div className="dir-addr">
+                {d.direccion}{d.indicaciones && <><br />{d.indicaciones}</>}<br />{lugar(d.ciudad, d.departamento)}
+              </div>
+              <div className="dir-btns">
+                <button className="btn-dir" onClick={() => setEditando(d)}>Editar</button>
+                {!d.principal && <button className="btn-dir" disabled={ocupado} onClick={() => accion(`/api/cuenta/direcciones/${d.id}/principal`, { method: 'POST' })}>Usar como principal</button>}
+                <button className="btn-dir del" onClick={() => setBorrando(d)}>Eliminar</button>
+              </div>
+            </div>
+          ))}
+          {direcciones.length < 10 && (
+            <button className="dir-add" onClick={() => setEditando('nueva')}>
+              <div className="dir-add-plus">＋</div>
+              <div className="dir-add-label">Agregar nueva dirección</div>
+            </button>
+          )}
+        </div>
+      )}
+
+      {editando && (
+        <DireccionModal
+          inicial={editando === 'nueva' ? null : editando}
+          onCerrar={() => setEditando(null)}
+          onGuardar={async (datos) => {
+            const r = editando === 'nueva'
+              ? await accion('/api/cuenta/direcciones', { method: 'POST', body: datos })
+              : await accion(`/api/cuenta/direcciones/${editando.id}`, { method: 'PUT', body: datos })
+            if (r.ok) setEditando(null)
+            return r.ok ? null : (r.datos.error || 'No se pudo guardar la dirección.')
+          }}
+        />
+      )}
+
+      {borrando && (
+        <Modal titulo="Eliminar dirección" onCerrar={() => setBorrando(null)}
+          pie={<>
+            <button className="modal-btn-cancel" onClick={() => setBorrando(null)}>Cancelar</button>
+            <button className="modal-btn-save del" disabled={ocupado} onClick={eliminar}>Sí, eliminar</button>
+          </>}>
+          <p>¿Seguro que quieres eliminar la dirección de <strong>{borrando.destinatario}</strong> ({borrando.direccion})? Esta acción no se puede deshacer.</p>
+        </Modal>
+      )}
+    </>
+  )
+}
+
+function DireccionModal({ inicial, onCerrar, onGuardar }) {
+  const [ciudades, setCiudades] = useState([])
+  const [f, setF] = useState({
+    destinatario: inicial?.destinatario || '',
+    direccion: inicial?.direccion || '',
+    indicaciones: inicial?.indicaciones || '',
+    departamento: inicial?.departamento || '',
+    codigoDane: inicial?.codigoDane || '',
+  })
+  const [error, setError] = useState('')
+  const [guardando, setGuardando] = useState(false)
+
+  useEffect(() => {
+    let activo = true
+    cargarCiudades().then((c) => { if (activo) setCiudades(c) })
+    return () => { activo = false }
+  }, [])
+
+  const departamentos = [...new Set(ciudades.map((c) => c.departamento))].sort((a, b) => a.localeCompare(b, 'es'))
+  const municipiosDepto = ciudades.filter((c) => c.departamento === f.departamento).sort((a, b) => a.ciudad.localeCompare(b.ciudad, 'es'))
+  const set = (campo) => (e) => setF((x) => ({ ...x, [campo]: e.target.value }))
+
+  async function guardar() {
+    setError('')
+    if (f.destinatario.trim().length < 2) return setError('Escribe el nombre de quien recibe.')
+    if (f.direccion.trim().length < 5) return setError('Escribe la dirección completa.')
+    if (!f.codigoDane) return setError('Elige el departamento y el municipio.')
+    setGuardando(true)
+    const msg = await onGuardar({ destinatario: f.destinatario, direccion: f.direccion, indicaciones: f.indicaciones, codigoDane: f.codigoDane })
+    setGuardando(false)
+    if (msg) setError(msg)
+  }
+
+  return (
+    <Modal titulo={inicial ? 'Editar dirección' : 'Agregar nueva dirección'} onCerrar={onCerrar}
+      pie={<>
+        <button className="modal-btn-cancel" onClick={onCerrar}>Cancelar</button>
+        <button className="modal-btn-save" disabled={guardando} onClick={guardar}>{guardando ? 'Guardando…' : inicial ? 'Guardar cambios' : 'Agregar dirección'}</button>
+      </>}>
+      <div className="fg"><label className="fl" htmlFor="d-dest">Nombre del destinatario</label>
+        <input id="d-dest" className="fi" placeholder="Nombre completo" value={f.destinatario} onChange={set('destinatario')} maxLength={120} /></div>
+      <div className="fg"><label className="fl" htmlFor="d-depto">Departamento</label>
+        <select id="d-depto" className="fi" value={f.departamento} disabled={!ciudades.length}
+          onChange={(e) => setF((x) => ({ ...x, departamento: e.target.value, codigoDane: '' }))}>
+          <option value="">{ciudades.length ? 'Elige un departamento…' : 'Cargando…'}</option>
+          {departamentos.map((d) => <option key={d} value={d}>{nombreCiudad(d)}</option>)}
+        </select></div>
+      <div className="fg"><label className="fl" htmlFor="d-mun">Municipio</label>
+        <select id="d-mun" className="fi" value={f.codigoDane} disabled={!f.departamento} onChange={set('codigoDane')}>
+          <option value="">{f.departamento ? 'Elige el municipio…' : 'Elige primero el departamento'}</option>
+          {municipiosDepto.map((m) => <option key={m.dane} value={m.dane}>{nombreCiudad(m.ciudad)}</option>)}
+        </select></div>
+      <div className="fg"><label className="fl" htmlFor="d-dir">Dirección</label>
+        <input id="d-dir" className="fi" placeholder="Calle, número, apartamento" value={f.direccion} onChange={set('direccion')} maxLength={200} /></div>
+      <div className="fg"><label className="fl" htmlFor="d-ind">Indicaciones adicionales <span>(opcional)</span></label>
+        <input id="d-ind" className="fi" placeholder="Ej: torre B, timbre 3" value={f.indicaciones} onChange={set('indicaciones')} maxLength={200} /></div>
+      {error && <div className="form-error">{error}</div>}
+    </Modal>
+  )
+}
+
+// ── Detalles de la cuenta ──
+const TIPOS_DOC = { CC: 'Cédula de ciudadanía', CE: 'Cédula de extranjería', NIT: 'NIT', TI: 'Tarjeta de identidad', PP: 'Pasaporte' }
+const PROVEEDOR = { google: 'Google', facebook: 'Facebook' }
+
+function Detalles({ token }) {
+  const { refrescarPerfil } = useAuth()
+  const [perfil, setPerfil] = useState(null)
+  const [error, setError] = useState('')
+  const [aviso, setAviso] = useState('')
+  const [ventana, setVentana] = useState(null)   // null | 'info' | 'pwd'
+
+  useEffect(() => {
+    let activo = true
+    api(token, '/api/cuenta/perfil').then((r) => {
+      if (!activo) return
+      if (r.ok) setPerfil(r.datos)
+      else setError(r.datos.error || 'No se pudo cargar tu información.')
+    })
+    return () => { activo = false }
+  }, [token])
+
+  if (error) return <div className="empty-state"><h3>Algo salió mal</h3><p>{error}</p></div>
+  if (!perfil) return <p className="cargando">Cargando tu información…</p>
+
+  const social = perfil.proveedores.filter((p) => p !== 'email').map((p) => PROVEEDOR[p] || p)
+  const valor = (v) => (v ? v : <span className="info-val vacio">Sin agregar</span>)
+
+  return (
+    <>
+      <h1 className="sec-title">Detalles de la cuenta</h1>
+      <p className="sec-sub">Revisa y actualiza tu información personal{perfil.tieneContrasena ? ' y tu contraseña' : ''}.</p>
+      {aviso && <div className="aviso-ok">{aviso}</div>}
+      <div className="detalles-grid">
+        <div className="det-card">
+          <div className="det-card-header">
+            <h3>Información personal</h3>
+            <button className="btn-edit-info" onClick={() => { setAviso(''); setVentana('info') }}>Editar</button>
+          </div>
+          <div className="info-fila"><span className="info-lbl">Nombre</span><span className="info-val">{valor(perfil.nombre)}</span></div>
+          <div className="info-fila"><span className="info-lbl">Correo</span><span className="info-val">{perfil.email}</span></div>
+          <div className="info-fila"><span className="info-lbl">Teléfono</span><span className="info-val">{valor(perfil.telefono)}</span></div>
+          <div className="info-fila"><span className="info-lbl">Documento</span><span className="info-val">{perfil.documento ? `${perfil.tipoDocumento} ${perfil.documento}` : valor('')}</span></div>
+          <p>Con estos datos llenamos el checkout por ti. Para cambiar el correo, escríbenos por WhatsApp.</p>
+        </div>
+
+        <div className="det-card">
+          <div className="det-card-header">
+            <h3>Contraseña</h3>
+            {perfil.tieneContrasena && <button className="btn-edit-info" onClick={() => { setAviso(''); setVentana('pwd') }}>Cambiar</button>}
+          </div>
+          {perfil.tieneContrasena ? (
+            <>
+              <div className="info-fila"><span className="info-lbl">Contraseña</span><span className="info-val">••••••••••</span></div>
+              <p>Para cambiarla te pediremos la actual, para confirmar que eres tú.</p>
+            </>
+          ) : (
+            <p>Entras con <strong>{social.join(' o ') || 'tu proveedor'}</strong>, así que tu cuenta no tiene una contraseña propia en Russitex. La seguridad la maneja {social[0] || 'ese servicio'}.</p>
+          )}
+        </div>
+      </div>
+
+      {ventana === 'info' && (
+        <InfoModal perfil={perfil} onCerrar={() => setVentana(null)} onGuardar={async (datos) => {
+          const r = await api(token, '/api/cuenta/perfil', { method: 'PUT', body: datos })
+          if (!r.ok) return r.datos.error || 'No se pudieron guardar los cambios.'
+          setPerfil(r.datos); setVentana(null); setAviso('Tus datos quedaron guardados.')
+          refrescarPerfil?.()   // para que el encabezado muestre el nombre nuevo
+          return null
+        }} />
+      )}
+      {ventana === 'pwd' && (
+        <PwdModal onCerrar={() => setVentana(null)} onGuardar={async (datos) => {
+          const r = await api(token, '/api/cuenta/contrasena', { method: 'POST', body: datos })
+          if (!r.ok) return r.datos.error || 'No se pudo cambiar la contraseña.'
+          setVentana(null); setAviso('Tu contraseña quedó actualizada.')
+          return null
+        }} />
+      )}
+    </>
+  )
+}
+
+function InfoModal({ perfil, onCerrar, onGuardar }) {
+  const [f, setF] = useState({ nombre: perfil.nombre, telefono: perfil.telefono, tipoDocumento: perfil.tipoDocumento || 'CC', documento: perfil.documento })
+  const [error, setError] = useState('')
+  const [guardando, setGuardando] = useState(false)
+  const set = (campo) => (e) => setF((x) => ({ ...x, [campo]: e.target.value }))
+
+  async function guardar() {
+    setError('')
+    if (f.nombre.trim().length < 2) return setError('Escribe tu nombre completo.')
+    setGuardando(true)
+    const msg = await onGuardar(f)
+    setGuardando(false)
+    if (msg) setError(msg)
+  }
+
+  return (
+    <Modal titulo="Editar información personal" onCerrar={onCerrar}
+      pie={<>
+        <button className="modal-btn-cancel" onClick={onCerrar}>Cancelar</button>
+        <button className="modal-btn-save" disabled={guardando} onClick={guardar}>{guardando ? 'Guardando…' : 'Guardar cambios'}</button>
+      </>}>
+      <div className="fg"><label className="fl" htmlFor="i-nom">Nombre completo</label>
+        <input id="i-nom" className="fi" value={f.nombre} onChange={set('nombre')} maxLength={120} autoComplete="name" /></div>
+      <div className="fg"><label className="fl" htmlFor="i-mail">Correo electrónico</label>
+        <input id="i-mail" className="fi" value={perfil.email} disabled />
+        <span className="ayuda">Para cambiarlo, escríbenos por WhatsApp.</span></div>
+      <div className="fg"><label className="fl" htmlFor="i-tel">Teléfono</label>
+        <input id="i-tel" className="fi" type="tel" placeholder="Ej: 3001234567" value={f.telefono} onChange={set('telefono')} maxLength={20} autoComplete="tel" /></div>
+      <div className="fg"><label className="fl" htmlFor="i-doc">Documento de identidad</label>
+        <div className="fila-2">
+          <select className="fi" aria-label="Tipo de documento" value={f.tipoDocumento} onChange={set('tipoDocumento')}>
+            {Object.keys(TIPOS_DOC).map((t) => <option key={t} value={t} title={TIPOS_DOC[t]}>{t}</option>)}
+          </select>
+          <input id="i-doc" className="fi" placeholder="Ej: 1020345678" value={f.documento} onChange={set('documento')} maxLength={20} />
+        </div></div>
+      {error && <div className="form-error">{error}</div>}
+    </Modal>
+  )
+}
+
+function PwdModal({ onCerrar, onGuardar }) {
+  const [f, setF] = useState({ actual: '', nueva: '', repetir: '' })
+  const [error, setError] = useState('')
+  const [guardando, setGuardando] = useState(false)
+  const set = (campo) => (e) => setF((x) => ({ ...x, [campo]: e.target.value }))
+
+  async function guardar() {
+    setError('')
+    if (!f.actual) return setError('Escribe tu contraseña actual.')
+    if (f.nueva.length < 8) return setError('La nueva contraseña debe tener al menos 8 caracteres.')
+    if (f.nueva !== f.repetir) return setError('Las contraseñas nuevas no coinciden.')
+    setGuardando(true)
+    const msg = await onGuardar({ actual: f.actual, nueva: f.nueva })
+    setGuardando(false)
+    if (msg) setError(msg)
+  }
+
+  return (
+    <Modal titulo="Cambiar contraseña" onCerrar={onCerrar}
+      pie={<>
+        <button className="modal-btn-cancel" onClick={onCerrar}>Cancelar</button>
+        <button className="modal-btn-save" disabled={guardando} onClick={guardar}>{guardando ? 'Actualizando…' : 'Actualizar contraseña'}</button>
+      </>}>
+      <div className="fg"><label className="fl" htmlFor="p-act">Contraseña actual</label>
+        <input id="p-act" className="fi" type="password" value={f.actual} onChange={set('actual')} autoComplete="current-password" /></div>
+      <div className="fg"><label className="fl" htmlFor="p-new">Nueva contraseña</label>
+        <input id="p-new" className="fi" type="password" placeholder="Mínimo 8 caracteres" value={f.nueva} onChange={set('nueva')} autoComplete="new-password" /></div>
+      <div className="fg"><label className="fl" htmlFor="p-rep">Confirmar nueva contraseña</label>
+        <input id="p-rep" className="fi" type="password" placeholder="Repite la nueva contraseña" value={f.repetir} onChange={set('repetir')} autoComplete="new-password" /></div>
+      {error && <div className="form-error">{error}</div>}
+    </Modal>
   )
 }
 

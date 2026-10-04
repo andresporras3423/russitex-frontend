@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useCart } from '../context/useCart'
+import { useAuth } from '../context/useAuth'
 import './CheckoutPage.css'
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -14,6 +15,7 @@ function unidadBase(unidad) {
 
 export default function CheckoutPage() {
   const { items, subtotal } = useCart()
+  const { token } = useAuth()
   const navigate = useNavigate()
 
   const [envio, setEnvio] = useState('domicilio')     // 'domicilio' | 'tienda'
@@ -61,13 +63,60 @@ export default function CheckoutPage() {
 
   // Al cambiar de departamento se limpia el municipio elegido.
   function elegirDepartamento(dep) {
+    setDirGuardada('otra')
     setDeptoSel(dep)
     setDaneDestino(null)
     setForm((f) => ({ ...f, ciudad: '' }))
   }
 
+  // ── Datos de la cuenta (si inició sesión): se prellenan los datos
+  //    personales vacíos y la dirección principal guardada. ──
+  const [direccionesGuardadas, setDireccionesGuardadas] = useState([])
+  const [dirGuardada, setDirGuardada] = useState('otra')   // id | 'otra'
+
+  function aplicarDireccion(d) {
+    setDirGuardada(d ? d.id : 'otra')
+    setDeptoSel(d ? d.departamento : '')
+    setDaneDestino(d ? d.codigoDane : null)
+    setForm((f) => ({
+      ...f,
+      ciudad: d ? d.ciudad : '',
+      dir: d ? (d.indicaciones ? `${d.direccion} (${d.indicaciones})` : d.direccion) : '',
+    }))
+  }
+  const elegirDireccionGuardada = (id) => aplicarDireccion(direccionesGuardadas.find((d) => d.id === id) || null)
+
+  useEffect(() => {
+    if (!token) return
+    let activo = true
+    const pedir = (ruta) => fetch(`${API_URL}${ruta}`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => (r.ok ? r.json() : null)).catch(() => null)
+    Promise.all([pedir('/api/cuenta/perfil'), pedir('/api/cuenta/direcciones')]).then(([perfil, dirs]) => {
+      if (!activo) return
+      if (perfil) {
+        const [nombre, ...resto] = String(perfil.nombre || '').trim().split(/\s+/)
+        const tipodoc = { CC: 'C.C.', CE: 'C.E.', NIT: 'NIT' }[perfil.tipoDocumento]
+        // Solo se llenan los campos que el cliente no haya escrito ya.
+        setForm((f) => ({
+          ...f,
+          nombre: f.nombre || nombre || '',
+          apellido: f.apellido || resto.join(' '),
+          correo: f.correo || perfil.email || '',
+          cel: f.cel || perfil.telefono || '',
+          doc: f.doc || perfil.documento || '',
+          tipodoc: f.doc ? f.tipodoc : (tipodoc || f.tipodoc),
+        }))
+      }
+      const lista = dirs?.direcciones || []
+      setDireccionesGuardadas(lista)
+      if (lista.length) aplicarDireccion(lista.find((d) => d.principal) || lista[0])
+    })
+    return () => { activo = false }
+  }, [token])
+
   // Al elegir municipio se fija el DANE del destino (dispara la cotización).
   function elegirMunicipio(dane) {
+    setDirGuardada('otra')
     const c = municipios.find((m) => m.dane === dane)
     setDaneDestino(dane || null)
     setForm((f) => ({ ...f, ciudad: c ? c.ciudad : '' }))
@@ -282,6 +331,21 @@ export default function CheckoutPage() {
               <h2>Dirección de entrega</h2>
               <p className="bloque-sub">Elige tu ciudad y con ella calculamos el costo real del envío.</p>
 
+              {direccionesGuardadas.length > 0 && envio === 'domicilio' && (
+                <div className="fila una">
+                  <div className="campo">
+                    <label htmlFor="dirGuardada">Tus direcciones guardadas</label>
+                    <select id="dirGuardada" value={dirGuardada} onChange={(e) => elegirDireccionGuardada(e.target.value)}>
+                      {direccionesGuardadas.map((d) => (
+                        <option key={d.id} value={d.id}>{d.destinatario} — {d.direccion}, {d.ciudad}{d.principal ? ' (principal)' : ''}</option>
+                      ))}
+                      <option value="otra">Usar otra dirección</option>
+                    </select>
+                    <span className="ayuda">Las administras en <Link to="/mi-cuenta/direcciones">Mi cuenta</Link>.</span>
+                  </div>
+                </div>
+              )}
+
               <div className="fila">
                 <div className="campo">
                   <label htmlFor="depto">Departamento</label>
@@ -312,7 +376,7 @@ export default function CheckoutPage() {
               <div className="fila una">
                 <div className="campo">
                   <label htmlFor="dir">Dirección</label>
-                  <input id="dir" type="text" placeholder="Calle 66 # 21-50" value={form.dir} onChange={set('dir')} disabled={envio === 'tienda'} />
+                  <input id="dir" type="text" placeholder="Calle 66 # 21-50" value={form.dir} onChange={(e) => { setDirGuardada('otra'); set('dir')(e) }} disabled={envio === 'tienda'} />
                   {envio === 'tienda' && <span className="ayuda">No hace falta: vas a recoger en la tienda.</span>}
                 </div>
               </div>

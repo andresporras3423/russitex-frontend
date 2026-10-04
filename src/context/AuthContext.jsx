@@ -113,6 +113,12 @@ export function AuthProvider({ children }) {
     return data
   }, [])
 
+  // Vuelve a leer el perfil (p. ej. después de cambiar el nombre en Mi cuenta).
+  const refrescarPerfil = useCallback(async () => {
+    if (!token) return
+    try { setUser(await cargarPerfil(token)) } catch { /* se queda el anterior */ }
+  }, [token, cargarPerfil])
+
   const logout = useCallback(async () => {
     if (token) {
       await fetch(`${API_URL}/api/auth/logout`, {
@@ -126,7 +132,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, login, register, logout, loginConProveedor, forgotPassword }}
+      value={{ user, token, loading, login, register, logout, loginConProveedor, forgotPassword, refrescarPerfil }}
     >
       {children}
     </AuthContext.Provider>
