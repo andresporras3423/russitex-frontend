@@ -6,6 +6,14 @@ import { useCart } from '../context/useCart'
 import { useAuth } from '../context/useAuth'
 import './CheckoutPage.css'
 
+// Dígito de verificación del NIT (algoritmo de la DIAN).
+function digitoVerificacion(nit) {
+  const pesos = [3, 7, 13, 17, 19, 23, 29, 37, 41, 43, 47, 53, 59, 67, 71]
+  const suma = String(nit).split('').reverse().reduce((s, d, i) => s + Number(d) * pesos[i], 0)
+  const r = suma % 11
+  return String(r > 1 ? 11 - r : r)
+}
+
 const API_URL = import.meta.env.VITE_API_URL
 const money = (n) => `$${Number(n).toLocaleString('es-CO')}`
 
@@ -25,7 +33,9 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     nombre: '', apellido: '', tipodoc: 'C.C.', doc: '', cel: '', correo: '',
     ciudad: '', dir: '', notas: '',
+    razon: '', nit: '', nitdv: '', regimen: '',   // solo con "Datos de empresa"
   })
+  const [esEmpresa, setEsEmpresa] = useState(false)
 
   // Municipios (con código DANE). Se elige en dos pasos: departamento y municipio.
   const [ciudades, setCiudades] = useState([])
@@ -38,6 +48,16 @@ export default function CheckoutPage() {
   const [errorEnvio, setErrorEnvio] = useState('')
 
   const set = (campo) => (e) => setForm((f) => ({ ...f, [campo]: e.target.value }))
+
+  // El DV se llena solo al escribir el NIT (se puede corregir a mano).
+  const cambiarNit = (e) => {
+    const nit = e.target.value
+    const limpio = nit.replace(/\D/g, '')
+    setForm((f) => ({ ...f, nit, nitdv: limpio ? digitoVerificacion(limpio) : '' }))
+  }
+  const nitLimpio = form.nit.replace(/\D/g, '')
+  const dvCalculado = nitLimpio ? digitoVerificacion(nitLimpio) : ''
+  const dvErrado = esEmpresa && form.nitdv !== '' && dvCalculado !== '' && form.nitdv !== dvCalculado
 
   // Cargar la lista de municipios una vez.
   useEffect(() => {
@@ -95,7 +115,7 @@ export default function CheckoutPage() {
       if (!activo) return
       if (perfil) {
         const [nombre, ...resto] = String(perfil.nombre || '').trim().split(/\s+/)
-        const tipodoc = { CC: 'C.C.', CE: 'C.E.', NIT: 'NIT' }[perfil.tipoDocumento]
+        const tipodoc = { CC: 'C.C.', CE: 'C.E.' }[perfil.tipoDocumento]
         // Solo se llenan los campos que el cliente no haya escrito ya.
         setForm((f) => ({
           ...f,
@@ -167,12 +187,16 @@ export default function CheckoutPage() {
   // Campos mínimos para facturar (Alegra) y cobrar (Wompi). Para domicilio,
   // además hace falta una ciudad válida y un envío ya cotizado.
   const formularioValido = useMemo(() => {
-    const datos = form.nombre.trim() && form.apellido.trim() && form.doc.trim() &&
+    // Con empresa, la identidad fiscal es el NIT: la cédula deja de ser obligatoria.
+    const identidad = esEmpresa
+      ? form.razon.trim() && /^\d{5,}$/.test(form.nit.replace(/\D/g, '')) && form.regimen
+      : form.doc.trim()
+    const datos = form.nombre.trim() && form.apellido.trim() && identidad &&
       form.cel.trim() && /\S+@\S+\.\S+/.test(form.correo) && acepta
     if (!datos) return false
     if (envio === 'tienda') return true
     return Boolean(form.dir.trim() && daneDestino && envioCotizado && !cotizando)
-  }, [form, envio, acepta, daneDestino, envioCotizado, cotizando])
+  }, [form, esEmpresa, envio, acepta, daneDestino, envioCotizado, cotizando])
 
   // Carrito vacío: no tiene sentido el checkout.
   if (items.length === 0) {
@@ -209,7 +233,11 @@ export default function CheckoutPage() {
           cliente: {
             nombre: `${form.nombre} ${form.apellido}`.trim(), nombres: form.nombre.trim(), apellidos: form.apellido.trim(),
             email: form.correo, telefono: form.cel,
-            tipoDocumento: { 'C.C.': 'CC', NIT: 'NIT', 'C.E.': 'CE' }[form.tipodoc] || 'CC', documento: form.doc,
+            tipoDocumento: form.tipodoc === 'C.E.' ? 'CE' : 'CC', documento: form.doc.trim(),
+            // La factura sale a nombre de la empresa (ver services/alegra.js).
+            empresa: esEmpresa
+              ? { razonSocial: form.razon.trim(), nit: form.nit.replace(/\D/g, ''), dv: dvCalculado, regimen: form.regimen }
+              : null,
           },
           envio: {
             modalidad: envio,
@@ -308,7 +336,7 @@ export default function CheckoutPage() {
                   <label htmlFor="doc">Documento</label>
                   <div className="doc">
                     <select id="tipodoc" aria-label="Tipo de documento" value={form.tipodoc} onChange={set('tipodoc')}>
-                      <option>C.C.</option><option>NIT</option><option>C.E.</option>
+                      <option>C.C.</option><option>C.E.</option>
                     </select>
                     <input id="doc" type="text" placeholder="1020304050" value={form.doc} onChange={set('doc')} />
                   </div>
@@ -328,6 +356,41 @@ export default function CheckoutPage() {
                   <span className="ayuda">Ahí te llega la confirmación y la guía del envío.</span>
                 </div>
               </div>
+
+              <label className="empresa-check">
+                <input type="checkbox" checked={esEmpresa} onChange={(e) => setEsEmpresa(e.target.checked)} />
+                <span>Datos de empresa</span>
+              </label>
+
+              {esEmpresa && (
+                <div className="empresa-extra">
+                  <div className="fila una">
+                    <div className="campo">
+                      <label htmlFor="razon">Razón social</label>
+                      <input id="razon" type="text" placeholder="Ej: Textiles ABC S.A.S." value={form.razon} onChange={set('razon')} />
+                    </div>
+                  </div>
+                  <div className="fila">
+                    <div className="campo">
+                      <label htmlFor="nit">NIT</label>
+                      <div className="nit-grid">
+                        <input id="nit" type="text" inputMode="numeric" placeholder="Ej: 900123456" value={form.nit} onChange={cambiarNit} />
+                        <input id="nitdv" type="text" inputMode="numeric" maxLength={1} placeholder="DV" aria-label="Dígito de verificación"
+                          value={form.nitdv} onChange={set('nitdv')} />
+                      </div>
+                      {dvErrado && <span className="ayuda">El dígito de verificación de ese NIT debería ser {dvCalculado}.</span>}
+                    </div>
+                    <div className="campo">
+                      <label htmlFor="regimen">Responsabilidad de IVA</label>
+                      <select id="regimen" value={form.regimen} onChange={set('regimen')}>
+                        <option value="">Selecciona…</option>
+                        <option value="COMMON_REGIME">Responsable de IVA</option>
+                        <option value="SIMPLIFIED_REGIME">No responsable de IVA</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* ── DIRECCIÓN ── */}
