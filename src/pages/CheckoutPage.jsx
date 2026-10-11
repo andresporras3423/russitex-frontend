@@ -4,18 +4,29 @@ import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useCart } from '../context/useCart'
 import { useAuth } from '../context/useAuth'
+import { digitoVerificacion } from '../lib/nit'
 import './CheckoutPage.css'
-
-// Dígito de verificación del NIT (algoritmo de la DIAN).
-function digitoVerificacion(nit) {
-  const pesos = [3, 7, 13, 17, 19, 23, 29, 37, 41, 43, 47, 53, 59, 67, 71]
-  const suma = String(nit).split('').reverse().reduce((s, d, i) => s + Number(d) * pesos[i], 0)
-  const r = suma % 11
-  return String(r > 1 ? 11 - r : r)
-}
 
 const API_URL = import.meta.env.VITE_API_URL
 const money = (n) => `$${Number(n).toLocaleString('es-CO')}`
+
+// Compras sin cuenta: el formulario se recuerda en ESTE navegador para la
+// próxima vez (localStorage, no cookies: no viaja al servidor). Nunca datos
+// de pago: esos los maneja Wompi. "No soy yo" lo borra.
+const CLAVE_DATOS = 'russitex_datos_checkout'
+function leerDatosLocales() {
+  try {
+    const d = JSON.parse(localStorage.getItem(CLAVE_DATOS) || 'null')
+    return d && typeof d === 'object' && d.form ? d : null
+  } catch {
+    return null
+  }
+}
+const FORM_VACIO = {
+  nombre: '', apellido: '', tipodoc: 'C.C.', doc: '', cel: '', correo: '',
+  ciudad: '', dir: '', notas: '',
+  razon: '', nit: '', nitdv: '', regimen: '',   // solo con "Datos de empresa"
+}
 
 function unidadBase(unidad) {
   return (unidad || '').replace(/^(venta\s+por|por)\s+/i, '').trim().toLowerCase()
@@ -26,21 +37,27 @@ export default function CheckoutPage() {
   const { token } = useAuth()
   const navigate = useNavigate()
 
-  const [envio, setEnvio] = useState('domicilio')     // 'domicilio' | 'tienda'
+  // Sin sesión: lo que quedó guardado en este navegador la última vez.
+  const [locales] = useState(() => (token ? null : leerDatosLocales()))
+  const [recordados, setRecordados] = useState(Boolean(locales))   // muestra "No soy yo"
+
+  const [envio, setEnvio] = useState(locales?.envio === 'tienda' ? 'tienda' : 'domicilio')   // 'domicilio' | 'tienda'
   const [acepta, setAcepta] = useState(false)
   const [pagando, setPagando] = useState(false)       // preparando el pago / redirigiendo
   const [errorPago, setErrorPago] = useState('')
-  const [form, setForm] = useState({
-    nombre: '', apellido: '', tipodoc: 'C.C.', doc: '', cel: '', correo: '',
-    ciudad: '', dir: '', notas: '',
-    razon: '', nit: '', nitdv: '', regimen: '',   // solo con "Datos de empresa"
-  })
-  const [esEmpresa, setEsEmpresa] = useState(false)
+  const [form, setForm] = useState(() => ({ ...FORM_VACIO, ...(locales?.form || {}) }))
+  const [esEmpresa, setEsEmpresa] = useState(Boolean(locales?.esEmpresa))
 
   // Municipios (con código DANE). Se elige en dos pasos: departamento y municipio.
   const [ciudades, setCiudades] = useState([])
-  const [deptoSel, setDeptoSel] = useState('')          // departamento elegido
-  const [daneDestino, setDaneDestino] = useState(null)  // municipio elegido (código DANE)
+  const [deptoSel, setDeptoSel] = useState(locales?.depto || '')            // departamento elegido
+  const [daneDestino, setDaneDestino] = useState(locales?.dane || null)     // municipio elegido (código DANE)
+
+  function olvidarDatos() {
+    try { localStorage.removeItem(CLAVE_DATOS) } catch { /* nada que borrar */ }
+    setForm(FORM_VACIO); setEsEmpresa(false); setDeptoSel(''); setDaneDestino(null)
+    setEnvio('domicilio'); setRecordados(false)
+  }
 
   // Cotización del envío en vivo.
   const [cotizando, setCotizando] = useState(false)
@@ -125,7 +142,13 @@ export default function CheckoutPage() {
           cel: f.cel || perfil.telefono || '',
           doc: f.doc || perfil.documento || '',
           tipodoc: f.doc ? f.tipodoc : (tipodoc || f.tipodoc),
+          // La empresa guardada se llena siempre (oculta si no se marca la casilla).
+          razon: f.razon || perfil.empresa?.razonSocial || '',
+          nit: f.nit || perfil.empresa?.nit || '',
+          nitdv: f.nit ? f.nitdv : (perfil.empresa?.nit ? digitoVerificacion(perfil.empresa.nit) : ''),
+          regimen: f.regimen || perfil.empresa?.regimen || '',
         }))
+        if (perfil.facturarComoEmpresa) setEsEmpresa(true)
       }
       const lista = dirs?.direcciones || []
       setDireccionesGuardadas(lista)
@@ -217,6 +240,36 @@ export default function CheckoutPage() {
     )
   }
 
+  function guardarDatosParaLaProxima() {
+    const empresa = esEmpresa
+      ? { razonSocial: form.razon.trim(), nit: form.nit.replace(/\D/g, ''), regimen: form.regimen }
+      : null
+    if (token) {
+      try { localStorage.removeItem(CLAVE_DATOS) } catch { /* nada que borrar */ }
+      // keepalive: el aviso sigue aunque la página se vaya a Wompi enseguida.
+      fetch(`${API_URL}/api/cuenta/desde-checkout`, {
+        method: 'POST',
+        keepalive: true,
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          nombre: `${form.nombre} ${form.apellido}`.trim(), telefono: form.cel,
+          tipoDocumento: form.tipodoc === 'C.E.' ? 'CE' : 'CC', documento: form.doc.trim(),
+          empresa,
+          // Una dirección guardada elegida tal cual no se vuelve a mandar.
+          direccion: envio === 'domicilio' && dirGuardada === 'otra'
+            ? { destinatario: `${form.nombre} ${form.apellido}`.trim(), direccion: form.dir.trim(), codigoDane: daneDestino }
+            : null,
+        }),
+      }).catch(() => { /* no es grave: solo no queda prellenado */ })
+      return
+    }
+    try {
+      localStorage.setItem(CLAVE_DATOS, JSON.stringify({
+        form: { ...form, notas: '' }, esEmpresa, envio, depto: deptoSel, dane: daneDestino,
+      }))
+    } catch { /* sin storage: la próxima vez se llena de nuevo */ }
+  }
+
   // Prepara el pago en el backend y redirige al checkout web de Wompi.
   async function pagar() {
     if (!formularioValido || pagando) return
@@ -251,6 +304,10 @@ export default function CheckoutPage() {
 
       // Guardamos la referencia para leer el estado al volver de Wompi.
       try { localStorage.setItem('russitex_ultima_ref', data.referencia) } catch { /* sin persistencia, no pasa nada */ }
+
+      // Recordar los datos para la próxima compra (y por si el pago falla y
+      // vuelve). Con cuenta, en la cuenta; sin cuenta, en este navegador.
+      guardarDatosParaLaProxima()
 
       // Datos para la página de confirmación que el backend no devuelve a
       // propósito (contacto y dirección: no se exponen por una URL) y fotos
@@ -319,6 +376,12 @@ export default function CheckoutPage() {
             <div className="bloque">
               <h2>Tus datos</h2>
               <p className="bloque-sub">Los necesitamos para emitir la factura y para que la transportadora te ubique.</p>
+              {recordados && (
+                <p className="datos-recordados">
+                  Llenamos el formulario con los datos de tu última compra en este navegador.{' '}
+                  <button type="button" onClick={olvidarDatos}>¿No eres tú? Borrar estos datos</button>
+                </p>
+              )}
 
               <div className="fila">
                 <div className="campo">

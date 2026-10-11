@@ -84,6 +84,9 @@
 .empresa-extra .fila:last-child { margin-bottom: 0; }
 .nit-grid { display: grid; grid-template-columns: 1fr 72px; gap: 0.6rem; }
 
+.datos-recordados { margin: -0.4rem 0 1rem; font-size: 0.78rem; color: var(--gris-calido); line-height: 1.5; }
+.datos-recordados button { background: none; border: none; padding: 0; font: inherit; color: var(--azul-oficio); text-decoration: underline; cursor: pointer; }
+
 /* ── ENVÍO ── */
 .envio-op { display: flex; align-items: flex-start; gap: 0.8rem; border: 1px solid var(--linea); border-radius: var(--r-md); padding: 1rem; margin-bottom: 0.7rem; cursor: pointer; transition: all 0.2s; }
 .envio-op:hover { border-color: var(--arena); background: var(--crema); }

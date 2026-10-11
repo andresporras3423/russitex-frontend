@@ -4,6 +4,7 @@ import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useAuth } from '../context/useAuth'
 import { useProductos } from '../hooks/useProductos'
+import { digitoVerificacion, REGIMENES } from '../lib/nit'
 import './MiCuentaPage.css'
 
 // Portada de la maqueta version2/russitex-mi-cuenta.html. Por ahora tiene
@@ -603,6 +604,23 @@ function Detalles({ token }) {
             <p>Entras con <strong>{social.join(' o ') || 'tu proveedor'}</strong>, así que tu cuenta no tiene una contraseña propia en Russitex. La seguridad la maneja {social[0] || 'ese servicio'}.</p>
           )}
         </div>
+
+        <div className="det-card">
+          <div className="det-card-header">
+            <h3>Datos de facturación</h3>
+            <button className="btn-edit-info" onClick={() => { setAviso(''); setVentana('empresa') }}>{perfil.empresa ? 'Editar' : 'Agregar'}</button>
+          </div>
+          {perfil.empresa ? (
+            <>
+              <div className="info-fila"><span className="info-lbl">Razón social</span><span className="info-val">{perfil.empresa.razonSocial}</span></div>
+              <div className="info-fila"><span className="info-lbl">NIT</span><span className="info-val">{perfil.empresa.nit}-{digitoVerificacion(perfil.empresa.nit)}</span></div>
+              <div className="info-fila"><span className="info-lbl">IVA</span><span className="info-val">{REGIMENES[perfil.empresa.regimen] || perfil.empresa.regimen}</span></div>
+              <p>Si compras como empresa, la factura sale a nombre de estos datos.</p>
+            </>
+          ) : (
+            <p>Si compras como empresa, guarda aquí la razón social y el NIT para que la factura salga a su nombre. También se guardan solos la primera vez que compres como empresa.</p>
+          )}
+        </div>
       </div>
 
       {ventana === 'info' && (
@@ -611,6 +629,19 @@ function Detalles({ token }) {
           if (!r.ok) return r.datos.error || 'No se pudieron guardar los cambios.'
           setPerfil(r.datos); setVentana(null); setAviso('Tus datos quedaron guardados.')
           refrescarPerfil?.()   // para que el encabezado muestre el nombre nuevo
+          return null
+        }} />
+      )}
+      {ventana === 'empresa' && (
+        <EmpresaModal empresa={perfil.empresa} onCerrar={() => setVentana(null)} onGuardar={async (empresa) => {
+          // El PUT de perfil pide también los datos personales: van tal cual.
+          const r = await api(token, '/api/cuenta/perfil', {
+            method: 'PUT',
+            body: { nombre: perfil.nombre, telefono: perfil.telefono, tipoDocumento: perfil.tipoDocumento, documento: perfil.documento, empresa },
+          })
+          if (!r.ok) return r.datos.error || 'No se pudieron guardar los cambios.'
+          setPerfil(r.datos); setVentana(null)
+          setAviso(empresa ? 'Los datos de facturación quedaron guardados.' : 'Quitamos los datos de empresa.')
           return null
         }} />
       )}
@@ -661,6 +692,51 @@ function InfoModal({ perfil, onCerrar, onGuardar }) {
           </select>
           <input id="i-doc" className="fi" placeholder="Ej: 1020345678" value={f.documento} onChange={set('documento')} maxLength={20} />
         </div></div>
+      {error && <div className="form-error">{error}</div>}
+    </Modal>
+  )
+}
+
+function EmpresaModal({ empresa, onCerrar, onGuardar }) {
+  const [f, setF] = useState({ razonSocial: empresa?.razonSocial || '', nit: empresa?.nit || '', regimen: empresa?.regimen || '' })
+  const [error, setError] = useState('')
+  const [guardando, setGuardando] = useState(false)
+  const set = (campo) => (e) => setF((x) => ({ ...x, [campo]: e.target.value }))
+  const nit = f.nit.replace(/\D/g, '')
+
+  async function enviar(datos) {
+    setError('')
+    if (datos) {
+      if (datos.razonSocial.trim().length < 2) return setError('Escribe la razón social.')
+      if (nit.length < 5) return setError('Escribe el NIT sin el dígito de verificación.')
+      if (!datos.regimen) return setError('Elige la responsabilidad de IVA.')
+    }
+    setGuardando(true)
+    const msg = await onGuardar(datos && { ...datos, razonSocial: datos.razonSocial.trim(), nit })
+    setGuardando(false)
+    if (msg) setError(msg)
+  }
+
+  return (
+    <Modal titulo="Datos de facturación" onCerrar={onCerrar}
+      pie={<>
+        {empresa && <button className="modal-btn-cancel" disabled={guardando} onClick={() => enviar(null)}>Quitar empresa</button>}
+        <button className="modal-btn-cancel" onClick={onCerrar}>Cancelar</button>
+        <button className="modal-btn-save" disabled={guardando} onClick={() => enviar(f)}>{guardando ? 'Guardando…' : 'Guardar'}</button>
+      </>}>
+      <div className="fg"><label className="fl" htmlFor="e-razon">Razón social</label>
+        <input id="e-razon" className="fi" placeholder="Ej: Textiles ABC S.A.S." value={f.razonSocial} onChange={set('razonSocial')} maxLength={150} /></div>
+      <div className="fg"><label className="fl" htmlFor="e-nit">NIT</label>
+        <div className="fila-2">
+          <input id="e-nit" className="fi" inputMode="numeric" placeholder="Ej: 900123456" value={f.nit} onChange={set('nit')} maxLength={15} />
+          <input className="fi" aria-label="Dígito de verificación" value={nit ? digitoVerificacion(nit) : ''} placeholder="DV" disabled />
+        </div>
+        <span className="ayuda">El dígito de verificación se calcula solo.</span></div>
+      <div className="fg"><label className="fl" htmlFor="e-reg">Responsabilidad de IVA</label>
+        <select id="e-reg" className="fi" value={f.regimen} onChange={set('regimen')}>
+          <option value="">Selecciona…</option>
+          {Object.entries(REGIMENES).map(([v, t]) => <option key={v} value={v}>{t}</option>)}
+        </select></div>
       {error && <div className="form-error">{error}</div>}
     </Modal>
   )

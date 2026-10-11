@@ -127,6 +127,8 @@ export function AuthProvider({ children }) {
       }).catch(() => {})
     }
     await supabase.auth.signOut().catch(() => {})
+    // Datos del checkout recordados en este navegador (computadores compartidos).
+    try { localStorage.removeItem('russitex_datos_checkout') } catch { /* nada que borrar */ }
     limpiarSesion()
   }, [token, limpiarSesion])
 
