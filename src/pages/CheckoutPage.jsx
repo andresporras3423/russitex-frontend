@@ -206,7 +206,11 @@ export default function CheckoutPage() {
             productoId: i.productoId, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio,
             variante: i.variante?.nombre || null,   // p. ej. el color: hace falta para despachar
           })),
-          cliente: { nombre: `${form.nombre} ${form.apellido}`.trim(), email: form.correo, telefono: form.cel, documento: form.doc },
+          cliente: {
+            nombre: `${form.nombre} ${form.apellido}`.trim(), nombres: form.nombre.trim(), apellidos: form.apellido.trim(),
+            email: form.correo, telefono: form.cel,
+            tipoDocumento: { 'C.C.': 'CC', NIT: 'NIT', 'C.E.': 'CE' }[form.tipodoc] || 'CC', documento: form.doc,
+          },
           envio: {
             modalidad: envio,
             ciudad: form.ciudad, direccion: form.dir, departamento: deptoSel,
