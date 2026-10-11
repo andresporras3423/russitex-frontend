@@ -45,6 +45,7 @@ export default function CheckoutPage() {
   const [acepta, setAcepta] = useState(false)
   const [pagando, setPagando] = useState(false)       // preparando el pago / redirigiendo
   const [errorPago, setErrorPago] = useState('')
+  const [totalAceptado, setTotalAceptado] = useState(null)   // total del servidor ya avisado
   const [form, setForm] = useState(() => ({ ...FORM_VACIO, ...(locales?.form || {}) }))
   const [esEmpresa, setEsEmpresa] = useState(Boolean(locales?.esEmpresa))
 
@@ -279,8 +280,9 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          // Solo qué y cuánto: el precio y el nombre los pone el servidor.
           carrito: items.map((i) => ({
-            productoId: i.productoId, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio,
+            productoId: i.productoId, cantidad: i.cantidad,
             variante: i.variante?.nombre || null,   // p. ej. el color: hace falta para despachar
           })),
           cliente: {
@@ -301,6 +303,17 @@ export default function CheckoutPage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'No se pudo preparar el pago.')
+
+      // El servidor cobra con los precios del catálogo. Si no coinciden con los
+      // que el carrito tenía guardados (un precio cambió), se avisa antes de
+      // ir a Wompi; el segundo clic ya sigue con el total nuevo.
+      const totalServidor = data.resumen?.totalPesos
+      if (totalServidor != null && totalServidor !== total && totalAceptado !== totalServidor) {
+        setTotalAceptado(totalServidor)
+        setPagando(false)
+        setErrorPago(`Algunos precios se actualizaron: el total a pagar es ${money(totalServidor)}. Vuelve a hacer clic en "Pagar" para continuar.`)
+        return
+      }
 
       // Guardamos la referencia para leer el estado al volver de Wompi.
       try { localStorage.setItem('russitex_ultima_ref', data.referencia) } catch { /* sin persistencia, no pasa nada */ }

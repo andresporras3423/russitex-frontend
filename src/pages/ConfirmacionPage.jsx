@@ -224,8 +224,14 @@ function Detalle({ pedido, vista, local }) {
   const fecha = textoFecha(pedido.creadoEn)
 
   // Productos: los del checkout local traen foto y unidad; si no hay, los
-  // del backend.
-  const items = local?.items?.length ? local.items : (pedido.productos || [])
+  // del backend. El precio siempre es el que cobró el backend.
+  const cobrados = pedido.productos || []
+  const items = local?.items?.length
+    ? local.items.map((i) => {
+      const c = cobrados.find((p) => String(p.productoId) === String(i.productoId) && (p.variante || null) === (i.variante || null))
+      return c ? { ...i, precio: c.precio } : i
+    })
+    : cobrados
   const subtotal = items.reduce((s, i) => s + (Number(i.precio) || 0) * (Number(i.cantidad) || 0), 0)
   const etiquetaEnvio = tienda ? 'Recoger en tienda' : envio.ciudad ? `Envío a ${nombreCiudad(envio.ciudad)}` : 'Envío'
   const valorEnvio = tienda || envio.costo === 0 ? 'Gratis' : money(envio.costo)
