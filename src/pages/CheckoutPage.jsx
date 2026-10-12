@@ -241,16 +241,17 @@ export default function CheckoutPage() {
     )
   }
 
-  function guardarDatosParaLaProxima() {
+  async function guardarDatosParaLaProxima() {
     const empresa = esEmpresa
       ? { razonSocial: form.razon.trim(), nit: form.nit.replace(/\D/g, ''), regimen: form.regimen }
       : null
     if (token) {
       try { localStorage.removeItem(CLAVE_DATOS) } catch { /* nada que borrar */ }
-      // keepalive: el aviso sigue aunque la página se vaya a Wompi enseguida.
-      fetch(`${API_URL}/api/cuenta/desde-checkout`, {
+      // Se espera (máx. 4 s) antes de irse a Wompi: si la página se va, el
+      // navegador corta la petición. (keepalive no sirve: con el encabezado
+      // de sesión Chrome la descarta en silencio.)
+      const guardar = fetch(`${API_URL}/api/cuenta/desde-checkout`, {
         method: 'POST',
-        keepalive: true,
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           nombre: `${form.nombre} ${form.apellido}`.trim(), telefono: form.cel,
@@ -262,6 +263,7 @@ export default function CheckoutPage() {
             : null,
         }),
       }).catch(() => { /* no es grave: solo no queda prellenado */ })
+      await Promise.race([guardar, new Promise((r) => setTimeout(r, 4000))])
       return
     }
     try {
@@ -320,7 +322,7 @@ export default function CheckoutPage() {
 
       // Recordar los datos para la próxima compra (y por si el pago falla y
       // vuelve). Con cuenta, en la cuenta; sin cuenta, en este navegador.
-      guardarDatosParaLaProxima()
+      await guardarDatosParaLaProxima()
 
       // Datos para la página de confirmación que el backend no devuelve a
       // propósito (contacto y dirección: no se exponen por una URL) y fotos
