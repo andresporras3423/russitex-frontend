@@ -32,7 +32,6 @@ export default function SiteFooter() {
         <div className="f-col">
           <h4>Información</h4>
           <ul>
-            {/* Términos y privacidad siguen sin página (RC1-T4). */}
             <li>
               <a href="/preguntas-frecuentes" onClick={(e) => { e.preventDefault(); navigate('/preguntas-frecuentes') }}>
                 Preguntas frecuentes
@@ -48,8 +47,16 @@ export default function SiteFooter() {
                 Cambios y devoluciones
               </a>
             </li>
-            <li><a href="#">Términos y condiciones</a></li>
-            <li><a href="#">Política de privacidad</a></li>
+            <li>
+              <a href="/terminos-y-condiciones" onClick={(e) => { e.preventDefault(); navigate('/terminos-y-condiciones') }}>
+                Términos y condiciones
+              </a>
+            </li>
+            <li>
+              <a href="/politica-de-privacidad" onClick={(e) => { e.preventDefault(); navigate('/politica-de-privacidad') }}>
+                Política de privacidad
+              </a>
+            </li>
           </ul>
         </div>
 

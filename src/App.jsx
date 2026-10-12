@@ -44,6 +44,8 @@ function App() {
             <Route path="/preguntas-frecuentes" element={<FaqPage />} />
             <Route path="/politica-de-envios" element={<LegalPage doc="envios" />} />
             <Route path="/cambios-y-devoluciones" element={<LegalPage doc="devoluciones" />} />
+            <Route path="/terminos-y-condiciones" element={<LegalPage doc="terminos" />} />
+            <Route path="/politica-de-privacidad" element={<LegalPage doc="privacidad" />} />
             <Route path="/producto/:id" element={<ProductoDetallePage />} />
             <Route path="/carrito" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />

@@ -612,7 +612,7 @@ export default function CheckoutPage() {
 
               <label className="acepto">
                 <input type="checkbox" checked={acepta} onChange={(e) => setAcepta(e.target.checked)} />
-                <span>Acepto los <Link to="/preguntas-frecuentes">Términos y condiciones</Link> y la <Link to="/preguntas-frecuentes">Política de privacidad</Link>.</span>
+                <span>Acepto los <Link to="/terminos-y-condiciones" target="_blank">Términos y condiciones</Link> y autorizo el tratamiento de mis datos según la <Link to="/politica-de-privacidad" target="_blank">Política de privacidad</Link>.</span>
               </label>
             </div>
           </form>

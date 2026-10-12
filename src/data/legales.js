@@ -5,7 +5,10 @@
 //  Los párrafos son HTML corto (solo enlaces). {{whatsapp}} se reemplaza
 //  por el WhatsApp de tienda_info, para que haya un solo número en la web.
 // ============================================================
+import { TERMINOS_PRIVACIDAD } from './terminosPrivacidad'
+
 export const LEGALES = {
+  ...TERMINOS_PRIVACIDAD,
   "envios": {
     "ruta": "/politica-de-envios",
     "migas": "Política de envíos",

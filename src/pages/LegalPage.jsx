@@ -14,7 +14,10 @@ export default function LegalPage({ doc }) {
   // El número sale de tienda_info (con el mismo respaldo del pie de página):
   // así la web tiene un solo WhatsApp.
   const whatsapp = `<a href="${info.whatsapp_link || 'https://wa.me/573138909118'}" target="_blank" rel="noopener noreferrer">${info.whatsapp || '+57 313 890 9118'}</a>`
-  const html = (t) => ({ __html: t.split('{{whatsapp}}').join(whatsapp) })
+  const correo = info.correo || 'contacto@russitex.com'
+  const html = (t) => ({
+    __html: t.split('{{whatsapp}}').join(whatsapp).split('{{correo}}').join(`<a href="mailto:${correo}">${correo}</a>`),
+  })
 
   // Los enlaces internos del texto (p. ej. a la otra política) navegan sin
   // recargar la página.

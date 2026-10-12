@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
@@ -199,7 +199,7 @@ export default function LoginPage() {
                   </div>
                 </div>
                 <button type="submit" className="btn-submit" disabled={busy}>{busy ? 'Creando...' : 'Crear cuenta'}</button>
-                <p className="terms-note">Al crear una cuenta aceptas nuestros <a href="#">Términos y condiciones</a> y nuestra <a href="#">Política de privacidad</a>.</p>
+                <p className="terms-note">Al crear una cuenta aceptas nuestros <Link to="/terminos-y-condiciones" target="_blank">Términos y condiciones</Link> y autorizas el tratamiento de tus datos según la <Link to="/politica-de-privacidad" target="_blank">Política de privacidad</Link>.</p>
               </form>
             )}
           </div>
