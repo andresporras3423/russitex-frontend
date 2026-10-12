@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage'
 import AsesoriaPage from './pages/AsesoriaPage'
 import CatalogPage from './pages/CatalogPage'
 import SobreNosotrosPage from './pages/SobreNosotrosPage'
+import LegalPage from './pages/LegalPage'
 import ProductoDetallePage from './pages/ProductoDetallePage'
 import NuevaContrasenaPage from './pages/NuevaContrasenaPage'
 import ContactoPage from './pages/ContactoPage'
@@ -41,6 +42,8 @@ function App() {
             <Route path="/sobre-nosotros" element={<SobreNosotrosPage />} />
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/preguntas-frecuentes" element={<FaqPage />} />
+            <Route path="/politica-de-envios" element={<LegalPage doc="envios" />} />
+            <Route path="/cambios-y-devoluciones" element={<LegalPage doc="devoluciones" />} />
             <Route path="/producto/:id" element={<ProductoDetallePage />} />
             <Route path="/carrito" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />

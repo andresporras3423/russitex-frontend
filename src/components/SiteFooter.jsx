@@ -32,22 +32,19 @@ export default function SiteFooter() {
         <div className="f-col">
           <h4>Información</h4>
           <ul>
-            {/* Envíos y devoluciones no tienen página propia todavía, pero la
-                FAQ ya los responde, así que apuntan a su grupo. Mejor eso que
-                un enlace muerto; el día que se redacte la política formal se
-                cambia el destino. Términos y privacidad siguen sin nada (RC1-T4). */}
+            {/* Términos y privacidad siguen sin página (RC1-T4). */}
             <li>
-              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/preguntas-frecuentes') }}>
+              <a href="/preguntas-frecuentes" onClick={(e) => { e.preventDefault(); navigate('/preguntas-frecuentes') }}>
                 Preguntas frecuentes
               </a>
             </li>
             <li>
-              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/preguntas-frecuentes#grupo-envios') }}>
+              <a href="/politica-de-envios" onClick={(e) => { e.preventDefault(); navigate('/politica-de-envios') }}>
                 Políticas de envío
               </a>
             </li>
             <li>
-              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/preguntas-frecuentes#grupo-devoluciones') }}>
+              <a href="/cambios-y-devoluciones" onClick={(e) => { e.preventDefault(); navigate('/cambios-y-devoluciones') }}>
                 Cambios y devoluciones
               </a>
             </li>
