@@ -59,12 +59,15 @@ const primerNombre = (u) => (u?.nombre?.trim() || u?.email || '').split(/[\s@]+/
 const IcoResumen = () => <svg className="si-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7,0H4A4,4,0,0,0,0,4V7a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V4A4,4,0,0,0,7,0ZM9,7A2,2,0,0,1,7,9H4A2,2,0,0,1,2,7V4A2,2,0,0,1,4,2H7A2,2,0,0,1,9,4Z" /><path d="M20,0H17a4,4,0,0,0-4,4V7a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V4A4,4,0,0,0,20,0Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V4a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z" /><path d="M7,13H4a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4H7a4,4,0,0,0,4-4V17A4,4,0,0,0,7,13Zm2,7a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2H7a2,2,0,0,1,2,2Z" /><path d="M20,13H17a4,4,0,0,0-4,4v3a4,4,0,0,0,4,4h3a4,4,0,0,0,4-4V17A4,4,0,0,0,20,13Zm2,7a2,2,0,0,1-2,2H17a2,2,0,0,1-2-2V17a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2Z" /></svg>
 const IcoPedidos = () => <svg className="si-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19,0H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V5A5.006,5.006,0,0,0,19,0ZM5,2H19a3,3,0,0,1,3,3V6H2V5A3,3,0,0,1,5,2ZM19,22H5a3,3,0,0,1-3-3V8H22V19A3,3,0,0,1,19,22Z" /><path d="M16,11H8a1,1,0,0,0,0,2h8a1,1,0,0,0,0-2Z" /></svg>
 const IcoSalir = () => <svg className="si-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11.476,15a1,1,0,0,0-1,1v3a3,3,0,0,1-3,3H5a3,3,0,0,1-3-3V5A3,3,0,0,1,5,2H7.476a3,3,0,0,1,3,3V8a1,1,0,0,0,2,0V5a5.006,5.006,0,0,0-5-5H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H7.476a5.006,5.006,0,0,0,5-5V16A1,1,0,0,0,11.476,15Z" /><path d="M22.867,9.879,18.281,5.293a1,1,0,1,0-1.414,1.414l4.262,4.263L6,11a1,1,0,0,0,0,2H6l15.188-.031-4.323,4.324a1,1,0,1,0,1.414,1.414l4.586-4.586A3,3,0,0,0,22.867,9.879Z" /></svg>
-const IcoCaja = () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.2,6.2,14.4,1.7a5,5,0,0,0-4.8,0L1.8,6.2A3.5,3.5,0,0,0,0,9.3v5.4a3.5,3.5,0,0,0,1.8,3.1l7.8,4.5a5,5,0,0,0,4.8,0l7.8-4.5A3.5,3.5,0,0,0,24,14.7V9.3A3.5,3.5,0,0,0,22.2,6.2ZM10.6,3.4a3,3,0,0,1,2.8,0l7.4,4.3L12,12.8,3.2,7.7ZM2.8,16.1A1.5,1.5,0,0,1,2,14.7V9.4l9,5.2v7.3a3.1,3.1,0,0,1-.4-.2Zm18.4,0-7.8,4.5a3.1,3.1,0,0,1-.4.2V14.6l9-5.2v5.3A1.5,1.5,0,0,1,21.2,16.1Z" /></svg>
-const IcoMoneda = () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,22A10,10,0,1,1,22,12,10.011,10.011,0,0,1,12,22Z" /><path d="M12,5a1,1,0,0,0-1,1v6a1,1,0,0,0,.293.707l3,3a1,1,0,0,0,1.414-1.414L13,11.586V6A1,1,0,0,0,12,5Z" /></svg>
 const IcoCamion = () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19,5H17V4a3,3,0,0,0-3-3H3A3,3,0,0,0,0,4V19H2.041A3.465,3.465,0,0,0,2,19.5a3.5,3.5,0,0,0,7,0,3.465,3.465,0,0,0-.041-.5h6.082a3.465,3.465,0,0,0-.041.5,3.5,3.5,0,0,0,7,0,3.465,3.465,0,0,0-.041-.5H24V10A5.006,5.006,0,0,0,19,5Zm0,2a3,3,0,0,1,3,3v1H17V7ZM7,19.5a1.5,1.5,0,0,1-3,0,1.418,1.418,0,0,1,.093-.5H6.907A1.418,1.418,0,0,1,7,19.5ZM15,17H2V4A1,1,0,0,1,3,3H14a1,1,0,0,1,1,1Zm5,2.5a1.5,1.5,0,0,1-3,0,1.41,1.41,0,0,1,.093-.5h2.814A1.41,1.41,0,0,1,20,19.5ZM22,17H17V13h5Z" /></svg>
 
 const IcoDireccion = () => <svg className="si-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12,6a4,4,0,1,0,4,4A4,4,0,0,0,12,6Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,12Z" /><path d="M12,24a5.271,5.271,0,0,1-4.311-2.2c-3.811-5.257-5.744-9.209-5.744-11.747a10.055,10.055,0,0,1,20.11,0c0,2.538-1.933,6.49-5.744,11.747A5.271,5.271,0,0,1,12,24ZM12,2.181a7.883,7.883,0,0,0-7.874,7.874c0,2.01,1.893,5.727,5.329,10.466a3.145,3.145,0,0,0,5.09,0c3.436-4.739,5.329-8.456,5.329-10.466A7.883,7.883,0,0,0,12,2.181Z" /></svg>
 const IcoUsuario = () => <svg className="si-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12,12A6,6,0,1,0,6,6,6.006,6.006,0,0,0,12,12ZM12,2A4,4,0,1,1,8,6,4,4,0,0,1,12,2Z" /><path d="M12,14a9.01,9.01,0,0,0-9,9,1,1,0,0,0,2,0,7,7,0,0,1,14,0,1,1,0,0,0,2,0A9.01,9.01,0,0,0,12,14Z" /></svg>
+// Iconos del diseño version2 (iconos/ de almacen-russitex).
+const IcoSaludo = () => <svg className="title-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.04,.719c.156-.53,.713-.833,1.241-.679,1.843,.54,3.114,1.809,3.677,3.671,.16,.529-.14,1.087-.668,1.247-.096,.029-.194,.043-.29,.043-.429,0-.826-.279-.957-.711-.373-1.234-1.111-1.974-2.323-2.329-.53-.155-.834-.711-.679-1.241Zm10.96,7.265v6.17c0,2.381-.969,4.708-2.658,6.386l-.815,.81c-1.721,1.709-4.104,2.65-6.526,2.65-2.454-.021-4.725-1.006-6.436-2.766L.842,14.316c-.964-.965-1.119-2.506-.35-3.576,.238-.33,.541-.599,.885-.793l-.344-.344C.058,8.628-.097,7.086,.674,6.017c.352-.489,.846-.841,1.405-1.018-.127-.71,.005-1.451,.434-2.047,.474-.658,1.205-1.073,2.006-1.137,.711-.055,1.398,.177,1.942,.622,.051-.094,.099-.19,.162-.278,.474-.658,1.205-1.072,2.005-1.137,.809-.064,1.586,.224,2.154,.792l7.218,7.218v-.939c0-1.517,1.076-2.835,2.504-3.067,.879-.141,1.768,.103,2.439,.674,.672,.571,1.057,1.404,1.057,2.286Zm-2,0c0-.294-.128-.572-.353-.762-.228-.193-.521-.271-.823-.224-.462,.075-.825,.555-.825,1.093v3.354c0,.404-.244,.769-.617,.924-.375,.154-.804,.069-1.09-.217L9.368,3.227c-.153-.153-.364-.227-.579-.212-.126,.01-.365,.064-.543,.312-.2,.278-.134,.719,.15,1.003l5.051,5.051c.391,.391,.391,1.023,0,1.414-.195,.195-.451,.293-.707,.293s-.512-.098-.707-.293L5.258,4.021c-.152-.152-.359-.229-.579-.212-.126,.01-.365,.064-.543,.312-.2,.278-.134,.718,.15,1.003l6.71,6.71c.391,.391,.391,1.023,0,1.414-.195,.195-.451,.293-.707,.293s-.512-.098-.707-.293L3.419,7.085c-.152-.152-.372-.23-.578-.212-.126,.01-.365,.064-.544,.313-.2,.278-.134,.718,.15,1.003l6.097,6.097c.391,.391,.391,1.023,0,1.414s-1.023,.391-1.414,0l-3.891-3.891c-.152-.152-.364-.228-.579-.212-.126,.01-.365,.064-.544,.312-.2,.278-.134,.719,.151,1.003l6.732,6.929c1.335,1.374,3.125,2.14,5.041,2.157,1.885,.003,3.718-.717,5.078-2.066l.815-.81c1.314-1.305,2.067-3.115,2.067-4.967V7.984ZM4.281,21.04c-1.212-.355-1.951-1.095-2.323-2.329-.16-.529-.718-.825-1.247-.668-.529,.16-.828,.718-.668,1.247,.562,1.862,1.834,3.131,3.677,3.671,.094,.027,.188,.041,.281,.041,.433,0,.832-.283,.959-.72,.155-.53-.149-1.085-.679-1.241Z" /></svg>
+const IcoBolsa = () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21,6H18A6,6,0,0,0,6,6H3A3,3,0,0,0,0,9V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V9A3,3,0,0,0,21,6ZM12,2a4,4,0,0,1,4,4H8A4,4,0,0,1,12,2ZM22,19a3,3,0,0,1-3,3H5a3,3,0,0,1-3-3V9A1,1,0,0,1,3,8H6v2a1,1,0,0,0,2,0V8h8v2a1,1,0,0,0,2,0V8h3a1,1,0,0,1,1,1Z" /></svg>
+const IcoFactura = () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16,23c0,.552-.447,1-1,1H6c-2.757,0-5-2.243-5-5V5C1,2.243,3.243,0,6,0h4.515c1.869,0,3.627,.728,4.95,2.05l3.484,3.486c.271,.271,.523,.568,.748,.883,.321,.449,.217,1.074-.232,1.395-.449,.32-1.075,.217-1.395-.233-.161-.225-.341-.438-.534-.63l-3.485-3.486c-.318-.318-.671-.587-1.051-.805V7c0,.551,.448,1,1,1h3c.553,0,1,.448,1,1s-.447,1-1,1h-3c-1.654,0-3-1.346-3-3V2.023c-.16-.015-.322-.023-.485-.023H6c-1.654,0-3,1.346-3,3v14c0,1.654,1.346,3,3,3H15c.553,0,1,.448,1,1Zm5.685-6.733l-3.041-.507c-.373-.062-.644-.382-.644-.76,0-.551,.448-1,1-1h2.268c.356,0,.688,.192,.867,.5,.275,.478,.885,.641,1.366,.365,.478-.277,.642-.888,.364-1.366-.534-.925-1.53-1.5-2.598-1.5h-.268v-1c0-.552-.447-1-1-1s-1,.448-1,1v1c-1.654,0-3,1.346-3,3,0,1.36,.974,2.51,2.315,2.733l3.041,.507c.373,.062,.644,.382,.644,.76,0,.551-.448,1-1,1h-2.268c-.356,0-.688-.192-.867-.5-.275-.479-.886-.642-1.366-.365-.478,.277-.642,.888-.364,1.366,.534,.925,1.53,1.499,2.598,1.499h.268v1c0,.552,.447,1,1,1s1-.448,1-1v-1c1.654,0,3-1.346,3-3,0-1.36-.974-2.51-2.315-2.733Zm-14.185-1.267h5.5c.553,0,1-.448,1-1s-.447-1-1-1H7.5c-1.378,0-2.5,1.122-2.5,2.5v2c0,1.378,1.122,2.5,2.5,2.5h5.5c.553,0,1-.448,1-1s-.447-1-1-1H7.5c-.276,0-.5-.224-.5-.5v-2c0-.276,.224-.5,.5-.5Zm-1.5-4h2c.552,0,1-.448,1-1s-.448-1-1-1h-2c-.552,0-1,.448-1,1s.448,1,1,1Zm0-4h2c.552,0,1-.448,1-1s-.448-1-1-1h-2c-.552,0-1,.448-1,1s.448,1,1,1Z" /></svg>
+const IcoCarrito = () => <svg viewBox="0 0 24 24"><path d="M22.713,4.077A2.993,2.993,0,0,0,20.41,3H4.242L4.2,2.649A3,3,0,0,0,1.222,0H1A1,1,0,0,0,1,2h.222a1,1,0,0,1,.993.883l1.376,11.7A5,5,0,0,0,8.557,19H19a1,1,0,0,0,0-2H8.557a3,3,0,0,1-2.82-2h11.92a5,5,0,0,0,4.921-4.113l.785-4.354A2.994,2.994,0,0,0,22.713,4.077ZM21.4,6.178l-.786,4.354A3,3,0,0,1,17.657,13H5.419L4.478,5H20.41A1,1,0,0,1,21.4,6.178Z" /><circle cx="7" cy="22" r="2" /><circle cx="17" cy="22" r="2" /></svg>
 
 // Llamada autenticada al backend. Devuelve { ok, status, datos }.
 async function api(token, ruta, { method = 'GET', body } = {}) {
@@ -229,11 +232,11 @@ function Resumen({ user, pedidos, onVer, onTodos }) {
   const enCamino = pedidos.filter((p) => p.estadoCliente.clave === 'enviado').length
   return (
     <>
-      <h1 className="sec-title">¡Hola, {primerNombre(user)}! 👋</h1>
+      <h1 className="sec-title">¡Hola, {primerNombre(user)}! <IcoSaludo /></h1>
       <p className="sec-sub">Desde aquí puedes ver tus pedidos y cómo van tus envíos.</p>
       <div className="stats-row">
-        <div className="stat-card"><div className="stat-ico p"><IcoCaja /></div><div><div className="stat-num">{pagados.length}</div><div className="stat-lbl">Pedidos realizados</div></div></div>
-        <div className="stat-card"><div className="stat-ico g"><IcoMoneda /></div><div><div className="stat-num">{moneyCorto(pagados.reduce((s, p) => s + (Number(p.total) || 0), 0))}</div><div className="stat-lbl">Total comprado</div></div></div>
+        <div className="stat-card"><div className="stat-ico p"><IcoBolsa /></div><div><div className="stat-num">{pagados.length}</div><div className="stat-lbl">Pedidos realizados</div></div></div>
+        <div className="stat-card"><div className="stat-ico g"><IcoFactura /></div><div><div className="stat-num">{moneyCorto(pagados.reduce((s, p) => s + (Number(p.total) || 0), 0))}</div><div className="stat-lbl">Total comprado</div></div></div>
         <div className="stat-card"><div className="stat-ico d"><IcoCamion /></div><div><div className="stat-num">{enCamino}</div><div className="stat-lbl">{enCamino === 1 ? 'Envío en camino' : 'Envíos en camino'}</div></div></div>
       </div>
       <div className="recientes-card">
@@ -245,13 +248,14 @@ function Resumen({ user, pedidos, onVer, onTodos }) {
           <div className="empty-mini">Aún no tienes pedidos. <Link to="/catalogo">Explora el catálogo</Link></div>
         ) : (
           <>
-            <div className="tabla-head"><span>Pedido</span><span>Fecha</span><span>Estado</span><span>Total</span></div>
+            <div className="tabla-head"><span>Pedido</span><span>Fecha</span><span>Estado</span><span>Total</span><span /></div>
             {pedidos.slice(0, 3).map((p) => (
               <div className="pedido-fila" key={p.referencia} role="button" tabIndex={0} onClick={() => onVer(p.referencia)} onKeyDown={(e) => e.key === 'Enter' && onVer(p.referencia)}>
                 <span className="p-num">#{p.referencia}</span>
                 <span className="p-fecha">{fechaCorta(p.creadoEn)}</span>
                 <Estado e={p.estadoCliente} />
                 <span className="p-total">{money(p.total)}</span>
+                <span className="p-ver" aria-hidden="true">Ver</span>
               </div>
             ))}
           </>
@@ -268,14 +272,14 @@ function ListaPedidos({ pedidos, onVer }) {
       <p className="sec-sub">Historial de tus compras en Russitex. Haz clic en un pedido para ver el detalle.</p>
       {pedidos.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-ico"><IcoPedidos /></div>
+          <div className="empty-ico"><IcoCarrito /></div>
           <h3>Aún no has hecho ningún pedido</h3>
           <p>Cuando compres, tus pedidos aparecerán aquí con su estado, seguimiento y detalle.</p>
           <Link className="btn-primary" to="/catalogo">Explorar catálogo</Link>
         </div>
       ) : (
         <div className="recientes-card">
-          <div className="tabla-head cols5"><span>Pedido</span><span>Fecha</span><span>Productos</span><span>Estado</span><span>Total</span></div>
+          <div className="tabla-head cols5"><span>Pedido</span><span>Fecha</span><span>Productos</span><span>Estado</span><span>Total</span><span /></div>
           {pedidos.map((p) => (
             <div className="pedido-fila cols5" key={p.referencia} role="button" tabIndex={0} onClick={() => onVer(p.referencia)} onKeyDown={(e) => e.key === 'Enter' && onVer(p.referencia)}>
               <span className="p-num">#{p.referencia}</span>
@@ -286,6 +290,7 @@ function ListaPedidos({ pedidos, onVer }) {
               </span>
               <Estado e={p.estadoCliente} />
               <span className="p-total">{money(p.total)}</span>
+              <span className="p-ver" aria-hidden="true">Ver</span>
             </div>
           ))}
         </div>
@@ -434,6 +439,9 @@ function Direcciones({ token }) {
       {error && <div className="form-error" style={{ marginBottom: '1rem' }}>{error}</div>}
       {direcciones === null ? <p className="cargando">Cargando tus direcciones…</p> : (
         <div className="dirs-grid">
+          {direcciones.length === 0 && (
+            <div className="empty-mini" style={{ gridColumn: '1 / -1' }}>Aún no tienes direcciones guardadas. Agrega una para agilizar tus envíos.</div>
+          )}
           {direcciones.map((d) => (
             <div className={`dir-card ${d.principal ? 'principal' : ''}`} key={d.id}>
               {d.principal && <span className="dir-badge">Principal</span>}
@@ -546,15 +554,18 @@ function DireccionModal({ inicial, onCerrar, onGuardar }) {
 }
 
 // ── Detalles de la cuenta ──
-const TIPOS_DOC = { CC: 'Cédula de ciudadanía', CE: 'Cédula de extranjería', NIT: 'NIT', TI: 'Tarjeta de identidad', PP: 'Pasaporte' }
+// Tipos de documento de la persona (código guardado -> etiqueta). PEP = PPT.
+const TIPOS_DOC = { CC: 'C.C.', CE: 'C.E.', PP: 'Pasaporte', PEP: 'PPT', TI: 'T.I.' }
 const PROVEEDOR = { google: 'Google', facebook: 'Facebook' }
+// 1020345678 -> "1.020.345.678" (solo si es un número).
+const conPuntos = (n) => (/^\d+$/.test(String(n || '')) ? Number(n).toLocaleString('es-CO') : String(n || ''))
 
 function Detalles({ token }) {
   const { refrescarPerfil } = useAuth()
   const [perfil, setPerfil] = useState(null)
   const [error, setError] = useState('')
   const [aviso, setAviso] = useState('')
-  const [ventana, setVentana] = useState(null)   // null | 'info' | 'pwd'
+  const [ventana, setVentana] = useState(null)   // null | 'info' | 'empresa' | 'pwd'
 
   useEffect(() => {
     let activo = true
@@ -570,7 +581,18 @@ function Detalles({ token }) {
   if (!perfil) return <p className="cargando">Cargando tu información…</p>
 
   const social = perfil.proveedores.filter((p) => p !== 'email').map((p) => PROVEEDOR[p] || p)
-  const valor = (v) => (v ? v : <span className="info-val vacio">Sin agregar</span>)
+  const fila = (etiqueta, v) => (
+    <div className="info-fila"><span className="info-lbl">{etiqueta}</span>
+      {v ? <span className="info-val">{v}</span> : <span className="info-val vacio">Sin completar</span>}</div>
+  )
+  const e = perfil.empresa
+
+  async function guardarPerfil(body, mensaje) {
+    const r = await api(token, '/api/cuenta/perfil', { method: 'PUT', body })
+    if (!r.ok) return r.datos.error || 'No se pudieron guardar los cambios.'
+    setPerfil(r.datos); setVentana(null); setAviso(mensaje)
+    return null
+  }
 
   return (
     <>
@@ -578,19 +600,33 @@ function Detalles({ token }) {
       <p className="sec-sub">Revisa y actualiza tu información personal{perfil.tieneContrasena ? ' y tu contraseña' : ''}.</p>
       {aviso && <div className="aviso-ok">{aviso}</div>}
       <div className="detalles-grid">
-        <div className="det-card">
+        <div className="det-card" style={{ gridArea: 'info' }}>
           <div className="det-card-header">
             <h3>Información personal</h3>
             <button className="btn-edit-info" onClick={() => { setAviso(''); setVentana('info') }}>Editar</button>
           </div>
-          <div className="info-fila"><span className="info-lbl">Nombre</span><span className="info-val">{valor(perfil.nombre)}</span></div>
-          <div className="info-fila"><span className="info-lbl">Correo</span><span className="info-val">{perfil.email}</span></div>
-          <div className="info-fila"><span className="info-lbl">Teléfono</span><span className="info-val">{valor(perfil.telefono)}</span></div>
-          <div className="info-fila"><span className="info-lbl">Documento</span><span className="info-val">{perfil.documento ? `${perfil.tipoDocumento} ${perfil.documento}` : valor('')}</span></div>
+          {fila('Nombres', perfil.nombres)}
+          {fila('Apellidos', perfil.apellidos)}
+          {fila('Documento', perfil.documento && `${TIPOS_DOC[perfil.tipoDocumento] || perfil.tipoDocumento} ${conPuntos(perfil.documento)}`)}
+          {fila('Celular', perfil.telefono)}
+          {fila('Correo', perfil.email)}
           <p>Con estos datos llenamos el checkout por ti. Para cambiar el correo, escríbenos por WhatsApp.</p>
         </div>
 
-        <div className="det-card">
+        <div className="det-card" style={{ gridArea: 'empresa' }}>
+          <div className="det-card-header">
+            <h3>Datos de empresa</h3>
+            <button className="btn-edit-info" onClick={() => { setAviso(''); setVentana('empresa') }}>Editar</button>
+          </div>
+          {fila('Razón social', e?.razonSocial)}
+          {fila('NIT', e?.nit && `${conPuntos(e.nit)}-${digitoVerificacion(e.nit)}`)}
+          {fila('Resp. de IVA', REGIMENES[e?.regimen])}
+          {fila('Celular', e?.celular)}
+          {fila('Correo', e?.correo)}
+          <p>Completa estos datos solo si quieres recibir la factura a nombre de una empresa. Así los tendrás listos al pagar.</p>
+        </div>
+
+        <div className="det-card" style={{ gridArea: 'pwd' }}>
           <div className="det-card-header">
             <h3>Contraseña</h3>
             {perfil.tieneContrasena && <button className="btn-edit-info" onClick={() => { setAviso(''); setVentana('pwd') }}>Cambiar</button>}
@@ -604,46 +640,18 @@ function Detalles({ token }) {
             <p>Entras con <strong>{social.join(' o ') || 'tu proveedor'}</strong>, así que tu cuenta no tiene una contraseña propia en Russitex. La seguridad la maneja {social[0] || 'ese servicio'}.</p>
           )}
         </div>
-
-        <div className="det-card">
-          <div className="det-card-header">
-            <h3>Datos de facturación</h3>
-            <button className="btn-edit-info" onClick={() => { setAviso(''); setVentana('empresa') }}>{perfil.empresa ? 'Editar' : 'Agregar'}</button>
-          </div>
-          {perfil.empresa ? (
-            <>
-              <div className="info-fila"><span className="info-lbl">Razón social</span><span className="info-val">{perfil.empresa.razonSocial}</span></div>
-              <div className="info-fila"><span className="info-lbl">NIT</span><span className="info-val">{perfil.empresa.nit}-{digitoVerificacion(perfil.empresa.nit)}</span></div>
-              <div className="info-fila"><span className="info-lbl">IVA</span><span className="info-val">{REGIMENES[perfil.empresa.regimen] || perfil.empresa.regimen}</span></div>
-              <p>Si compras como empresa, la factura sale a nombre de estos datos.</p>
-            </>
-          ) : (
-            <p>Si compras como empresa, guarda aquí la razón social y el NIT para que la factura salga a su nombre. También se guardan solos la primera vez que compres como empresa.</p>
-          )}
-        </div>
       </div>
 
       {ventana === 'info' && (
         <InfoModal perfil={perfil} onCerrar={() => setVentana(null)} onGuardar={async (datos) => {
-          const r = await api(token, '/api/cuenta/perfil', { method: 'PUT', body: datos })
-          if (!r.ok) return r.datos.error || 'No se pudieron guardar los cambios.'
-          setPerfil(r.datos); setVentana(null); setAviso('Tus datos quedaron guardados.')
-          refrescarPerfil?.()   // para que el encabezado muestre el nombre nuevo
-          return null
+          const msg = await guardarPerfil(datos, 'Tus datos quedaron guardados.')
+          if (!msg) refrescarPerfil?.()   // para que el encabezado muestre el nombre nuevo
+          return msg
         }} />
       )}
       {ventana === 'empresa' && (
-        <EmpresaModal empresa={perfil.empresa} onCerrar={() => setVentana(null)} onGuardar={async (empresa) => {
-          // El PUT de perfil pide también los datos personales: van tal cual.
-          const r = await api(token, '/api/cuenta/perfil', {
-            method: 'PUT',
-            body: { nombre: perfil.nombre, telefono: perfil.telefono, tipoDocumento: perfil.tipoDocumento, documento: perfil.documento, empresa },
-          })
-          if (!r.ok) return r.datos.error || 'No se pudieron guardar los cambios.'
-          setPerfil(r.datos); setVentana(null)
-          setAviso(empresa ? 'Los datos de facturación quedaron guardados.' : 'Quitamos los datos de empresa.')
-          return null
-        }} />
+        <EmpresaModal empresa={e} onCerrar={() => setVentana(null)} onGuardar={(empresa) =>
+          guardarPerfil({ empresa }, empresa ? 'Los datos de empresa quedaron guardados.' : 'Quitamos los datos de empresa.')} />
       )}
       {ventana === 'pwd' && (
         <PwdModal onCerrar={() => setVentana(null)} onGuardar={async (datos) => {
@@ -658,16 +666,19 @@ function Detalles({ token }) {
 }
 
 function InfoModal({ perfil, onCerrar, onGuardar }) {
-  const [f, setF] = useState({ nombre: perfil.nombre, telefono: perfil.telefono, tipoDocumento: perfil.tipoDocumento || 'CC', documento: perfil.documento })
+  const [f, setF] = useState({
+    nombres: perfil.nombres || '', apellidos: perfil.apellidos || '', telefono: perfil.telefono || '',
+    tipoDocumento: TIPOS_DOC[perfil.tipoDocumento] ? perfil.tipoDocumento : 'CC', documento: perfil.documento || '',
+  })
   const [error, setError] = useState('')
   const [guardando, setGuardando] = useState(false)
   const set = (campo) => (e) => setF((x) => ({ ...x, [campo]: e.target.value }))
 
   async function guardar() {
     setError('')
-    if (f.nombre.trim().length < 2) return setError('Escribe tu nombre completo.')
+    if (f.nombres.trim().length < 2) return setError('Escribe tus nombres.')
     setGuardando(true)
-    const msg = await onGuardar(f)
+    const msg = await onGuardar({ ...f, nombres: f.nombres.trim(), apellidos: f.apellidos.trim(), documento: f.documento.replace(/\./g, '').trim() })
     setGuardando(false)
     if (msg) setError(msg)
   }
@@ -678,27 +689,34 @@ function InfoModal({ perfil, onCerrar, onGuardar }) {
         <button className="modal-btn-cancel" onClick={onCerrar}>Cancelar</button>
         <button className="modal-btn-save" disabled={guardando} onClick={guardar}>{guardando ? 'Guardando…' : 'Guardar cambios'}</button>
       </>}>
-      <div className="fg"><label className="fl" htmlFor="i-nom">Nombre completo</label>
-        <input id="i-nom" className="fi" value={f.nombre} onChange={set('nombre')} maxLength={120} autoComplete="name" /></div>
-      <div className="fg"><label className="fl" htmlFor="i-mail">Correo electrónico</label>
-        <input id="i-mail" className="fi" value={perfil.email} disabled />
-        <span className="ayuda">Para cambiarlo, escríbenos por WhatsApp.</span></div>
-      <div className="fg"><label className="fl" htmlFor="i-tel">Teléfono</label>
-        <input id="i-tel" className="fi" type="tel" placeholder="Ej: 3001234567" value={f.telefono} onChange={set('telefono')} maxLength={20} autoComplete="tel" /></div>
-      <div className="fg"><label className="fl" htmlFor="i-doc">Documento de identidad</label>
+      <div className="fila-par">
+        <div className="fg"><label className="fl" htmlFor="i-nom">Nombres</label>
+          <input id="i-nom" className="fi" value={f.nombres} onChange={set('nombres')} maxLength={80} autoComplete="given-name" /></div>
+        <div className="fg"><label className="fl" htmlFor="i-ape">Apellidos</label>
+          <input id="i-ape" className="fi" value={f.apellidos} onChange={set('apellidos')} maxLength={80} autoComplete="family-name" /></div>
+      </div>
+      <div className="fg"><label className="fl" htmlFor="i-doc">Documento</label>
         <div className="fila-2">
           <select className="fi" aria-label="Tipo de documento" value={f.tipoDocumento} onChange={set('tipoDocumento')}>
-            {Object.keys(TIPOS_DOC).map((t) => <option key={t} value={t} title={TIPOS_DOC[t]}>{t}</option>)}
+            {Object.entries(TIPOS_DOC).map(([v, t]) => <option key={v} value={v}>{t}</option>)}
           </select>
           <input id="i-doc" className="fi" placeholder="Ej: 1020345678" value={f.documento} onChange={set('documento')} maxLength={20} />
         </div></div>
+      <div className="fg"><label className="fl" htmlFor="i-tel">Celular</label>
+        <input id="i-tel" className="fi" type="tel" placeholder="Ej: 3001234567" value={f.telefono} onChange={set('telefono')} maxLength={20} autoComplete="tel" /></div>
+      <div className="fg"><label className="fl" htmlFor="i-mail">Correo electrónico</label>
+        <input id="i-mail" className="fi" value={perfil.email} disabled />
+        <span className="ayuda">Para cambiarlo, escríbenos por WhatsApp.</span></div>
       {error && <div className="form-error">{error}</div>}
     </Modal>
   )
 }
 
 function EmpresaModal({ empresa, onCerrar, onGuardar }) {
-  const [f, setF] = useState({ razonSocial: empresa?.razonSocial || '', nit: empresa?.nit || '', regimen: empresa?.regimen || '' })
+  const [f, setF] = useState({
+    razonSocial: empresa?.razonSocial || '', nit: empresa?.nit || '', regimen: empresa?.regimen || '',
+    celular: empresa?.celular || '', correo: empresa?.correo || '',
+  })
   const [error, setError] = useState('')
   const [guardando, setGuardando] = useState(false)
   const set = (campo) => (e) => setF((x) => ({ ...x, [campo]: e.target.value }))
@@ -709,34 +727,38 @@ function EmpresaModal({ empresa, onCerrar, onGuardar }) {
     if (datos) {
       if (datos.razonSocial.trim().length < 2) return setError('Escribe la razón social.')
       if (nit.length < 5) return setError('Escribe el NIT sin el dígito de verificación.')
-      if (!datos.regimen) return setError('Elige la responsabilidad de IVA.')
     }
     setGuardando(true)
-    const msg = await onGuardar(datos && { ...datos, razonSocial: datos.razonSocial.trim(), nit })
+    const msg = await onGuardar(datos && { ...datos, razonSocial: datos.razonSocial.trim(), nit, celular: datos.celular.trim(), correo: datos.correo.trim() })
     setGuardando(false)
     if (msg) setError(msg)
   }
 
   return (
-    <Modal titulo="Datos de facturación" onCerrar={onCerrar}
+    <Modal titulo="Editar datos de empresa" onCerrar={onCerrar}
       pie={<>
         {empresa && <button className="modal-btn-cancel" disabled={guardando} onClick={() => enviar(null)}>Quitar empresa</button>}
         <button className="modal-btn-cancel" onClick={onCerrar}>Cancelar</button>
-        <button className="modal-btn-save" disabled={guardando} onClick={() => enviar(f)}>{guardando ? 'Guardando…' : 'Guardar'}</button>
+        <button className="modal-btn-save" disabled={guardando} onClick={() => enviar(f)}>{guardando ? 'Guardando…' : 'Guardar cambios'}</button>
       </>}>
       <div className="fg"><label className="fl" htmlFor="e-razon">Razón social</label>
-        <input id="e-razon" className="fi" placeholder="Ej: Textiles ABC S.A.S." value={f.razonSocial} onChange={set('razonSocial')} maxLength={150} /></div>
+        <input id="e-razon" className="fi" placeholder="Ej: Textiles ABC S.A.S." value={f.razonSocial} onChange={set('razonSocial')} maxLength={150} autoComplete="organization" /></div>
       <div className="fg"><label className="fl" htmlFor="e-nit">NIT</label>
-        <div className="fila-2">
+        <div className="fila-nit">
           <input id="e-nit" className="fi" inputMode="numeric" placeholder="Ej: 900123456" value={f.nit} onChange={set('nit')} maxLength={15} />
           <input className="fi" aria-label="Dígito de verificación" value={nit ? digitoVerificacion(nit) : ''} placeholder="DV" disabled />
         </div>
         <span className="ayuda">El dígito de verificación se calcula solo.</span></div>
-      <div className="fg"><label className="fl" htmlFor="e-reg">Responsabilidad de IVA</label>
+      <div className="fg"><label className="fl" htmlFor="e-reg">Responsabilidad de IVA <span className="opcional">(opcional)</span></label>
         <select id="e-reg" className="fi" value={f.regimen} onChange={set('regimen')}>
-          <option value="">Selecciona…</option>
+          <option value="">No estoy seguro</option>
           {Object.entries(REGIMENES).map(([v, t]) => <option key={v} value={v}>{t}</option>)}
         </select></div>
+      <div className="fg"><label className="fl" htmlFor="e-cel">Celular</label>
+        <input id="e-cel" className="fi" type="tel" placeholder="Ej: 3001234567" value={f.celular} onChange={set('celular')} maxLength={20} /></div>
+      <div className="fg"><label className="fl" htmlFor="e-correo">Correo electrónico</label>
+        <input id="e-correo" className="fi" type="email" placeholder="Ej: facturacion@empresa.com" value={f.correo} onChange={set('correo')} maxLength={120} />
+        <span className="ayuda">Ahí llega la factura cuando compras como empresa.</span></div>
       {error && <div className="form-error">{error}</div>}
     </Modal>
   )

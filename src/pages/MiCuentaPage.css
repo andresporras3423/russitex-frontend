@@ -69,13 +69,17 @@
 .micuenta-page .rc-link:hover { text-decoration: underline; }
 
 /* ── Tabla de pedidos ── */
-.micuenta-page .tabla-head { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 1rem; padding: 0.7rem 1.5rem; background: var(--crema-osc); }
+.micuenta-page .tabla-head { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr 64px; gap: 1rem; padding: 0.7rem 1.5rem; background: var(--crema-osc); }
 .micuenta-page .tabla-head span { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--gris-calido); }
-.micuenta-page .tabla-head.cols5 { grid-template-columns: 1.3fr 0.9fr 1.4fr 1fr 0.8fr; }
-.micuenta-page .pedido-fila { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 1rem; padding: 0.95rem 1.5rem; border-bottom: 1px solid var(--crema-osc); align-items: center; transition: background 0.15s; cursor: pointer; }
+.micuenta-page .tabla-head.cols5 { grid-template-columns: 1.3fr 0.9fr 1.4fr 1fr 0.8fr 64px; }
+.micuenta-page .pedido-fila { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr 64px; gap: 1rem; padding: 0.95rem 1.5rem; border-bottom: 1px solid var(--crema-osc); align-items: center; transition: background 0.15s; cursor: pointer; }
 .micuenta-page .pedido-fila:last-child { border-bottom: none; }
 .micuenta-page .pedido-fila:hover, .micuenta-page .pedido-fila:focus-visible { background: var(--crema); outline: none; }
-.micuenta-page .pedido-fila.cols5 { grid-template-columns: 1.3fr 0.9fr 1.4fr 1fr 0.8fr; }
+.micuenta-page .pedido-fila.cols5 { grid-template-columns: 1.3fr 0.9fr 1.4fr 1fr 0.8fr 64px; }
+/* "Ver": deja claro que el pedido se puede abrir (diseño version2). */
+.micuenta-page .p-ver { justify-self: end; border: 1px solid var(--linea); background: #fff; color: var(--azul-oficio); font-size: 0.78rem; font-weight: 700; padding: 0.35rem 0.9rem; border-radius: var(--r-pill); transition: all 0.15s; white-space: nowrap; }
+.micuenta-page .pedido-fila:hover .p-ver { border-color: var(--azul-oficio); background: var(--azul-claro); }
+.micuenta-page .title-ico { width: 1.05em; height: 1.05em; vertical-align: -0.14em; fill: var(--azul-oficio); margin-left: 0.25rem; }
 .micuenta-page .p-num { font-size: 0.84rem; font-weight: 700; color: var(--azul-oficio); overflow-wrap: anywhere; }
 .micuenta-page .p-fecha { font-size: 0.81rem; color: var(--gris-calido); }
 .micuenta-page .p-items { font-size: 0.79rem; color: var(--tinta); line-height: 1.4; }
@@ -172,7 +176,7 @@
 .micuenta-page .dir-add-label { font-size: 0.83rem; font-weight: 600; color: var(--gris-calido); }
 
 /* ── Detalles de la cuenta ── */
-.micuenta-page .detalles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+.micuenta-page .detalles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; grid-template-areas: "info empresa" "pwd empresa"; }
 .micuenta-page .det-card { background: #fff; border-radius: var(--r-lg); border: 1px solid var(--linea); padding: 1.8rem; }
 .micuenta-page .det-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--linea); }
 .micuenta-page .det-card-header h3 { font-family: var(--f-head); font-size: 1rem; font-weight: 600; color: var(--tinta); }
@@ -194,6 +198,9 @@
 .micuenta-page .fi:disabled { opacity: 0.65; cursor: not-allowed; }
 .micuenta-page .fi::placeholder { color: var(--gris-calido); }
 .micuenta-page .fila-2 { display: grid; grid-template-columns: 110px 1fr; gap: 0.6rem; }
+.micuenta-page .fila-nit { display: grid; grid-template-columns: 1fr 80px; gap: 0.6rem; }
+.micuenta-page .fila-par { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+.micuenta-page .fl .opcional { font-weight: 400; color: var(--gris-calido); }
 .micuenta-page .ayuda { font-size: 0.74rem; color: var(--gris-calido); }
 .micuenta-page .form-error { font-size: 0.82rem; color: var(--rojo); background: #F6E7E4; border-radius: var(--r-sm); padding: 0.65rem 0.9rem; }
 .micuenta-page .aviso-ok { font-size: 0.82rem; color: var(--verde); background: #EAF1E6; border-radius: var(--r-sm); padding: 0.65rem 0.9rem; margin-bottom: 1.2rem; }
@@ -221,11 +228,12 @@
   .micuenta-page .cuenta-layout { grid-template-columns: 1fr; padding: 2rem 6% 3.5rem; }
   .micuenta-page .breadcrumb-bar { padding: 0.9rem 6%; }
   .micuenta-page .cuenta-sidebar { position: static; }
-  .micuenta-page .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0.4rem; }
-  .micuenta-page .sidebar-item { width: auto; flex: 1 1 auto; justify-content: center; border-left: none; border-radius: var(--r-sm); }
+  .micuenta-page .sidebar-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; padding: 0.5rem; }
+  .micuenta-page .sidebar-item { width: auto; justify-content: center; border-left: none; border-radius: var(--r-sm); }
+  .micuenta-page .sidebar-item:nth-child(4) { grid-column: span 2; }
   .micuenta-page .sidebar-item.active { border-left: none; }
   .micuenta-page .sidebar-item.logout { border-top: none; margin-top: 0; }
-  .micuenta-page .detalles-grid { grid-template-columns: 1fr; }
+  .micuenta-page .detalles-grid { grid-template-columns: 1fr; grid-template-areas: "info" "empresa" "pwd"; }
 }
 @media (max-width: 700px) {
   .micuenta-page .stats-row { grid-template-columns: 1fr; }
@@ -234,7 +242,8 @@
   .micuenta-page .modal-footer button { width: 100%; }
   .micuenta-page .tabla-head { display: none; }
   .micuenta-page .pedido-fila, .micuenta-page .pedido-fila.cols5 { grid-template-columns: 1fr auto; gap: 0.4rem 1rem; padding: 1rem 1.2rem; }
-  .micuenta-page .pedido-fila .p-items { grid-column: 1 / -1; order: 5; }
+  .micuenta-page .pedido-fila .p-items { grid-column: 1; order: 5; }
+  .micuenta-page .pedido-fila .p-ver { order: 6; grid-column: 2; justify-self: end; align-self: end; }
   .micuenta-page .pedido-fila .estado { order: 4; justify-self: end; }
   .micuenta-page .pedido-fila .p-fecha { order: 2; justify-self: end; }
   .micuenta-page .pedido-fila .p-total { order: 3; }
@@ -243,4 +252,7 @@
   .micuenta-page .prod-fila { grid-template-columns: 1fr auto; }
   .micuenta-page .prod-fila .c-precio, .micuenta-page .prod-fila .c-cant { display: none; }
   .micuenta-page .prod-nom .meta { display: block; }
+  .micuenta-page .sidebar-nav { grid-template-columns: 1fr; }
+  .micuenta-page .sidebar-item { justify-content: flex-start; }
+  .micuenta-page .sidebar-item:nth-child(4) { grid-column: auto; }
 }
