@@ -77,11 +77,6 @@
 
 .doc { display: grid; grid-template-columns: 110px 1fr; gap: 0.6rem; }
 
-/* ── EMPRESA ── */
-.empresa-check { display: flex; align-items: flex-start; gap: 0.55rem; margin: 0.2rem 0; font-size: 0.83rem; color: var(--tinta); line-height: 1.5; cursor: pointer; }
-.empresa-check input { margin-top: 0.15rem; accent-color: var(--azul-oficio); flex-shrink: 0; }
-.empresa-extra { border-top: 1px dashed var(--linea); padding-top: 1.2rem; margin-top: 1rem; }
-.empresa-extra .fila:last-child { margin-bottom: 0; }
 .nit-grid { display: grid; grid-template-columns: 1fr 72px; gap: 0.6rem; }
 
 .datos-recordados { margin: -0.4rem 0 1rem; font-size: 0.78rem; color: var(--gris-calido); line-height: 1.5; }

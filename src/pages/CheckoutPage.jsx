@@ -22,6 +22,11 @@ function leerDatosLocales() {
     return null
   }
 }
+// Tipos de documento del formulario -> código de Alegra/DIAN. El PPT
+// (Permiso por Protección Temporal) no tiene código propio en Alegra: PEP.
+const TIPOS_DOC = { 'C.C.': 'CC', 'C.E.': 'CE', Pasaporte: 'PP', PPT: 'PEP', 'T.I.': 'TI' }
+const ETIQUETA_DOC = Object.fromEntries(Object.entries(TIPOS_DOC).map(([k, v]) => [v, k]))
+
 const FORM_VACIO = {
   nombre: '', apellido: '', tipodoc: 'C.C.', doc: '', cel: '', correo: '',
   ciudad: '', dir: '', notas: '',
@@ -132,15 +137,16 @@ export default function CheckoutPage() {
     Promise.all([pedir('/api/cuenta/perfil'), pedir('/api/cuenta/direcciones')]).then(([perfil, dirs]) => {
       if (!activo) return
       if (perfil) {
-        const [nombre, ...resto] = String(perfil.nombre || '').trim().split(/\s+/)
-        const tipodoc = { CC: 'C.C.', CE: 'C.E.' }[perfil.tipoDocumento]
+        const tipodoc = ETIQUETA_DOC[perfil.tipoDocumento]
+        // Si la última compra fue como empresa, el contacto es el de la empresa.
+        const e = perfil.facturarComoEmpresa ? perfil.empresa : null
         // Solo se llenan los campos que el cliente no haya escrito ya.
         setForm((f) => ({
           ...f,
-          nombre: f.nombre || nombre || '',
-          apellido: f.apellido || resto.join(' '),
-          correo: f.correo || perfil.email || '',
-          cel: f.cel || perfil.telefono || '',
+          nombre: f.nombre || perfil.nombres || '',
+          apellido: f.apellido || perfil.apellidos || '',
+          correo: f.correo || e?.correo || perfil.email || '',
+          cel: f.cel || e?.celular || perfil.telefono || '',
           doc: f.doc || perfil.documento || '',
           tipodoc: f.doc ? f.tipodoc : (tipodoc || f.tipodoc),
           // La empresa guardada se llena siempre (oculta si no se marca la casilla).
@@ -212,10 +218,12 @@ export default function CheckoutPage() {
   // además hace falta una ciudad válida y un envío ya cotizado.
   const formularioValido = useMemo(() => {
     // Con empresa, la identidad fiscal es el NIT: la cédula deja de ser obligatoria.
+    // Persona: nombres, apellidos y documento. Empresa: razón social y NIT
+    // (la responsabilidad de IVA es opcional).
     const identidad = esEmpresa
-      ? form.razon.trim() && /^\d{5,}$/.test(form.nit.replace(/\D/g, '')) && form.regimen
-      : form.doc.trim()
-    const datos = form.nombre.trim() && form.apellido.trim() && identidad &&
+      ? form.razon.trim() && /^\d{5,}$/.test(form.nit.replace(/\D/g, ''))
+      : form.nombre.trim() && form.apellido.trim() && form.doc.trim()
+    const datos = identidad &&
       form.cel.trim() && /\S+@\S+\.\S+/.test(form.correo) && acepta
     if (!datos) return false
     if (envio === 'tienda') return true
@@ -241,9 +249,12 @@ export default function CheckoutPage() {
     )
   }
 
+  // Con empresa, el nombre del pedido (guía, correos) es la razón social.
+  const nombreCliente = esEmpresa ? form.razon.trim() : `${form.nombre} ${form.apellido}`.trim()
+
   async function guardarDatosParaLaProxima() {
     const empresa = esEmpresa
-      ? { razonSocial: form.razon.trim(), nit: form.nit.replace(/\D/g, ''), regimen: form.regimen }
+      ? { razonSocial: form.razon.trim(), nit: form.nit.replace(/\D/g, ''), regimen: form.regimen, celular: form.cel.trim(), correo: form.correo.trim() }
       : null
     if (token) {
       try { localStorage.removeItem(CLAVE_DATOS) } catch { /* nada que borrar */ }
@@ -254,12 +265,12 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          nombre: `${form.nombre} ${form.apellido}`.trim(), telefono: form.cel,
-          tipoDocumento: form.tipodoc === 'C.E.' ? 'CE' : 'CC', documento: form.doc.trim(),
+          nombres: form.nombre.trim(), apellidos: form.apellido.trim(), telefono: form.cel,
+          tipoDocumento: TIPOS_DOC[form.tipodoc] || 'CC', documento: form.doc.trim(),
           empresa,
           // Una dirección guardada elegida tal cual no se vuelve a mandar.
           direccion: envio === 'domicilio' && dirGuardada === 'otra'
-            ? { destinatario: `${form.nombre} ${form.apellido}`.trim(), direccion: form.dir.trim(), codigoDane: daneDestino }
+            ? { destinatario: nombreCliente, direccion: form.dir.trim(), codigoDane: daneDestino }
             : null,
         }),
       }).catch(() => { /* no es grave: solo no queda prellenado */ })
@@ -288,12 +299,13 @@ export default function CheckoutPage() {
             variante: i.variante?.nombre || null,   // p. ej. el color: hace falta para despachar
           })),
           cliente: {
-            nombre: `${form.nombre} ${form.apellido}`.trim(), nombres: form.nombre.trim(), apellidos: form.apellido.trim(),
+            nombre: nombreCliente,
+            ...(esEmpresa ? {} : { nombres: form.nombre.trim(), apellidos: form.apellido.trim() }),
             email: form.correo, telefono: form.cel,
-            tipoDocumento: form.tipodoc === 'C.E.' ? 'CE' : 'CC', documento: form.doc.trim(),
+            tipoDocumento: esEmpresa ? null : (TIPOS_DOC[form.tipodoc] || 'CC'), documento: esEmpresa ? '' : form.doc.trim(),
             // La factura sale a nombre de la empresa (ver services/alegra.js).
             empresa: esEmpresa
-              ? { razonSocial: form.razon.trim(), nit: form.nit.replace(/\D/g, ''), dv: dvCalculado, regimen: form.regimen }
+              ? { razonSocial: form.razon.trim(), nit: form.nit.replace(/\D/g, ''), dv: dvCalculado, regimen: form.regimen, celular: form.cel.trim(), correo: form.correo.trim() }
               : null,
           },
           envio: {
@@ -332,7 +344,7 @@ export default function CheckoutPage() {
         sessionStorage.setItem('russitex_ultimo_checkout', JSON.stringify({
           referencia: data.referencia,
           contacto: {
-            nombre: `${form.nombre} ${form.apellido}`.trim(), telefono: form.cel, correo: form.correo,
+            nombre: nombreCliente, telefono: form.cel, correo: form.correo,
             direccion: envio === 'domicilio' ? form.dir : '', ciudad: form.ciudad, departamento: deptoSel,
           },
           items: items.map((i) => ({
@@ -390,7 +402,7 @@ export default function CheckoutPage() {
             {/* ── TUS DATOS ── */}
             <div className="bloque">
               <h2>Tus datos</h2>
-              <p className="bloque-sub">Los necesitamos para emitir la factura y para que la transportadora te ubique.</p>
+              <p className="bloque-sub">Elige a nombre de quién va la factura y completa tus datos.</p>
               {recordados && (
                 <p className="datos-recordados">
                   Llenamos el formulario con los datos de tu última compra en este navegador.{' '}
@@ -398,54 +410,52 @@ export default function CheckoutPage() {
                 </p>
               )}
 
-              <div className="fila">
-                <div className="campo">
-                  <label htmlFor="nombre">Nombre</label>
-                  <input id="nombre" type="text" placeholder="María" value={form.nombre} onChange={set('nombre')} />
+              {/* A nombre de quién va la factura */}
+              <label className={`envio-op ${!esEmpresa ? 'sel' : ''}`} style={{ marginBottom: '0.6rem' }}>
+                <input type="radio" name="tipoPersona" checked={!esEmpresa} onChange={() => setEsEmpresa(false)} />
+                <div className="envio-op-txt">
+                  <div className="envio-op-nom">Persona natural</div>
+                  <div className="envio-op-desc">La factura va a tu nombre, con tu cédula.</div>
                 </div>
-                <div className="campo">
-                  <label htmlFor="apellido">Apellidos</label>
-                  <input id="apellido" type="text" placeholder="Gómez Ruiz" value={form.apellido} onChange={set('apellido')} />
+              </label>
+              <label className={`envio-op ${esEmpresa ? 'sel' : ''}`} style={{ marginBottom: '1.3rem' }}>
+                <input type="radio" name="tipoPersona" checked={esEmpresa} onChange={() => setEsEmpresa(true)} />
+                <div className="envio-op-txt">
+                  <div className="envio-op-nom">Empresa</div>
+                  <div className="envio-op-desc">La factura va a nombre de una empresa, con NIT.</div>
                 </div>
-              </div>
-
-              <div className="fila">
-                <div className="campo">
-                  <label htmlFor="doc">Documento</label>
-                  <div className="doc">
-                    <select id="tipodoc" aria-label="Tipo de documento" value={form.tipodoc} onChange={set('tipodoc')}>
-                      <option>C.C.</option><option>C.E.</option>
-                    </select>
-                    <input id="doc" type="text" placeholder="1020304050" value={form.doc} onChange={set('doc')} />
-                  </div>
-                  <span className="ayuda">Va en la factura.</span>
-                </div>
-                <div className="campo">
-                  <label htmlFor="cel">Celular</label>
-                  <input id="cel" type="tel" placeholder="300 123 4567" value={form.cel} onChange={set('cel')} />
-                  <span className="ayuda">Por aquí avisa la transportadora.</span>
-                </div>
-              </div>
-
-              <div className="fila una">
-                <div className="campo">
-                  <label htmlFor="correo">Correo electrónico</label>
-                  <input id="correo" type="email" placeholder="maria@correo.com" value={form.correo} onChange={set('correo')} />
-                  <span className="ayuda">Ahí te llega la confirmación y la guía del envío.</span>
-                </div>
-              </div>
-
-              <label className="empresa-check">
-                <input type="checkbox" checked={esEmpresa} onChange={(e) => setEsEmpresa(e.target.checked)} />
-                <span>Datos de empresa</span>
               </label>
 
-              {esEmpresa && (
-                <div className="empresa-extra">
+              {!esEmpresa ? (
+                <>
+                  <div className="fila">
+                    <div className="campo">
+                      <label htmlFor="nombre">Nombres</label>
+                      <input id="nombre" type="text" placeholder="Ej: María" value={form.nombre} onChange={set('nombre')} autoComplete="given-name" />
+                    </div>
+                    <div className="campo">
+                      <label htmlFor="apellido">Apellidos</label>
+                      <input id="apellido" type="text" placeholder="Ej: Gómez Ruiz" value={form.apellido} onChange={set('apellido')} autoComplete="family-name" />
+                    </div>
+                  </div>
+                  <div className="fila una">
+                    <div className="campo">
+                      <label htmlFor="doc">Documento</label>
+                      <div className="doc">
+                        <select id="tipodoc" aria-label="Tipo de documento" value={form.tipodoc} onChange={set('tipodoc')}>
+                          {Object.keys(TIPOS_DOC).map((t) => <option key={t}>{t}</option>)}
+                        </select>
+                        <input id="doc" type="text" placeholder="Ej: 1020304050" value={form.doc} onChange={set('doc')} />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
                   <div className="fila una">
                     <div className="campo">
                       <label htmlFor="razon">Razón social</label>
-                      <input id="razon" type="text" placeholder="Ej: Textiles ABC S.A.S." value={form.razon} onChange={set('razon')} />
+                      <input id="razon" type="text" placeholder="Ej: Textiles ABC S.A.S." value={form.razon} onChange={set('razon')} autoComplete="organization" />
                     </div>
                   </div>
                   <div className="fila">
@@ -459,19 +469,65 @@ export default function CheckoutPage() {
                       {dvErrado && <span className="ayuda">El dígito de verificación de ese NIT debería ser {dvCalculado}.</span>}
                     </div>
                     <div className="campo">
-                      <label htmlFor="regimen">Responsabilidad de IVA</label>
+                      <label htmlFor="regimen">Responsabilidad de IVA <span className="opt">(opcional)</span></label>
                       <select id="regimen" value={form.regimen} onChange={set('regimen')}>
-                        <option value="">Selecciona…</option>
+                        <option value="">No estoy seguro</option>
                         <option value="COMMON_REGIME">Responsable de IVA</option>
                         <option value="SIMPLIFIED_REGIME">No responsable de IVA</option>
                       </select>
                     </div>
                   </div>
-                </div>
+                </>
               )}
+
+              {/* Contacto: va en los dos casos */}
+              <div className="fila">
+                <div className="campo">
+                  <label htmlFor="cel">Celular</label>
+                  <input id="cel" type="tel" placeholder="Ej: 300 123 4567" value={form.cel} onChange={set('cel')} autoComplete="tel" />
+                  <span className="ayuda">Por aquí avisa la transportadora.</span>
+                </div>
+                <div className="campo">
+                  <label htmlFor="correo">Correo electrónico</label>
+                  <input id="correo" type="email" placeholder="Ej: nombre@correo.com" value={form.correo} onChange={set('correo')} autoComplete="email" />
+                  <span className="ayuda">Ahí te llega la confirmación{esEmpresa ? ' y la factura' : ''}.</span>
+                </div>
+              </div>
             </div>
 
-            {/* ── DIRECCIÓN ── */}
+            {/* ── ENTREGA ── */}
+            <div className="bloque">
+              <h2>Forma de entrega</h2>
+              <p className="bloque-sub">Envíos a toda Colombia, o recoge gratis en la tienda.</p>
+
+              <label className={`envio-op ${envio === 'domicilio' ? 'sel' : ''}`}>
+                <input type="radio" name="envio" checked={envio === 'domicilio'} onChange={() => setEnvio('domicilio')} />
+                <div className="envio-op-txt">
+                  <div className="envio-op-nom">Entrega a domicilio</div>
+                  <div className="envio-op-desc">
+                    {envioGratis
+                      ? 'Tu compra tiene envío gratis a toda Colombia.'
+                      : 'Lo entrega una transportadora. El costo se calcula según tu ciudad.'}
+                    {envioCotizado?.transportadora && ` Vía ${envioCotizado.transportadora}.`}
+                  </div>
+                </div>
+                <div className={`envio-op-precio ${envioGratis ? 'gratis' : ''}`}>
+                  {envio !== 'domicilio' ? '' : cotizando ? 'Calculando…' : (costoEnvio != null ? textoEnvio(costoEnvio) : 'Según ciudad')}
+                </div>
+              </label>
+
+              <label className={`envio-op ${envio === 'tienda' ? 'sel' : ''}`}>
+                <input type="radio" name="envio" checked={envio === 'tienda'} onChange={() => setEnvio('tienda')} />
+                <div className="envio-op-txt">
+                  <div className="envio-op-nom">Recoger en la tienda</div>
+                  <div className="envio-op-desc">Calle 66 No 21-50, Bogotá. Te avisamos por WhatsApp cuando esté listo.</div>
+                </div>
+                <div className="envio-op-precio gratis">Gratis</div>
+              </label>
+            </div>
+
+            {/* ── DIRECCIÓN (solo a domicilio) ── */}
+            {envio === 'domicilio' && (
             <div className="bloque">
               <h2>Dirección de entrega</h2>
               <p className="bloque-sub">Elige tu ciudad y con ella calculamos el costo real del envío.</p>
@@ -533,37 +589,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </div>
-
-            {/* ── ENTREGA ── */}
-            <div className="bloque">
-              <h2>Forma de entrega</h2>
-              <p className="bloque-sub">Las opciones cambian según la ciudad que elegiste.</p>
-
-              <label className={`envio-op ${envio === 'domicilio' ? 'sel' : ''}`}>
-                <input type="radio" name="envio" checked={envio === 'domicilio'} onChange={() => setEnvio('domicilio')} />
-                <div className="envio-op-txt">
-                  <div className="envio-op-nom">Domicilio</div>
-                  <div className="envio-op-desc">
-                    {envioGratis
-                      ? 'Tu compra tiene envío gratis a toda Colombia.'
-                      : 'Lo entrega una transportadora. El costo se calcula según tu ciudad.'}
-                    {envioCotizado?.transportadora && ` Vía ${envioCotizado.transportadora}.`}
-                  </div>
-                </div>
-                <div className={`envio-op-precio ${envioGratis ? 'gratis' : ''}`}>
-                  {envio !== 'domicilio' ? '' : cotizando ? 'Calculando…' : (costoEnvio != null ? textoEnvio(costoEnvio) : 'Según ciudad')}
-                </div>
-              </label>
-
-              <label className={`envio-op ${envio === 'tienda' ? 'sel' : ''}`}>
-                <input type="radio" name="envio" checked={envio === 'tienda'} onChange={() => setEnvio('tienda')} />
-                <div className="envio-op-txt">
-                  <div className="envio-op-nom">Recoger en la tienda</div>
-                  <div className="envio-op-desc">Calle 66 No 21-50, Bogotá. Te avisamos por WhatsApp cuando esté listo.</div>
-                </div>
-                <div className="envio-op-precio gratis">Gratis</div>
-              </label>
-            </div>
+            )}
 
             {/* ── PAGO ── */}
             <div className="bloque">
