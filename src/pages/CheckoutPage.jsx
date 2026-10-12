@@ -31,6 +31,7 @@ const FORM_VACIO = {
   nombre: '', apellido: '', tipodoc: 'C.C.', doc: '', cel: '', correo: '',
   ciudad: '', dir: '', notas: '',
   razon: '', nit: '', nitdv: '', regimen: '',   // solo con "Datos de empresa"
+  avisosWa: false,   // acepta avisos del pedido por WhatsApp (sin marcar: tiene que elegirlo)
 }
 
 function unidadBase(unidad) {
@@ -301,7 +302,7 @@ export default function CheckoutPage() {
           cliente: {
             nombre: nombreCliente,
             ...(esEmpresa ? {} : { nombres: form.nombre.trim(), apellidos: form.apellido.trim() }),
-            email: form.correo, telefono: form.cel,
+            email: form.correo, telefono: form.cel, avisosWhatsapp: Boolean(form.avisosWa),
             tipoDocumento: esEmpresa ? null : (TIPOS_DOC[form.tipodoc] || 'CC'), documento: esEmpresa ? '' : form.doc.trim(),
             // La factura sale a nombre de la empresa (ver services/alegra.js).
             empresa: esEmpresa
@@ -493,6 +494,11 @@ export default function CheckoutPage() {
                   <span className="ayuda">Ahí te llega la confirmación{esEmpresa ? ' y la factura' : ''}.</span>
                 </div>
               </div>
+
+              <label className="acepto" style={{ marginTop: '0.2rem' }}>
+                <input type="checkbox" checked={form.avisosWa} onChange={(e) => setForm((f) => ({ ...f, avisosWa: e.target.checked }))} />
+                <span>Quiero recibir por WhatsApp los avisos de mi pedido (pago recibido y envío) en este celular.</span>
+              </label>
             </div>
 
             {/* ── ENTREGA ── */}
