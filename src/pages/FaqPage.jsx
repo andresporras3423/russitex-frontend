@@ -39,19 +39,21 @@ const GRUPOS = [
         respuesta: () => (
           <>
             Los pagos en nuestra tienda online se procesan a través de <strong>Wompi</strong>, una
-            pasarela de pago segura que acepta tarjetas de crédito y débito (Visa, Mastercard,
-            American Express), PSE, Nequi y Daviplata. En nuestra <strong>tienda física</strong> también
-            recibimos efectivo y tarjeta.
+            pasarela de pago segura que admite tarjetas de crédito y débito (Visa, Mastercard,
+            American Express), billeteras digitales (Nequi y DaviPlata), transferencias (PSE, Botón
+            Bancolombia y QR interoperable) y pago en efectivo en Corresponsales Bancolombia, según
+            las opciones disponibles en la pasarela. En nuestra <strong>tienda física</strong> recibimos
+            efectivo, Nequi, Tullave y transferencias a Bancolombia.
           </>
         ),
         destacado: () => <>Todas las transacciones online están encriptadas y protegidas por Wompi.</>,
       },
       {
-        p: '¿Los precios incluyen IVA?',
+        p: '¿Los precios tienen impuestos adicionales?',
         respuesta: () => (
           <>
-            Sí. Todos los precios que ves en el catálogo ya incluyen IVA. No habrá cobros
-            adicionales por impuestos al momento de pagar.
+            Los precios que ves en el catálogo son finales: el valor mostrado es el total a pagar y
+            no se suman impuestos al momento de pagar.
           </>
         ),
       },
@@ -86,21 +88,23 @@ const GRUPOS = [
         p: '¿Cuánto cuesta el envío y cuánto demora?',
         respuesta: () => (
           <>
-            El costo exacto se calcula al ingresar tu dirección. Como referencia aproximada:
+            El costo depende del destino, el peso y el tamaño del pedido; se calcula automáticamente
+            al ingresar tu dirección y se muestra antes de pagar. Los tiempos de entrega son estimados:
             <br /><br />
-            <strong>Bogotá:</strong> entre $8.000 y $12.000 COP. Entrega el mismo día o al día siguiente.<br />
-            <strong>Ciudades principales</strong> (Medellín, Cali, Barranquilla, etc.): entre $12.000 y
-            $18.000 COP. Entrega en 2 a 5 días hábiles.<br />
-            <strong>Municipios pequeños o zonas de difícil acceso:</strong> entre $15.000 y $25.000 COP.
-            Entrega en 5 a 10 días hábiles.
+            <strong>Bogotá:</strong> el mismo día si pides antes de las 12:00 m. de un día hábil, o el día hábil siguiente.<br />
+            <strong>Ciudades principales</strong> (Medellín, Cali, Barranquilla, etc.): de 2 a 5 días hábiles.<br />
+            <strong>Municipios pequeños o zonas de difícil acceso:</strong> de 5 a 10 días hábiles.
           </>
         ),
         // tienda_info guarda la frase entera ("Compras superiores a $350.000 COP"),
         // pensada para la barra superior. Se usa TAL CUAL, abriendo la oración
         // con ella: meterla en mitad de una frase obligaría a pasarla a
         // minúsculas y eso destroza la sigla COP.
-        destacado: ({ v }) => (
-          <><strong>{v('envio_gratis_desde')}</strong> tienen envío gratis a toda Colombia.</>
+        destacado: ({ v, ir }) => (
+          <>
+            <strong>{v('envio_gratis_desde')}</strong> tienen envío gratis a los destinos de cobertura estándar.
+            Consulta la <a href="/politica-de-envios" onClick={(e) => { e.preventDefault(); ir('/politica-de-envios') }}>Política de envíos</a> para los detalles.
+          </>
         ),
       },
     ],
@@ -113,21 +117,23 @@ const GRUPOS = [
         p: '¿Puedo devolver o cambiar un producto?',
         respuesta: () => (
           <>
-            Aceptamos devoluciones únicamente en los siguientes casos:
+            Aceptamos devoluciones o cambios cuando el producto llega con un <strong>defecto de
+            fabricación</strong>, cuando se envió un <strong>material diferente</strong> al que pediste, o
+            cuando la <strong>cantidad recibida no corresponde</strong> a la solicitada.
             <br /><br />
-            — El producto llegó con un <strong>defecto de fabricación</strong>.<br />
-            — Se envió un <strong>material diferente</strong> al que pediste.<br />
-            — La <strong>cantidad recibida no corresponde</strong> a la solicitada.
-            <br /><br />
-            Los materiales cortados a la medida solicitada por el cliente no son susceptibles de
-            devolución por arrepentimiento, de acuerdo con el artículo 47 de la Ley 1480 de 2011.
+            Además, en las compras en línea tienes <strong>derecho de retracto</strong>: puedes desistir de la
+            compra dentro de los 5 días hábiles siguientes a la entrega, siempre que el producto no haya
+            sido cortado a la medida y se devuelva sin usar y en las mismas condiciones. Los materiales
+            cortados a la medida no admiten retracto, de acuerdo con el artículo 47 de la Ley 1480 de 2011.
           </>
         ),
         tonoDestacado: 'terracota',
-        destacado: ({ v }) => (
+        destacado: ({ v, ir }) => (
           <>
-            Para gestionar una devolución, escríbenos por WhatsApp al <strong>{v('whatsapp')}</strong> dentro
-            de los 5 días hábiles siguientes a la recepción del pedido.
+            Para gestionar una devolución o retracto, escríbenos por WhatsApp al <strong>{v('whatsapp')}</strong> dentro
+            de los 5 días hábiles siguientes a la entrega. Consulta la{' '}
+            <a href="/cambios-y-devoluciones" onClick={(e) => { e.preventDefault(); ir('/cambios-y-devoluciones') }}>Política de cambios y devoluciones</a> para
+            ver todas las condiciones.
           </>
         ),
       },

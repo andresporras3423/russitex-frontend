@@ -255,7 +255,7 @@ export default function HomePage() {
           <div className="bene-card">
             <span className="bene-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg></span>
             <h3>Compra fácil</h3>
-            <p>Explora el catálogo y paga como prefieras: PSE, Nequi, Daviplata, efectivo, tarjeta de crédito o débito.</p>
+            <p>Explora el catálogo y paga como prefieras: tarjeta, PSE, Nequi, DaviPlata, transferencia o efectivo.</p>
           </div>
           <div className="bene-card">
             <span className="bene-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg></span>

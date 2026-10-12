@@ -1,8 +1,8 @@
 // ============================================================
 //  Términos y condiciones + Política de privacidad.
 //
-//  Base: russitex-terminos.html y russitex-privacidad.html (version1 de
-//  almacen-russitex), actualizadas a lo que la tienda usa de verdad
+//  Base: russitex-terminos.html y russitex-privacidad.html de almacen-russitex
+//  (version1, y lo que sumó la version2 del 2026-10-11), actualizadas a lo que la tienda usa de verdad
 //  (octubre de 2026): Wompi, Envia.com, Alegra, Supabase, Render,
 //  Cloudflare, Zoho, OpenAI (asistente Rusti), WhatsApp Business.
 //  Si se agrega o quita un servicio que reciba datos de clientes,
@@ -52,14 +52,17 @@ export const TERMINOS_PRIVACIDAD = {
           'La compra queda confirmada cuando el pago es aprobado; en ese momento el cliente recibe un correo electrónico con el resumen del pedido.',
           'Almacén Russitex P.L. podrá cancelar un pedido en caso de error evidente en el precio publicado, falta de inventario o indicios de fraude, informándolo al cliente ' +
           'y reembolsando la totalidad de lo pagado.',
+          'El usuario garantiza que la información que suministra para la compra, la facturación y el envío es veraz, completa y actualizada, y responde por las consecuencias ' +
+          'de datos falsos, inexactos o incompletos.',
         ],
       },
       {
         titulo: 'Medios de pago',
         parrafos: [
-          'Los pagos en línea se procesan a través de Wompi, que acepta tarjetas de crédito y débito, PSE, Nequi, Daviplata y otros medios disponibles en su plataforma. ' +
+          'Los pagos en línea se procesan a través de Wompi, que admite tarjetas de crédito y débito, billeteras digitales (Nequi y DaviPlata), transferencias (PSE, Botón Bancolombia y QR interoperable) ' +
+          'y pago en efectivo en corresponsales, según las opciones disponibles en la pasarela al momento del pago. ' +
           'Almacén Russitex P.L. no recibe ni almacena datos de tarjetas ni claves bancarias: esa información la gestiona directamente Wompi bajo sus propios estándares de seguridad. ' +
-          'En la tienda física se aceptan además pagos en efectivo.',
+          'En la tienda física se reciben efectivo, Nequi, Tullave y transferencias a Bancolombia.',
         ],
       },
       {
@@ -103,11 +106,13 @@ export const TERMINOS_PRIVACIDAD = {
         ],
       },
       {
-        titulo: 'Asistente virtual',
+        titulo: 'Asesoría y recomendaciones',
         parrafos: [
-          'El sitio cuenta con un asistente virtual (Rusti) que responde preguntas sobre productos y materiales con ayuda de inteligencia artificial. ' +
-          'Sus respuestas son orientativas y pueden contener errores; los precios, la disponibilidad y las condiciones que aplican son los que se muestran en el carrito y al confirmar la compra. ' +
-          'Para una asesoría personalizada, el cliente puede escribirnos por WhatsApp o visitarnos en la tienda.',
+          'Almacén Russitex P.L. ofrece un servicio de asesoría y un asistente virtual (Rusti), que funciona con inteligencia artificial, para orientar al cliente en la elección de materiales para sus proyectos. ' +
+          'Sus recomendaciones son de carácter orientativo e informativo y no constituyen una garantía sobre el resultado final de la confección. Las respuestas del asistente pueden contener errores: ' +
+          'los precios, la disponibilidad y las condiciones que aplican son los que se muestran en el carrito y al confirmar la compra.',
+          'El resultado de cada prenda o proyecto depende también de factores ajenos a Almacén Russitex P.L., como la confección, el manejo y el uso que el cliente dé a los materiales. ' +
+          'La decisión final sobre los productos a adquirir es del cliente, por lo que Almacén Russitex P.L. no asume responsabilidad por los resultados derivados de la aplicación de dichas recomendaciones.',
         ],
       },
       {
@@ -125,10 +130,12 @@ export const TERMINOS_PRIVACIDAD = {
         ],
       },
       {
-        titulo: 'Responsabilidad',
+        titulo: 'Limitación de responsabilidad',
         parrafos: [
-          'Almacén Russitex P.L. procura que el sitio web funcione de forma continua y segura, pero no garantiza que esté libre de interrupciones o errores técnicos. ' +
-          'Lo anterior no limita la garantía legal de los productos ni los demás derechos que la ley reconoce al consumidor.',
+          'Almacén Russitex P.L. no será responsable por daños o perjuicios derivados de interrupciones o fallas en el servicio del sitio web, errores de navegación, ' +
+          'accesos no autorizados por terceros ajenos a su control, ni por el uso indebido o inadecuado que el cliente dé a los productos adquiridos.',
+          'Lo anterior se entiende sin perjuicio de los derechos que la ley reconoce al consumidor, en especial la garantía legal y las acciones previstas en la Ley 1480 de 2011, ' +
+          'los cuales no se limitan ni se excluyen por los presentes Términos y Condiciones.',
         ],
       },
       {
@@ -272,9 +279,11 @@ export const TERMINOS_PRIVACIDAD = {
       {
         titulo: 'Cómo ejercer tus derechos',
         parrafos: [
-          'Escríbenos al correo {{correo}} o por WhatsApp al {{whatsapp}}, indicando tu nombre completo, tu número de documento y una descripción clara de tu solicitud.',
+          'Escríbenos al correo {{correo}} o por WhatsApp al {{whatsapp}}, indicando tu nombre completo, tu número de documento y una descripción clara de tu solicitud. ' +
+          'Podemos pedirte información adicional para verificar tu identidad antes de atenderla, con el fin de proteger tus datos.',
           'Las consultas se atenderán en un plazo máximo de diez (10) días hábiles y los reclamos en un plazo máximo de quince (15) días hábiles, contados desde su recibo. ' +
-          'Si no es posible atenderlos en ese término, te informaremos el motivo y la nueva fecha de respuesta, conforme a los artículos 14 y 15 de la Ley 1581 de 2012.',
+          'Si no es posible atenderlos en ese término, te informaremos el motivo y la nueva fecha de respuesta, conforme a los artículos 14 y 15 de la Ley 1581 de 2012. ' +
+          'Podrás acudir a la Superintendencia de Industria y Comercio una vez hayas agotado el trámite de consulta o reclamo ante nosotros.',
         ],
       },
       {

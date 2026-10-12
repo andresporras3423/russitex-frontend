@@ -605,7 +605,9 @@ export default function CheckoutPage() {
                     <span className="medio">Tarjetas</span>
                     <span className="medio">PSE</span>
                     <span className="medio">Nequi</span>
-                    <span className="medio">Daviplata</span>
+                    <span className="medio">DaviPlata</span>
+                    <span className="medio">Bancolombia</span>
+                    <span className="medio">Efectivo</span>
                   </div>
                 </div>
               </div>

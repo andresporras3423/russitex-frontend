@@ -112,14 +112,14 @@ function pasos(vista, { tienda, conGuia }) {
   }
   if (vista === 'rechazado') {
     return [
-      ['Reintenta con otro medio', 'Puedes pagar con otra tarjeta, PSE, Nequi o Daviplata desde el checkout. Si vuelve a fallar, espera unos minutos o consulta con tu entidad financiera.'],
+      ['Reintenta con otro medio', 'Puedes pagar con otra tarjeta, PSE, Nequi, DaviPlata u otro medio disponible en el checkout. Si vuelve a fallar, espera unos minutos o consulta con tu entidad financiera.'],
       ['Revisa tus datos', 'Verifica que el número, la fecha y el cupo de tu tarjeta o cuenta estén correctos.'],
       ['Contáctanos', 'Si sigue fallando, escríbenos por WhatsApp y te ayudamos a completar tu compra.'],
     ]
   }
   return [
     ['Reintenta en unos minutos', 'La mayoría de estos errores son temporales y se resuelven al volver a intentar.'],
-    ['Prueba otro medio de pago', 'Si sigue fallando, intenta con otra tarjeta, PSE, Nequi o Daviplata.'],
+    ['Prueba otro medio de pago', 'Si sigue fallando, intenta con otra tarjeta, PSE, Nequi, DaviPlata u otro medio disponible en el checkout.'],
     ['Escríbenos si continúa', 'Si el problema persiste, contáctanos por WhatsApp y te ayudamos a completar tu compra.'],
   ]
 }
