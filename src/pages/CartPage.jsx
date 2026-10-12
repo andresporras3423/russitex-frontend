@@ -216,7 +216,6 @@ export default function CartPage() {
                   <span>{money(subtotal)}</span>
                 </div>
                 <div className="res-fila"><span>Envío</span><span className="res-nota">Se calcula al pagar</span></div>
-                <div className="res-fila"><span>IVA</span><span className="res-nota">Incluido</span></div>
 
                 <div className="res-total">
                   <span className="res-total-label">Total</span>

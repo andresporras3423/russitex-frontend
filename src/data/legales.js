@@ -26,7 +26,7 @@ export const LEGALES = {
       {
         "titulo": "Tiempos de entrega",
         "parrafos": [
-          "Los tiempos de entrega son estimados y varían según el destino. Como referencia general: en Bogotá, el mismo día o al día siguiente hábil de realizado el pedido; en ciudades principales como Medellín, Cali, Barranquilla, Bucaramanga y otras capitales de departamento, de dos (2) a cinco (5) días hábiles; y en municipios pequeños, zonas rurales o de difícil acceso, de cinco (5) a diez (10) días hábiles.",
+          "Los tiempos de entrega son estimados y varían según el destino. Como referencia general: en Bogotá, el mismo día si el pedido se hace antes de las 12:00 m. de un día hábil, o el día hábil siguiente si se hace después; en ciudades principales como Medellín, Cali, Barranquilla, Bucaramanga y otras capitales de departamento, de dos (2) a cinco (5) días hábiles; y en municipios pequeños, zonas rurales o de difícil acceso, de cinco (5) a diez (10) días hábiles.",
           "Estos tiempos no constituyen una fecha de entrega garantizada y pueden verse afectados por la disponibilidad del servicio de mensajería o por eventos de fuerza mayor o caso fortuito, como condiciones climáticas adversas, paros, bloqueos, situaciones de orden público, festivos o temporadas de alta demanda. Si se presenta una demora, Almacén Russitex P.L. acompañará al cliente y gestionará el caso con la empresa de mensajería hasta su solución."
         ]
       },
@@ -63,7 +63,7 @@ export const LEGALES = {
       {
         "titulo": "Vigencia",
         "parrafos": [
-          "La presente política rige a partir de mayo de 2026. Almacén Russitex P.L. se reserva el derecho de modificarla en cualquier momento; los cambios serán publicados en este sitio web."
+          "La presente política rige a partir de noviembre de 2026. Almacén Russitex P.L. se reserva el derecho de modificarla en cualquier momento; los cambios serán publicados en este sitio web."
         ]
       }
     ]
@@ -122,7 +122,7 @@ export const LEGALES = {
       {
         "titulo": "Vigencia",
         "parrafos": [
-          "La presente política rige a partir de mayo de 2026. Almacén Russitex P.L. se reserva el derecho de modificarla en cualquier momento; los cambios serán publicados en este sitio web."
+          "La presente política rige a partir de noviembre de 2026. Almacén Russitex P.L. se reserva el derecho de modificarla en cualquier momento; los cambios serán publicados en este sitio web."
         ]
       }
     ]

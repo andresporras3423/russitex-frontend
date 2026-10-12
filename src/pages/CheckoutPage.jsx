@@ -650,7 +650,6 @@ export default function CheckoutPage() {
             {errorEnvio && envio === 'domicilio' && (
               <div className="res-fila"><span /><span className="res-nota" style={{ color: 'var(--rojo)' }}>{errorEnvio}</span></div>
             )}
-            <div className="res-fila"><span>IVA</span><span>Incluido</span></div>
 
             <div className="res-total">
               <span className="res-total-label">Total a pagar</span>
