@@ -313,7 +313,7 @@ function DetallePedido({ pedido, porId, onVolver }) {
   const tienda = pedido.modalidad === 'tienda'
   const envio = pedido.envio || {}
   const subtotal = pedido.productos.reduce((s, i) => s + i.precio * i.cantidad, 0)
-  const chip = { verde: 'Pagado', azul: 'Pagado', ambar: e.clave === 'pago_pendiente' ? 'Pago en proceso' : 'Pagado', rojo: e.clave === 'cancelado' ? 'Anulado' : 'No cobrado' }[e.color]
+  const chip = { verde: 'Pagado', azul: 'Pagado', ambar: e.clave === 'pago_pendiente' ? 'Pago en proceso' : 'Pagado', rojo: e.clave === 'cancelado' ? (e.pago || 'Anulado') : 'No cobrado' }[e.color]
 
   return (
     <>
@@ -325,6 +325,12 @@ function DetallePedido({ pedido, porId, onVolver }) {
       <div className="ped-fecha">{fechaLarga(pedido.creadoEn)}</div>
 
       {e.envio && <div className={`envio-banner ${e.color}`}><span className="dot" />Estado del envío: {e.envio}</div>}
+      {pedido.cancelacion && (
+        <div className="envio-banner rojo"><span className="dot" />
+          Cancelamos este pedido: {pedido.cancelacion.motivo}{' '}
+          <Link to={`/pedido-cancelado?ref=${encodeURIComponent(pedido.referencia)}`}>Ver el reembolso</Link>
+        </div>
+      )}
 
       <div className="ped-card">
         <h3>Datos del pedido</h3>
