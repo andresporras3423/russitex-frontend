@@ -294,7 +294,7 @@ export default function HomePage() {
             </div>
             <div className="tl-item">
               <div className="tl-left"><div className="tl-dot"></div></div>
-              <div><div className="tl-year">Hoy</div><div className="tl-text">Microempresa familiar con 39 años de oficio y presencia digital en crecimiento</div></div>
+              <div><div className="tl-year">Hoy</div><div className="tl-text">Empresa familiar con 39 años de oficio y presencia digital en crecimiento</div></div>
             </div>
           </div>
         </div>

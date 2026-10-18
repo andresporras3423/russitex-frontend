@@ -23,7 +23,7 @@ const HITOS = [
   {
     anio: '1987',
     titulo: 'Nace Russitex en Bogotá',
-    texto: 'El primer almacén abre sus puertas en la Calle 66. Una microempresa familiar que empieza con lo esencial de la sastrería.',
+    texto: 'El primer almacén abre sus puertas en la Calle 66. Una empresa familiar que empieza con lo esencial de la sastrería.',
   },
   {
     anio: '1990',
