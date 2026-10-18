@@ -41,12 +41,14 @@
 .confirmacion-page .conf-ico.pendiente { background: #FBF1DE; color: var(--ambar); }
 .confirmacion-page .conf-ico.rechazado { background: #F6E7E4; color: var(--rojo); }
 .confirmacion-page .conf-ico.error     { background: #ECEAE5; color: var(--gris-calido); }
+.confirmacion-page .conf-ico.cancelado { background: #F3EAE7; color: var(--ladrillo); }
 @keyframes conf-pop { from { transform: scale(0); opacity: 0 } to { transform: scale(1); opacity: 1 } }
 .confirmacion-page .conf-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.45rem; }
 .confirmacion-page .conf-eyebrow.aprobado  { color: var(--verde); }
 .confirmacion-page .conf-eyebrow.pendiente { color: #8A5E12; }
 .confirmacion-page .conf-eyebrow.rechazado { color: var(--rojo); }
 .confirmacion-page .conf-eyebrow.error     { color: var(--gris-calido); }
+.confirmacion-page .conf-eyebrow.cancelado { color: var(--ladrillo); }
 .confirmacion-page .conf-hero h1 { font-family: var(--f-head); font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 600; color: var(--tinta); line-height: 1.15; margin-bottom: 0.5rem; }
 .confirmacion-page .conf-hero h1 em { font-style: italic; color: var(--ladrillo); }
 .confirmacion-page .conf-hero p { font-size: 0.9rem; color: var(--gris-calido); line-height: 1.7; max-width: 520px; }
@@ -65,6 +67,9 @@
 .confirmacion-page .info-value.wait { color: #8A5E12; font-weight: 700; }
 .confirmacion-page .info-value.bad  { color: var(--rojo); font-weight: 700; }
 .confirmacion-page .info-value.err  { color: var(--gris-calido); font-weight: 700; }
+.confirmacion-page .info-value.cancel { color: var(--ladrillo-osc); font-weight: 700; }
+.confirmacion-page .info-value.proc   { color: var(--azul-oficio); font-weight: 700; }
+.confirmacion-page .info-value.money  { font-family: var(--f-head); font-weight: 700; color: var(--tinta); }
 
 /* ── Pasos siguientes ── */
 .confirmacion-page .next-steps { display: flex; flex-direction: column; }
@@ -116,6 +121,8 @@
 .confirmacion-page .pago-chip.pendiente .dot { background: var(--ambar); animation: conf-pulse 2s ease-in-out infinite; }
 .confirmacion-page .pago-chip.rechazado { background: #F6E7E4; color: var(--rojo); }
 .confirmacion-page .pago-chip.rechazado .dot { background: var(--rojo); }
+.confirmacion-page .pago-chip.cancelado { background: var(--azul-claro); color: var(--azul-oficio); }
+.confirmacion-page .pago-chip.cancelado .dot { background: var(--azul-oficio); animation: conf-pulse 2s ease-in-out infinite; }
 .confirmacion-page .pago-chip.error { background: #ECEAE5; color: var(--gris-calido); }
 .confirmacion-page .pago-chip.error .dot { background: var(--gris-calido); }
 @keyframes conf-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(91,122,82,0) } 50% { box-shadow: 0 0 0 4px rgba(91,122,82,0.18) } }

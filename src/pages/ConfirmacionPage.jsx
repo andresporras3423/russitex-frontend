@@ -20,6 +20,8 @@ const CHIP = {
   pendiente: { texto: 'Pago en proceso · Wompi',  total: 'Total (en verificación)' },
   rechazado: { texto: 'Pago rechazado · Wompi',   total: 'Total (no cobrado)' },
   error:     { texto: 'Error en el pago · Wompi', total: 'Total (no cobrado)' },
+  // Pagado y luego cancelado por la tienda (página /pedido-cancelado).
+  cancelado: { texto: 'Reembolso en proceso · Wompi', total: 'Total reembolsado' },
 }
 
 // payment_method_type de Wompi -> texto para el cliente.
@@ -72,6 +74,7 @@ const IcoX = () => <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" 
 const IcoAlerta = () => <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,22A10,10,0,1,1,22,12,10.011,10.011,0,0,1,12,22Z" /><path d="M12,5a1,1,0,0,0-1,1v8a1,1,0,0,0,2,0V6A1,1,0,0,0,12,5Z" /><rect x="11" y="17" width="2" height="2" rx="1" /></svg>
 const IcoDoc = () => <svg viewBox="0 0 24 24"><path d="M19.949,5.536,16.465,2.05A6.958,6.958,0,0,0,11.515,0H7A5.006,5.006,0,0,0,2,5V19a5.006,5.006,0,0,0,5,5H17a5.006,5.006,0,0,0,5-5V10.485A6.951,6.951,0,0,0,19.949,5.536ZM18.535,6.95A4.983,4.983,0,0,1,19.316,8H15a1,1,0,0,1-1-1V2.684a5.01,5.01,0,0,1,1.051.78ZM20,19a3,3,0,0,1-3,3H7a3,3,0,0,1-3-3V5A3,3,0,0,1,7,2h4.515c.164,0,.323.032.485.047V7a3,3,0,0,0,3,3h4.953c.015.162.047.32.047.485Z" /></svg>
 const IcoCaja = () => <svg viewBox="0 0 24 24"><path d="M9,14h6a1,1,0,0,0,0-2H9a1,1,0,0,0,0,2Z" /><path d="M19,0H5A5.006,5.006,0,0,0,0,5V6A3,3,0,0,0,1,8.234V19a5.006,5.006,0,0,0,5,5H18a5.006,5.006,0,0,0,5-5V8.234A3,3,0,0,0,24,6V5A5.006,5.006,0,0,0,19,0ZM2,5A3,3,0,0,1,5,2H19a3,3,0,0,1,3,3V6a1,1,0,0,1-1,1H3A1,1,0,0,1,2,6ZM21,19a3,3,0,0,1-3,3H6a3,3,0,0,1-3-3V9H21Z" /></svg>
+const IcoTarjeta = () => <svg viewBox="0 0 24 24"><path d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm2 0v3h16V5H4Zm16 5H4v9h16v-9ZM6 16h5v2H6v-2Z" /></svg>
 const IcoBandera = () => <svg viewBox="0 0 24 24"><path d="M20.358,7.5l3.237-4.297c.459-.609,.533-1.413,.192-2.096s-1.026-1.107-1.79-1.107H4C1.794,0,0,1.794,0,4V23c0,.553,.448,1,1,1s1-.447,1-1V15H21.998c.764,0,1.449-.425,1.79-1.107s.267-1.486-.192-2.096l-3.237-4.297ZM2,13V4c0-1.103,.897-2,2-2H21.998l-3.69,4.898c-.268,.356-.268,.847,0,1.203l3.69,4.898H2Z" /></svg>
 
 const HERO = {
@@ -83,6 +86,8 @@ const HERO = {
     texto: 'No te preocupes: no se realizó ningún cobro y tu carrito sigue guardado. Puedes intentarlo de nuevo cuando quieras.' },
   error:     { ico: <IcoAlerta />, ceja: 'Referencia', titulo: <>Tuvimos un <em>problema técnico</em></>,
     texto: 'No pudimos procesar el pago por un error de la pasarela, no por un rechazo de tu banco. No se realizó ningún cobro y tu carrito sigue guardado.' },
+  cancelado: { ico: <IcoX />,      ceja: 'Pedido',     titulo: <>Cancelamos tu <em>pedido</em></>,
+    texto: 'Lamentamos el inconveniente. No pudimos completar tu pedido y ya iniciamos la devolución de tu dinero. A continuación te contamos el motivo y los detalles del reembolso.' },
 }
 
 const NOTA = {
@@ -92,6 +97,13 @@ const NOTA = {
 }
 
 function pasos(vista, { tienda, conGuia }) {
+  if (vista === 'cancelado') {
+    return [
+      ['Te devolvemos tu dinero', 'El reembolso ya está en curso. Llega a tu medio de pago en 5 a 15 días hábiles, según tu banco.'],
+      ['Avísame cuando vuelva', 'En la página del producto usa el botón «Avísame cuando esté disponible», deja tu correo y te escribimos apenas vuelva el inventario.'],
+      ['¿Tienes dudas?', 'Escríbenos por WhatsApp y te ayudamos con el reembolso o a encontrar un material parecido.'],
+    ]
+  }
   const tiempos = 'Llega en 1–3 días hábiles en Bogotá y en aproximadamente 2 a 5 días hábiles al resto del país.'
   if (vista === 'aprobado') {
     return [
@@ -124,7 +136,7 @@ function pasos(vista, { tienda, conGuia }) {
   ]
 }
 
-export default function ConfirmacionPage() {
+export default function ConfirmacionPage({ cancelado = false }) {
   const { vaciar } = useCart()
   const [cargando, setCargando] = useState(true)
   const [pedido, setPedido] = useState(null)
@@ -134,6 +146,18 @@ export default function ConfirmacionPage() {
   useEffect(() => {
     let activo = true
     async function consultar() {
+      // /pedido-cancelado?ref=...: solo se consulta el pedido (el enlace llega
+      // por correo); no se toca el carrito.
+      if (cancelado) {
+        const ref = new URLSearchParams(window.location.search).get('ref')
+        if (!ref) { if (activo) { setSinRef(true); setCargando(false) } return }
+        try {
+          const r = await fetch(`${API_URL}/api/pagos/estado/${encodeURIComponent(ref)}`)
+          if (r.ok && activo) setPedido(await r.json())
+        } catch { /* se muestra el mensaje genérico */ }
+        if (activo) setCargando(false)
+        return
+      }
       // Wompi agrega ?id=<transaccionId> a la URL de regreso. Si está, se
       // verifica el pago DIRECTO con Wompi (no depende del webhook).
       const txId = new URLSearchParams(window.location.search).get('id')
@@ -177,9 +201,9 @@ export default function ConfirmacionPage() {
     }
     consultar()
     return () => { activo = false }
-  }, [vaciar])
+  }, [vaciar, cancelado])
 
-  const vista = pedido ? VISTA[pedido.estado] : null
+  const vista = pedido ? (pedido.cancelacion ? 'cancelado' : VISTA[pedido.estado]) : null
 
   return (
     <div className="confirmacion-page">
@@ -188,8 +212,11 @@ export default function ConfirmacionPage() {
       <div className="breadcrumb-bar">
         <div className="breadcrumb">
           <Link to="/">Inicio</Link><span className="sep">/</span>
-          <Link to="/carrito">Carrito</Link><span className="sep">/</span>
-          <span className="current">Confirmación</span>
+          {cancelado ? (
+            <span className="current">Pedido cancelado</span>
+          ) : (
+            <><Link to="/carrito">Carrito</Link><span className="sep">/</span><span className="current">Confirmación</span></>
+          )}
         </div>
       </div>
 
@@ -198,10 +225,12 @@ export default function ConfirmacionPage() {
           <div className="conf-simple">
             <div className={`conf-ico ${cargando ? 'pendiente' : 'aprobado'}`}>{cargando ? <IcoReloj /> : <IcoCheck />}</div>
             <div>
-              <h1>{cargando ? 'Confirmando tu pago…' : 'Gracias por tu compra'}</h1>
+              <h1>{cargando ? (cancelado ? 'Consultando tu pedido…' : 'Confirmando tu pago…') : (cancelado ? 'No encontramos ese pedido' : 'Gracias por tu compra')}</h1>
               <p>{cargando
                 ? 'Un momento, estamos verificando el estado de tu pedido.'
-                : 'Si completaste el pago, te llegará la confirmación por correo. Si tienes dudas, escríbenos por WhatsApp.'}</p>
+                : cancelado
+                  ? 'Revisa el enlace que te llegó por correo o escríbenos por WhatsApp y te ayudamos.'
+                  : 'Si completaste el pago, te llegará la confirmación por correo. Si tienes dudas, escríbenos por WhatsApp.'}</p>
               {!cargando && <div className="conf-actions"><Link className="btn-primary" to="/catalogo">Seguir comprando</Link></div>}
             </div>
           </div>
@@ -217,7 +246,13 @@ export default function ConfirmacionPage() {
 
 function Detalle({ pedido, vista, local }) {
   const hero = HERO[vista]
-  const nota = NOTA[vista]
+  const can = pedido.cancelacion
+  const reembolsado = can?.estadoReembolso === 'reembolsado'
+  const agotados = (can?.agotados || []).map((a) => a.toLowerCase())
+  const estaAgotado = (i) => agotados.some((a) => a && (i.nombre || '').toLowerCase().includes(a))
+  const nota = vista === 'cancelado'
+    ? { clase: 'err', ico: <IcoAlerta />, texto: <><strong>Motivo:</strong> {can.motivo} No cobramos por un pedido que no podemos cumplir, así que te reembolsamos el total.</> }
+    : NOTA[vista]
   const tienda = pedido.modalidad === 'tienda'
   const envio = pedido.envio || {}
   const contacto = local?.contacto
@@ -235,7 +270,7 @@ function Detalle({ pedido, vista, local }) {
   const subtotal = items.reduce((s, i) => s + (Number(i.precio) || 0) * (Number(i.cantidad) || 0), 0)
   const etiquetaEnvio = tienda ? 'Recoger en tienda' : envio.ciudad ? `Envío a ${nombreCiudad(envio.ciudad)}` : 'Envío'
   const valorEnvio = tienda || envio.costo === 0 ? 'Gratis' : money(envio.costo)
-  const estadoPago = { aprobado: ['ok', 'Aprobado'], pendiente: ['wait', 'En proceso'], rechazado: ['bad', 'Rechazado'], error: ['err', 'Error'] }[vista]
+  const estadoPago = { aprobado: ['ok', 'Aprobado'], pendiente: ['wait', 'En proceso'], rechazado: ['bad', 'Rechazado'], error: ['err', 'Error'], cancelado: ['cancel', 'Cancelado'] }[vista]
   const tiempo = tienda
     ? 'Te avisamos por WhatsApp cuando esté listo'
     : envio.codigoDane === BOGOTA_DANE ? '1–3 días hábiles en Bogotá' : '2–5 días hábiles'
@@ -256,12 +291,22 @@ function Detalle({ pedido, vista, local }) {
           <div className={`nota-box ${nota.clase}`}>{nota.ico}<div>{nota.texto}</div></div>
         )}
 
+        {vista === 'cancelado' && (
+          <div className="conf-card">
+            <div className="conf-card-title"><IcoTarjeta /> Tu reembolso</div>
+            <Fila label="Monto reembolsado" valor={money(can.monto ?? pedido.total)} clase="money" />
+            <Fila label="Se devuelve a" valor={<>Tu mismo medio de pago{pedido.metodoPago && <><br />{textoMetodo(pedido.metodoPago)}</>}</>} />
+            <Fila label="Tiempo estimado" valor={<>5 a 15 días hábiles<br />(según tu banco)</>} />
+            <Fila label="Estado del reembolso" valor={reembolsado ? 'Reembolsado' : 'En proceso'} clase={reembolsado ? 'ok' : 'proc'} />
+          </div>
+        )}
+
         <div className="conf-card">
-          <div className="conf-card-title"><IcoDoc /> {vista === 'aprobado' ? 'Detalle del pedido' : 'Detalle del intento'}</div>
-          <Fila label={vista === 'aprobado' ? 'Número de pedido' : 'Referencia'} valor={`#${pedido.referencia}`} />
+          <div className="conf-card-title"><IcoDoc /> {vista === 'aprobado' || vista === 'cancelado' ? 'Detalle del pedido' : 'Detalle del intento'}</div>
+          <Fila label={vista === 'aprobado' || vista === 'cancelado' ? 'Número de pedido' : 'Referencia'} valor={`#${pedido.referencia}`} />
           {fecha && <Fila label="Fecha" valor={fecha} />}
           {pedido.metodoPago && <Fila label="Método de pago" valor={textoMetodo(pedido.metodoPago)} />}
-          <Fila label="Estado del pago" valor={estadoPago[1]} clase={estadoPago[0]} />
+          <Fila label={vista === 'cancelado' ? 'Estado del pedido' : 'Estado del pago'} valor={estadoPago[1]} clase={estadoPago[0]} />
         </div>
 
         {vista === 'aprobado' && (
@@ -288,7 +333,7 @@ function Detalle({ pedido, vista, local }) {
         )}
 
         <div className="conf-card">
-          <div className="conf-card-title"><IcoBandera /> {vista === 'aprobado' || vista === 'pendiente' ? '¿Qué sigue ahora?' : '¿Qué puedes hacer?'}</div>
+          <div className="conf-card-title"><IcoBandera /> {vista === 'aprobado' || vista === 'pendiente' || vista === 'cancelado' ? '¿Qué sigue ahora?' : '¿Qué puedes hacer?'}</div>
           <div className="next-steps">
             {pasos(vista, { tienda, conGuia: Boolean(pedido.guia) }).map(([titulo, texto], i) => (
               <div className="next-step" key={titulo}>
@@ -301,7 +346,7 @@ function Detalle({ pedido, vista, local }) {
       </div>
 
       <aside className="resumen">
-        <h2>Resumen de tu compra</h2>
+        <h2>{vista === 'cancelado' ? 'Pedido cancelado' : 'Resumen de tu compra'}</h2>
         {items.map((i, n) => (
           <div className="res-item" key={`${i.productoId}-${i.variante || ''}-${n}`}>
             <div className="res-thumb">
@@ -310,7 +355,7 @@ function Detalle({ pedido, vista, local }) {
             </div>
             <div>
               <div className="res-item-nom">{i.nombre}{i.variante ? ` · ${i.variante}` : ''}</div>
-              <div className="res-item-det">{textoCantidad(i.cantidad, i.unidad)}</div>
+              <div className="res-item-det">{textoCantidad(i.cantidad, i.unidad)}{vista === 'cancelado' && estaAgotado(i) && ' · agotado'}</div>
             </div>
             <span className="res-item-val">{money(i.precio * i.cantidad)}</span>
           </div>
@@ -324,12 +369,17 @@ function Detalle({ pedido, vista, local }) {
           <span className="res-total-valor">{money(pedido.total)}</span>
         </div>
 
-        <div className={`pago-chip ${vista}`}><span className="dot" /><span>{CHIP[vista].texto}</span></div>
+        <div className={`pago-chip ${vista}`}><span className="dot" /><span>{vista === 'cancelado' && reembolsado ? 'Reembolsado · Wompi' : CHIP[vista].texto}</span></div>
       </aside>
 
       <div className="conf-cta">
         <div className="conf-actions">
-          {vista === 'aprobado' || vista === 'pendiente' ? (
+          {vista === 'cancelado' ? (
+            <>
+              <Link className="btn-primary" to="/">Volver al inicio</Link>
+              <Link className="btn-ghost" to="/catalogo">Ver el catálogo</Link>
+            </>
+          ) : vista === 'aprobado' || vista === 'pendiente' ? (
             <>
               <Link className="btn-primary" to="/catalogo">Seguir comprando</Link>
               <Link className="btn-ghost" to="/">Volver al inicio</Link>

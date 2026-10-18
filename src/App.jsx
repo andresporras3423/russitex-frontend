@@ -50,6 +50,7 @@ function App() {
             <Route path="/carrito" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/confirmacion" element={<ConfirmacionPage />} />
+            <Route path="/pedido-cancelado" element={<ConfirmacionPage cancelado />} />
             {/* Una sola ruta: Resumen, Mis pedidos y el detalle comparten la carga de pedidos. */}
             <Route path="/mi-cuenta/*" element={<MiCuentaPage />} />
             {/* Cualquier URL desconocida. Antes caía en HomePage, así que
