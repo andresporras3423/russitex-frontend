@@ -93,6 +93,7 @@
 .micuenta-page .estado.azul  { background: var(--azul-claro); color: var(--azul-oficio); }
 .micuenta-page .estado.ambar { background: #FBF1DE; color: #8A5E12; }
 .micuenta-page .estado.rojo  { background: #F6E7E4; color: var(--rojo); }
+.micuenta-page .estado.gris  { background: #ECEAE5; color: var(--gris-calido); }
 
 /* Estados vacíos */
 .micuenta-page .empty-state { background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 3.5rem 2rem; text-align: center; }
@@ -131,6 +132,7 @@
 .micuenta-page .envio-banner.azul  { background: var(--azul-claro); color: var(--azul-oficio); }
 .micuenta-page .envio-banner.ambar { background: #FBF1DE; color: #8A5E12; }
 .micuenta-page .envio-banner.rojo  { background: #F6E7E4; color: var(--rojo); }
+.micuenta-page .envio-banner.gris  { background: #ECEAE5; color: var(--gris-calido); }
 .micuenta-page .envio-banner a { color: inherit; font-weight: 700; text-decoration: underline; }
 .micuenta-page .ped-card { background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 1.6rem 1.6rem 1.1rem; margin-bottom: 1.2rem; }
 .micuenta-page .ped-card h3 { font-family: var(--f-head); font-size: 1.05rem; font-weight: 600; color: var(--tinta); margin-bottom: 1.1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--linea); }
@@ -159,6 +161,7 @@
 .micuenta-page .pd-chip.azul  { background: var(--azul-claro); color: var(--azul-oficio); }
 .micuenta-page .pd-chip.ambar { background: #FBF1DE; color: #8A5E12; }
 .micuenta-page .pd-chip.rojo  { background: #F6E7E4; color: var(--rojo); }
+.micuenta-page .pd-chip.gris  { background: #ECEAE5; color: var(--gris-calido); }
 
 /* ── Mis direcciones ── */
 .micuenta-page .dirs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
