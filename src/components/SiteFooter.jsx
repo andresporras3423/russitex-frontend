@@ -13,6 +13,7 @@ const POR_DEFECTO = {
   horario_semana: '10:00 a.m. – 6:00 p.m.',
   horario_sabado: '10:00 a.m. – 5:00 p.m.',
   ciudad: 'Bogotá, Colombia',
+  direccion: 'Calle 66 # 21-50',
 }
 
 // Logos en public/logos-pago (diseño version2). Todos los procesa Wompi.
@@ -98,7 +99,7 @@ export default function SiteFooter() {
 
             <div className="f-ci-item">
               <span className="f-ci" dangerouslySetInnerHTML={{ __html: ICON_FOOTER_LOCATION }} />
-              <div>{[info.direccion, v('ciudad')].filter(Boolean).join(', ')}</div>
+              <div>{[v('direccion'), v('ciudad')].filter(Boolean).join(', ')}</div>
             </div>
           </div>
         </div>
