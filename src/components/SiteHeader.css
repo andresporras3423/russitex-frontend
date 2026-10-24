@@ -245,3 +245,7 @@ header nav a.active::after {
   .mega-mobile-cat:last-child { border-bottom: none; }
   .mega-mobile-cat:hover { color: var(--azul-oficio); }
 }
+
+/* Pestaña "Administrador" (solo cuentas de ADMIN_EMAILS). Diseño version2. */
+header nav a.nav-admin { color: var(--ladrillo); font-weight: 700; }
+header nav a.nav-admin:hover { color: var(--ladrillo-osc); }

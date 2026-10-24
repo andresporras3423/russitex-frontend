@@ -16,6 +16,7 @@ import CartPage from './pages/CartPage'
 import CheckoutPage from './pages/CheckoutPage'
 import ConfirmacionPage from './pages/ConfirmacionPage'
 import MiCuentaPage from './pages/MiCuentaPage'
+import AdminPage from './pages/AdminPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
 import FloatingActions from './components/FloatingActions'
 import MiniCart from './components/MiniCart'
@@ -54,6 +55,7 @@ function App() {
             <Route path="/pedido-cancelado" element={<ConfirmacionPage cancelado />} />
             {/* Una sola ruta: Resumen, Mis pedidos y el detalle comparten la carga de pedidos. */}
             <Route path="/mi-cuenta/*" element={<MiCuentaPage />} />
+            <Route path="/admin/*" element={<AdminPage />} />
             {/* Cualquier URL desconocida. Antes caía en HomePage, así que
                 un enlace mal escrito mostraba el inicio sin avisar de nada. */}
             <Route path="*" element={<NoEncontradaPage />} />
