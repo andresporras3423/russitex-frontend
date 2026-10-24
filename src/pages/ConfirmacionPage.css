@@ -141,3 +141,6 @@
   .confirmacion-page .conf-ico svg { width: 26px; height: 26px; }
   .confirmacion-page .conf-actions .btn-primary, .confirmacion-page .conf-actions .btn-ghost { width: 100%; }
 }
+
+/* Descuento por compra grande */
+.confirmacion-page .res-desc { color: var(--verde); font-weight: 700; }

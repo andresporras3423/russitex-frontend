@@ -14,7 +14,7 @@ const POR_DEFECTO = {
   horario_semana: '10:00 a.m. – 6:00 p.m.',
   horario_sabado: '10:00 a.m. – 5:00 p.m.',
   horario_domingo: 'Cerrado',
-  envio_gratis_desde: 'Compras desde $350.000 COP',
+  descuento_compra_desde: 'Compras desde $350.000 COP',
 }
 
 /**
@@ -96,10 +96,10 @@ const GRUPOS = [
             <strong>Municipios pequeños o zonas de difícil acceso:</strong> de 5 a 10 días hábiles.
           </>
         ),
-        // Regla del envío: services/envios.js (aplicarEnvioGratis) en el backend.
+        // Regla del descuento: services/descuentos.js en el backend.
         destacado: ({ ir }) => (
           <>
-            En compras desde <strong>$350.000</strong>, el envío es <strong>gratis en Bogotá</strong> y tiene <strong>50% de descuento</strong> en el resto del país. En ambos casos la tienda pone hasta $20.000 por pedido.
+            El costo del envío lo paga el cliente y lo ves antes de pagar. En compras desde <strong>$350.000</strong> en productos te damos <strong>5% de descuento</strong> sobre los productos (el envío no tiene descuento).
             Consulta la <a href="/politica-de-envios" onClick={(e) => { e.preventDefault(); ir('/politica-de-envios') }}>Política de envíos</a> para los detalles.
           </>
         ),

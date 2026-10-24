@@ -283,8 +283,8 @@ export default function CatalogPage() {
                 </div>
                 <div className="promo-card shipping">
                   <div className="promo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8"><path d="M14 18V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1" /><path d="M14 9h4l3 3v5a1 1 0 0 1-1 1h-1" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /><path d="M9 18h6" /></svg></div>
-                  <div className="promo-title">Envío gratis en Bogotá desde $350.000</div>
-                  <div className="promo-desc">Y 50% de descuento en el resto del país. La tienda pone hasta $20.000 por pedido.</div>
+                  <div className="promo-title">5% de descuento desde $350.000</div>
+                  <div className="promo-desc">Se aplica a tus productos. El envío se calcula según tu ciudad.</div>
                   <button className="promo-btn" onClick={() => navigate('/asesoria')}>Ver más info</button>
                 </div>
               </>

@@ -260,3 +260,6 @@
   .micuenta-page .sidebar-item { justify-content: flex-start; }
   .micuenta-page .sidebar-item:nth-child(4) { grid-column: auto; }
 }
+
+/* Descuento por compra grande */
+.pd-row .v.desc { color: #5B7A52; font-weight: 700; }

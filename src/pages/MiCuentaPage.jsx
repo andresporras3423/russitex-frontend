@@ -376,6 +376,9 @@ function DetallePedido({ pedido, porId, onVolver }) {
       <div className="ped-card">
         <h3>Resumen</h3>
         <div className="pd-row"><span className="l">Subtotal</span><span className="v">{money(subtotal)}</span></div>
+        {pedido.descuento?.monto > 0 && (
+          <div className="pd-row"><span className="l">Descuento {pedido.descuento.porcentaje}%</span><span className="v desc">-{money(pedido.descuento.monto)}</span></div>
+        )}
         <div className="pd-row"><span className="l">Envío</span><span className="v">{tienda || envio.costo === 0 ? 'Gratis' : money(envio.costo)}</span></div>
         <div className="pd-total"><span className="l">Total</span><span className="v">{money(pedido.total)}</span></div>
         <div className={`pd-chip ${e.color}`}><span className="dot" />{chip} · Wompi</div>

@@ -153,4 +153,6 @@
 .checkout-page .medio-wompi img { height: 18px; width: auto; display: block; }
 
 /* Envío con descuento: el precio original tachado. */
-.checkout-page .precio-antes { color: var(--gris-calido); font-weight: 400; margin-right: 0.25rem; }
+
+/* Descuento por compra grande */
+.checkout-page .res-desc { color: var(--verde, #5B7A52); font-weight: 700; }

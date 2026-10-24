@@ -451,6 +451,9 @@ function DetallePedido({ token, referencia, toast, onVolver }) {
             </div>
           ))}
           <div className="det-row"><span className="l">Subtotal</span><span className="v">{money(subtotal)}</span></div>
+          {pedido.descuento?.monto > 0 && (
+            <div className="det-row"><span className="l">Descuento {pedido.descuento.porcentaje}%</span><span className="v">-{money(pedido.descuento.monto)}</span></div>
+          )}
           <div className="det-row"><span className="l">{tienda ? 'Recoge en tienda' : 'Envío'}</span><span className="v">{tienda || !env.costo ? 'Gratis' : money(env.costo)}{env.envioGratis ? ' (lo paga la tienda)' : ''}</span></div>
           <div className="det-total"><span className="l">Total</span><span className="v">{money(pedido.total)}</span></div>
           <div className="det-row" style={{ marginTop: '0.8rem' }}><span className="l">Pago</span><span className="v">{e.pago}{pedido.metodoPago ? ` · ${METODO[pedido.metodoPago] || pedido.metodoPago}` : ''}</span></div>

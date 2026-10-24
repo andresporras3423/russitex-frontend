@@ -39,7 +39,8 @@ export const TERMINOS_PRIVACIDAD = {
           'Los productos ofrecidos son materiales e insumos para confección, como forros, entretelas, hombreras, guatas, tizas, cremalleras y demás insumos de sastrería. ' +
           'Las imágenes son ilustrativas y los colores pueden verse distintos según la pantalla de cada dispositivo.',
           'Los precios se expresan en pesos colombianos (COP) y son el valor final a pagar por cada producto. Almacén Russitex P.L. no es responsable del impuesto sobre las ventas (IVA), ' +
-          'por lo que este no se cobra ni se discrimina. El costo del envío se informa por separado antes de pagar. ' +
+          'por lo que este no se cobra ni se discrimina. El costo del envío se informa por separado antes de pagar y no tiene descuentos. ' +
+          'Las compras con productos por un valor desde $350.000 COP tienen un 5 % de descuento sobre el valor de los productos, que se muestra en el carrito y al pagar. ' +
           'Los precios pueden cambiar en cualquier momento; el precio que se cobra es el que se muestra al confirmar la compra.',
           'La disponibilidad de los productos se actualiza de forma manual. Si después de pagar un producto resulta agotado, Almacén Russitex P.L. se comunicará con el cliente ' +
           'para ofrecerle un producto similar o la devolución del dinero correspondiente, a su elección.',

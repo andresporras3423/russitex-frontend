@@ -5,6 +5,7 @@ import SiteFooter from '../components/SiteFooter'
 import { useCart } from '../context/useCart'
 import { useProductos } from '../hooks/useProductos'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
+import { PORCENTAJE_DESCUENTO, umbralDescuento, calcularDescuento } from '../lib/descuento'
 import './CartPage.css'
 
 const money = (n) => `$${Number(n).toLocaleString('es-CO')}`
@@ -21,16 +22,6 @@ function unidadPlural(unidad) {
   if (!base) return 'unidades'
   if (/[aeiou]$/.test(base)) return `${base}s`
   return `${base}es`
-}
-
-// Saca el umbral de envío gratis de un texto libre como
-// "Compras superiores a $350.000 COP". Si no hay número, devuelve null y la
-// barra no se muestra (mejor callar que inventar una cifra).
-function umbralEnvioGratis(texto) {
-  if (!texto) return null
-  const soloDigitos = String(texto).replace(/[^\d]/g, '')
-  const n = Number(soloDigitos)
-  return Number.isFinite(n) && n > 0 ? n : null
 }
 
 // Una línea está disponible si el catálogo en vivo dice que el producto y la
@@ -66,9 +57,11 @@ export default function CartPage() {
   const subtotal = disponibles.reduce((s, l) => s + l.precio * l.cantidad, 0)
   const totalArticulos = lineas.reduce((s, l) => s + l.cantidad, 0)
 
-  const umbral = umbralEnvioGratis(info.envio_gratis_desde)
-  const faltaEnvioGratis = umbral ? Math.max(0, umbral - subtotal) : null
-  const progresoEnvio = umbral ? Math.min(100, Math.round((subtotal / umbral) * 100)) : 0
+  // Descuento por compra grande: solo sobre los productos, el envío no lleva.
+  const umbral = umbralDescuento(info.descuento_compra_desde)
+  const faltaDescuento = umbral ? Math.max(0, umbral - subtotal) : null
+  const progresoDescuento = umbral ? Math.min(100, Math.round((subtotal / umbral) * 100)) : 0
+  const descuento = calcularDescuento(disponibles, umbral)
 
   function irAlPago() {
     if (hayAgotados || subtotal <= 0) return
@@ -194,17 +187,17 @@ export default function CartPage() {
                   ))}
                 </div>
 
-                {umbral && faltaEnvioGratis > 0 && (
+                {umbral && faltaDescuento > 0 && (
                   <div className="envio-libre">
                     <div className="envio-libre-txt">
-                      Te faltan <strong>{money(faltaEnvioGratis)}</strong> para tener <strong>envío gratis en Bogotá</strong> y 50% de descuento en el envío al resto del país.
+                      Te faltan <strong>{money(faltaDescuento)}</strong> para tener <strong>{PORCENTAJE_DESCUENTO}% de descuento</strong> en tus productos.
                     </div>
-                    <div className="barra"><span style={{ width: `${progresoEnvio}%` }} /></div>
+                    <div className="barra"><span style={{ width: `${progresoDescuento}%` }} /></div>
                   </div>
                 )}
-                {umbral && faltaEnvioGratis === 0 && subtotal > 0 && (
+                {umbral && faltaDescuento === 0 && subtotal > 0 && (
                   <div className="envio-libre">
-                    <div className="envio-libre-txt"><strong>¡Ya tienes el beneficio de envío!</strong> Gratis en Bogotá y 50% de descuento en el resto del país. 🎉</div>
+                    <div className="envio-libre-txt"><strong>¡Tienes {PORCENTAJE_DESCUENTO}% de descuento en tus productos!</strong> 🎉</div>
                   </div>
                 )}
               </div>
@@ -215,11 +208,14 @@ export default function CartPage() {
                   <span>Subtotal ({disponibles.length} {disponibles.length === 1 ? 'producto' : 'productos'})</span>
                   <span>{money(subtotal)}</span>
                 </div>
+                {descuento > 0 && (
+                  <div className="res-fila"><span>Descuento {PORCENTAJE_DESCUENTO}%</span><span className="res-desc">-{money(descuento)}</span></div>
+                )}
                 <div className="res-fila"><span>Envío</span><span className="res-nota">Se calcula al pagar</span></div>
 
                 <div className="res-total">
                   <span className="res-total-label">Total</span>
-                  <span className="res-total-valor">{money(subtotal)}</span>
+                  <span className="res-total-valor">{money(subtotal - descuento)}</span>
                 </div>
 
                 {hayAgotados && (

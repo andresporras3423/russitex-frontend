@@ -362,6 +362,9 @@ function Detalle({ pedido, vista, local }) {
         ))}
 
         <div className="res-fila"><span>Subtotal</span><span>{money(subtotal)}</span></div>
+        {pedido.descuento?.monto > 0 && (
+          <div className="res-fila"><span>Descuento {pedido.descuento.porcentaje}%</span><span className="res-desc">-{money(pedido.descuento.monto)}</span></div>
+        )}
         <div className="res-fila"><span>{etiquetaEnvio}</span><span>{valorEnvio}</span></div>
 
         <div className="res-total">
