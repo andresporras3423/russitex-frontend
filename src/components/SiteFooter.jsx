@@ -15,6 +15,12 @@ const POR_DEFECTO = {
   ciudad: 'Bogotá, Colombia',
 }
 
+// Logos en public/logos-pago (diseño version2). Todos los procesa Wompi.
+const MEDIOS_PAGO = [
+  ['visa.webp', 'Visa'], ['mastercard.svg', 'Mastercard'], ['amex.svg', 'American Express'],
+  ['nequi.svg', 'Nequi'], ['daviplata.svg', 'DaviPlata'], ['pse.svg', 'PSE'], ['bancolombia.svg', 'Bancolombia'],
+]
+
 export default function SiteFooter() {
   const navigate = useNavigate()
   const info = useTiendaInfo()
@@ -27,6 +33,19 @@ export default function SiteFooter() {
           <span className="f-logo">Russi<span>tex</span></span>
           <p className="footer-desc">{v('descripcion_corta')}</p>
           <p className="footer-slogan">{v('lema')}</p>
+          <div className="f-pagos">
+            <div className="f-pagos-head">
+              <span className="f-pagos-label">Medios de pago</span>
+              <span className="f-pagos-wompi-txt">procesados por <strong>Wompi</strong></span>
+            </div>
+            <div className="f-pagos-logos">
+              {MEDIOS_PAGO.map(([archivo, nombre]) => (
+                <span key={archivo} className={`pago-logo ${archivo === 'pse.svg' ? 'pago-pse' : ''}`}>
+                  <img src={`/logos-pago/${archivo}`} alt={nombre} loading="lazy" />
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="f-col">
@@ -79,17 +98,14 @@ export default function SiteFooter() {
 
             <div className="f-ci-item">
               <span className="f-ci" dangerouslySetInnerHTML={{ __html: ICON_FOOTER_LOCATION }} />
-              <div>
-                {info.direccion && <>{info.direccion}<br /></>}
-                {v('ciudad')}
-              </div>
+              <div>{[info.direccion, v('ciudad')].filter(Boolean).join(', ')}</div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>© 2026 Russitex. Todos los derechos reservados.</p>
+        <p>© {new Date().getFullYear()} Almacén Russitex P. L. Todos los derechos reservados.</p>
       </div>
     </footer>
   )

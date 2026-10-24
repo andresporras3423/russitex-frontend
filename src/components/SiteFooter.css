@@ -32,3 +32,14 @@ footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 
   .footer-grid { grid-template-columns: 1fr; gap: 2.2rem; text-align: left; }
   .footer-bottom { justify-content: center; }
 }
+
+/* ── Medios de pago (diseño version2) ── */
+footer .f-pagos { margin-top: 1.6rem; }
+footer .f-pagos-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
+footer .f-pagos-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+footer .f-pagos-wompi-txt { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+footer .f-pagos-wompi-txt strong { color: rgba(255,255,255,0.62); font-weight: 700; }
+footer .f-pagos-logos { display: flex; align-items: center; flex-wrap: wrap; gap: 0.35rem; }
+footer .pago-logo { background: #fff; border-radius: 4px; width: 38px; height: 26px; display: inline-flex; align-items: center; justify-content: center; padding: 4px 5px; }
+footer .pago-logo.pago-pse { padding: 3px 2px; }
+footer .pago-logo img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; }

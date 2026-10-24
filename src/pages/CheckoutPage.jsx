@@ -608,6 +608,7 @@ export default function CheckoutPage() {
                   Al confirmar te llevamos a <strong>Wompi</strong> para completar el pago. Cuando termines
                   vuelves acá con la confirmación del pedido.
                   <div className="medios">
+                    <span className="medio medio-wompi"><img src="/logos-pago/wompi.svg" alt="Wompi" /></span>
                     <span className="medio">Tarjetas</span>
                     <span className="medio">PSE</span>
                     <span className="medio">Nequi</span>

@@ -18,6 +18,7 @@ import ConfirmacionPage from './pages/ConfirmacionPage'
 import MiCuentaPage from './pages/MiCuentaPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
 import FloatingActions from './components/FloatingActions'
+import MiniCart from './components/MiniCart'
 import ScrollToTop from './ScrollToTop'
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
               botones salen en todas las páginas y el chat no pierde la
               conversación al navegar. */}
           <FloatingActions />
+          <MiniCart />
          </CartProvider>
         </ChatProvider>
       </AuthProvider>

@@ -29,6 +29,10 @@ function leerGuardado() {
  */
 export function CartProvider({ children }) {
   const [items, setItems] = useState(leerGuardado)
+  // Panel lateral (MiniCart): lo abren el ícono del carrito y "Agregar".
+  const [panelAbierto, setPanelAbierto] = useState(false)
+  const abrirPanel = useCallback(() => setPanelAbierto(true), [])
+  const cerrarPanel = useCallback(() => setPanelAbierto(false), [])
 
   // Persistir en cada cambio. Si localStorage falla, el carrito sigue vivo en
   // memoria durante la sesión; solo se pierde al recargar.
@@ -73,6 +77,7 @@ export function CartProvider({ children }) {
         },
       ]
     })
+    setPanelAbierto(true)
   }, [])
 
   const cambiarCantidad = useCallback((clave, cantidad) => {
@@ -107,8 +112,11 @@ export function CartProvider({ children }) {
       cambiarCantidad,
       quitar,
       vaciar,
+      panelAbierto,
+      abrirPanel,
+      cerrarPanel,
     }),
-    [items, totalArticulos, subtotal, agregar, cambiarCantidad, quitar, vaciar]
+    [items, totalArticulos, subtotal, agregar, cambiarCantidad, quitar, vaciar, panelAbierto, abrirPanel, cerrarPanel]
   )
 
   return <CartContext.Provider value={valor}>{children}</CartContext.Provider>

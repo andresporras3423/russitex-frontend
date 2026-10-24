@@ -8,7 +8,7 @@ import './FaqPage.css'
 
 // Solo se usan si la base no responde; el dato bueno está en tienda_info.
 const POR_DEFECTO = {
-  direccion: 'calle 66 No 21-50',
+  direccion: 'Calle 66 # 21-50',
   ciudad: 'Bogotá, Colombia',
   whatsapp: '+57 313 890 9118',
   horario_semana: '10:00 a.m. – 6:00 p.m.',
