@@ -151,3 +151,6 @@
 /* Logo de Wompi al inicio de los medios de pago (diseño version2) */
 .checkout-page .medio-wompi { display: inline-flex; align-items: center; padding: 6px 0.7rem; }
 .checkout-page .medio-wompi img { height: 18px; width: auto; display: block; }
+
+/* Envío con descuento: el precio original tachado. */
+.checkout-page .precio-antes { color: var(--gris-calido); font-weight: 400; margin-right: 0.25rem; }

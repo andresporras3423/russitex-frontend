@@ -212,7 +212,13 @@ export default function CheckoutPage() {
   const costoEnvio = envio === 'tienda' ? 0 : (envioCotizado?.costoTotal ?? null)
   // El backend marca envioGratis cuando el subtotal llega al umbral de la tienda.
   const envioGratis = envio === 'domicilio' && Boolean(envioCotizado?.envioGratis)
+  // Fuera de Bogotá, desde el monto mínimo, la tienda pone parte del envío.
+  const descuentoEnvio = envio === 'domicilio' ? Number(envioCotizado?.descuentoEnvio || 0) : 0
   const textoEnvio = (valor) => (valor === 0 ? 'Gratis' : money(valor))
+  // Con descuento: el precio original tachado y el que paga el cliente.
+  const precioEnvio = (valor) => (descuentoEnvio > 0 && !envioGratis && envioCotizado?.costoReal
+    ? <><s className="precio-antes">{money(envioCotizado.costoReal)}</s> {money(valor)}</>
+    : textoEnvio(valor))
   const total = subtotal + (costoEnvio || 0)
 
   // Campos mínimos para facturar (Alegra) y cobrar (Wompi). Para domicilio,
@@ -512,13 +518,15 @@ export default function CheckoutPage() {
                   <div className="envio-op-nom">Entrega a domicilio</div>
                   <div className="envio-op-desc">
                     {envioGratis
-                      ? 'Tu compra tiene envío gratis a toda Colombia.'
-                      : 'Lo entrega una transportadora. El costo se calcula según tu ciudad.'}
+                      ? 'Tu compra tiene envío gratis.'
+                      : descuentoEnvio > 0
+                        ? `Por tu compra te regalamos ${money(descuentoEnvio)} del envío.`
+                        : 'Lo entrega una transportadora. El costo se calcula según tu ciudad.'}
                     {envioCotizado?.transportadora && ` Vía ${envioCotizado.transportadora}.`}
                   </div>
                 </div>
                 <div className={`envio-op-precio ${envioGratis ? 'gratis' : ''}`}>
-                  {envio !== 'domicilio' ? '' : cotizando ? 'Calculando…' : (costoEnvio != null ? textoEnvio(costoEnvio) : 'Según ciudad')}
+                  {envio !== 'domicilio' ? '' : cotizando ? 'Calculando…' : (costoEnvio != null ? precioEnvio(costoEnvio) : 'Según ciudad')}
                 </div>
               </label>
 
@@ -652,7 +660,7 @@ export default function CheckoutPage() {
                   : cotizando
                     ? 'Calculando…'
                     : costoEnvio != null
-                      ? textoEnvio(costoEnvio)
+                      ? precioEnvio(costoEnvio)
                       : <span className="res-nota">Elige tu ciudad</span>}
               </span>
             </div>

@@ -40,9 +40,9 @@ export const LEGALES = {
         ]
       },
       {
-        "titulo": "Envío gratis",
+        "titulo": "Envío gratis y descuento en el envío",
         "parrafos": [
-          "Los pedidos con un valor total superior a $350.000 COP tienen envío gratis a los destinos cubiertos por el despacho estándar de nuestras empresas de mensajería. Para pedidos de gran volumen o peso, o destinos de difícil acceso, Almacén Russitex P.L. podrá comunicarse con el cliente para confirmar las condiciones del envío antes del despacho."
+          "Los pedidos con un valor desde $350.000 COP tienen envío gratis en Bogotá. Para el resto del país, Almacén Russitex P.L. asume el 50 % del costo del envío, hasta $20.000 COP por pedido; el valor que paga el cliente se muestra antes de confirmar la compra. Para pedidos de gran volumen o peso, o destinos de difícil acceso, Almacén Russitex P.L. podrá comunicarse con el cliente para confirmar las condiciones del envío antes del despacho."
         ]
       },
       {

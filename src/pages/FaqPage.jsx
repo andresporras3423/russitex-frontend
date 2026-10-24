@@ -14,7 +14,7 @@ const POR_DEFECTO = {
   horario_semana: '10:00 a.m. – 6:00 p.m.',
   horario_sabado: '10:00 a.m. – 5:00 p.m.',
   horario_domingo: 'Cerrado',
-  envio_gratis_desde: 'Compras superiores a $350.000 COP',
+  envio_gratis_desde: 'Compras desde $350.000 COP',
 }
 
 /**
@@ -96,13 +96,10 @@ const GRUPOS = [
             <strong>Municipios pequeños o zonas de difícil acceso:</strong> de 5 a 10 días hábiles.
           </>
         ),
-        // tienda_info guarda la frase entera ("Compras superiores a $350.000 COP"),
-        // pensada para la barra superior. Se usa TAL CUAL, abriendo la oración
-        // con ella: meterla en mitad de una frase obligaría a pasarla a
-        // minúsculas y eso destroza la sigla COP.
-        destacado: ({ v, ir }) => (
+        // Regla del envío: services/envios.js (aplicarEnvioGratis) en el backend.
+        destacado: ({ ir }) => (
           <>
-            <strong>{v('envio_gratis_desde')}</strong> tienen envío gratis a los destinos de cobertura estándar.
+            En compras desde <strong>$350.000</strong>, el envío es <strong>gratis en Bogotá</strong> y tiene <strong>50% de descuento</strong> en el resto del país (hasta $20.000 por pedido).
             Consulta la <a href="/politica-de-envios" onClick={(e) => { e.preventDefault(); ir('/politica-de-envios') }}>Política de envíos</a> para los detalles.
           </>
         ),

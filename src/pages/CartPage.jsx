@@ -197,14 +197,14 @@ export default function CartPage() {
                 {umbral && faltaEnvioGratis > 0 && (
                   <div className="envio-libre">
                     <div className="envio-libre-txt">
-                      Te faltan <strong>{money(faltaEnvioGratis)}</strong> para tener <strong>envío gratis</strong> a toda Colombia.
+                      Te faltan <strong>{money(faltaEnvioGratis)}</strong> para tener <strong>envío gratis en Bogotá</strong> y 50% de descuento en el envío al resto del país.
                     </div>
                     <div className="barra"><span style={{ width: `${progresoEnvio}%` }} /></div>
                   </div>
                 )}
                 {umbral && faltaEnvioGratis === 0 && subtotal > 0 && (
                   <div className="envio-libre">
-                    <div className="envio-libre-txt"><strong>¡Tienes envío gratis!</strong> 🎉</div>
+                    <div className="envio-libre-txt"><strong>¡Ya tienes el beneficio de envío!</strong> Gratis en Bogotá y 50% de descuento en el resto del país. 🎉</div>
                   </div>
                 )}
               </div>
