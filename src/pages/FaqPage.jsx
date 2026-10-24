@@ -99,7 +99,7 @@ const GRUPOS = [
         // Regla del envío: services/envios.js (aplicarEnvioGratis) en el backend.
         destacado: ({ ir }) => (
           <>
-            En compras desde <strong>$350.000</strong>, el envío es <strong>gratis en Bogotá</strong> y tiene <strong>50% de descuento</strong> en el resto del país (hasta $20.000 por pedido).
+            En compras desde <strong>$350.000</strong>, el envío es <strong>gratis en Bogotá</strong> y tiene <strong>50% de descuento</strong> en el resto del país. En ambos casos la tienda pone hasta $20.000 por pedido.
             Consulta la <a href="/politica-de-envios" onClick={(e) => { e.preventDefault(); ir('/politica-de-envios') }}>Política de envíos</a> para los detalles.
           </>
         ),
