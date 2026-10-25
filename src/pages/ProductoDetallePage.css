@@ -246,7 +246,7 @@
 .detalle-page .rel-name { font-family: var(--f-head); font-size: 0.9rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.2rem; line-height: 1.25; }
 .detalle-page .rel-unit { font-size: 0.7rem; color: var(--gris-calido); margin-bottom: 0.4rem; }
 .detalle-page .rel-price { font-family: var(--f-head); font-size: 0.98rem; font-weight: 600; color: var(--ladrillo); margin-bottom: 0.6rem; }
-.detalle-page .rel-btn { display: block; text-align: center; background: var(--azul-claro); color: var(--azul-oficio); border: none; border-radius: var(--r-pill); padding: 0.45rem; font-size: 0.75rem; font-weight: 700; width: 100%; transition: background 0.2s, color 0.2s; }
+.detalle-page .rel-btn { display: block; text-align: center; background: var(--azul-claro); color: var(--azul-oficio); border: none; border-radius: var(--r-pill); padding: 0.45rem; font-family: var(--f-body); font-size: 0.75rem; font-weight: 700; width: 100%; transition: background 0.2s, color 0.2s; }
 .detalle-page .rel-card:hover .rel-btn { background: var(--azul-oficio); color: #fff; }
 
 /* ════════════════════════════════════════════
@@ -281,7 +281,7 @@
   .detalle-page .gallery-thumbs { width: 100%; max-width: 420px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
   .detalle-page .thumb { width: 77px; height: 77px; }
   .detalle-page .help-block { width: 100%; max-width: 420px; }
-  .detalle-page .prod-name { font-size: 1.6rem; }
+  .detalle-page .prod-name { font-size: 1.9rem; }
   .detalle-page .related-grid { grid-template-columns: repeat(2, 1fr); }
   .detalle-page .usos-grid { grid-template-columns: repeat(2, 1fr); }
   .detalle-page .details-grid { grid-template-columns: 1fr; }

@@ -40,7 +40,7 @@
   background: var(--azul-oficio); padding: 3rem 8%;
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
 }
-.catalog-page .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; }
+.catalog-page .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; }
 .catalog-page .breadcrumb a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; background: none; border: none; cursor: pointer; font: inherit; padding: 0; }
 .catalog-page .breadcrumb a:hover { color: #fff; }
 .catalog-page .breadcrumb span { color: rgba(255,255,255,0.35); }
@@ -182,7 +182,7 @@
 .catalog-page .prod-body { padding: 1rem 1.05rem 1.15rem; }
 .catalog-page .prod-name { font-family: var(--f-head); font-size: 1rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.18rem; line-height: 1.28; }
 .catalog-page .prod-unit { font-size: 0.76rem; color: var(--gris-calido); margin-bottom: 0.6rem; }
-.catalog-page .prod-price { font-size: 1.15rem; font-weight: 700; color: var(--azul-oficio); margin-bottom: 0.85rem; font-family: var(--f-body); }
+.catalog-page .prod-price { font-size: 1.15rem; font-weight: 700; color: var(--azul-oficio); margin-bottom: 0.85rem; font-family: var(--f-head); }
 .catalog-page .prod-actions { display: flex; gap: 0.5rem; }
 .catalog-page .btn-add {
   flex: 1; background: var(--azul-oficio); color: #fff; border: none; cursor: pointer;

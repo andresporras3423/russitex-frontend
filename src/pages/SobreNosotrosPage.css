@@ -39,11 +39,11 @@
 
 /* ── BREADCRUMB ── */
 .sobre-page .breadcrumb-bar { background: white; border-bottom: 1px solid var(--gris-claro); padding: 0.75rem 8%; }
-.sobre-page .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--gris); }
+.sobre-page .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris); }
 .sobre-page .breadcrumb a { color: var(--gris); text-decoration: none; transition: color 0.2s; }
 .sobre-page .breadcrumb a:hover { color: var(--azul); }
 .sobre-page .breadcrumb .sep { color: var(--gris-claro); }
-.sobre-page .breadcrumb .current { color: var(--carbon); font-weight: 500; }
+.sobre-page .breadcrumb .current { color: var(--carbon); font-weight: 600; }
 
 /* ── HERO — declaración editorial centrada ── */
 .sobre-page .hero { background: linear-gradient(150deg, var(--azul-profundo) 0%, var(--azul-oficio) 68%, #3a6fa0 100%); padding: 3.5rem 8% 3.2rem; text-align: center; position: relative; overflow: hidden; }

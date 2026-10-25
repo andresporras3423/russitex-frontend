@@ -35,6 +35,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Los navegadores no heredan la fuente en botones y campos (salen en Arial).
+   En el diseño todo va en Mulish/Fraunces, así que heredan la de la página. */
+button, input, select, textarea {
+  font-family: inherit;
+}
+
 #root {
   min-height: 100svh;
 }

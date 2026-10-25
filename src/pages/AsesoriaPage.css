@@ -22,11 +22,11 @@
 
 /* ── BREADCRUMB ── */
 .asesoria-page .breadcrumb-bar { background: white; border-bottom: 1px solid var(--gris-claro); padding: 0.75rem 8%; }
-.asesoria-page .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--gris); }
+.asesoria-page .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris); }
 .asesoria-page .breadcrumb a { color: var(--gris); text-decoration: none; transition: color 0.2s; }
 .asesoria-page .breadcrumb a:hover { color: var(--azul); }
 .asesoria-page .breadcrumb .sep { color: var(--gris-claro); }
-.asesoria-page .breadcrumb .current { color: var(--carbon); font-weight: 500; }
+.asesoria-page .breadcrumb .current { color: var(--carbon); font-weight: 600; }
 
 /* ── BANNER ── */
 .asesoria-page .page-banner {

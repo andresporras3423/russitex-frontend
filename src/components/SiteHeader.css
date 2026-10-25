@@ -199,7 +199,7 @@ header nav a.active::after {
   /* En móvil el texto viene de la base y puede ser más largo que el
      original: dejamos que se ajuste en vez de recortarse. */
   .topbar-set-mobile .topbar-msg {
-    font-size: 0.68rem; padding: 0 0.6rem;
+    font-size: 0.72rem; padding: 0 0.6rem;
     white-space: normal; line-height: 1.25; text-wrap: balance;
   }
   .topbar-set-mobile .topbar-msg:nth-child(1) { animation: siteHeaderSlideMsg 10s ease-in-out 0s infinite; }
