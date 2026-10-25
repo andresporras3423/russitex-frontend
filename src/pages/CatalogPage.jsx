@@ -247,7 +247,7 @@ export default function CatalogPage() {
                   <div className="prod-price">{money(p.price)}</div>
                   <div className="prod-actions">
                     {!p.disponible ? (
-                      <button className="btn-add" disabled>Agotado</button>
+                      <button className="btn-add agotado" disabled><span className="avail-dot" /> Agotado</button>
                     ) : p.tieneVariantes ? (
                       // Con variantes hay que elegir una: se manda al detalle.
                       <button className="btn-add" onClick={() => navigate(`/producto/${p.id}`)}>Elegir opción</button>

@@ -191,9 +191,11 @@
 }
 .catalog-page .btn-add:hover { background: var(--azul-profundo); }
 .catalog-page .btn-add:active { transform: scale(0.97); }
-/* Agotado: el botón ya está deshabilitado; que también se vea así. */
+/* Agotado: igual a la etiqueta roja del detalle de producto (.avail-badge.unavailable). */
 .catalog-page .btn-add:disabled,
-.catalog-page .btn-add:disabled:hover { background: #ECEAE5; color: var(--gris-calido); cursor: not-allowed; }
+.catalog-page .btn-add:disabled:hover { background: #F6E7E4; color: var(--rojo); cursor: not-allowed; }
+.catalog-page .btn-add.agotado { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; }
+.catalog-page .btn-add .avail-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 .catalog-page .btn-add:disabled:active { transform: none; }
 .catalog-page .btn-consultar {
   background: var(--crema); color: var(--azul-oficio); border: 1.5px solid var(--linea); cursor: pointer;
