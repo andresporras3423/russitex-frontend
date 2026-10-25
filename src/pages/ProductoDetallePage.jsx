@@ -4,6 +4,8 @@ import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useProductos } from '../hooks/useProductos'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
+import { useMediaQuery } from '../hooks/useMediaQuery'
+import GaleriaProducto from '../components/GaleriaProducto'
 import { useAuth } from '../context/useAuth'
 import { useCart } from '../context/useCart'
 import {
@@ -56,7 +58,6 @@ function FichaProducto({ id }) {
   const [cantidad, setCantidad] = useState(1)
   const [variante, setVariante] = useState(null)
   const [avisoVariante, setAvisoVariante] = useState(false)
-  const [imagenActiva, setImagenActiva] = useState(null)
   const [accAbierto, setAccAbierto] = useState('descripcion')
   const [agregado, setAgregado] = useState(null)
   const [modalAbierto, setModalAbierto] = useState(false)
@@ -68,6 +69,8 @@ function FichaProducto({ id }) {
   const [avisoEnviado, setAvisoEnviado] = useState(false)
   const [enviandoAviso, setEnviandoAviso] = useState(false)
   const [errorAviso, setErrorAviso] = useState('')
+  // En tablet y celular el recuadro de ayuda va al final, después del acordeón.
+  const ayudaAlFinal = useMediaQuery('(max-width: 991px)')
 
   if (productos.length === 0) {
     return (
@@ -118,11 +121,20 @@ function FichaProducto({ id }) {
     ? listaUrls(varianteElegida.imagenes)
     : listaUrls(producto.imagenes)
   const imagenes = galeria.length > 0 ? galeria : [producto.imagen || IMAGEN_POR_DEFECTO]
-  const imagenPrincipal = imagenActiva ?? imagenes[0]
 
   // Lo que manda en la parte de compra: si eligieron una variante agotada,
   // la ficha pasa al modo agotado aunque el producto en general sí esté.
   const disponible = productoDisponible && (!varianteElegida || varianteElegida.disponible)
+
+  const bloqueAyuda = (
+    <div className="help-block">
+      <p>
+        <strong>¿Necesitas una medida o cantidad específica?</strong>
+        Si tienes un requerimiento exacto, comunícate con nosotros por WhatsApp
+        usando el botón verde en la esquina inferior derecha.
+      </p>
+    </div>
+  )
 
   // Si el cliente no ha escrito nada, se muestra el correo de su sesión.
   const correo = correoAviso ?? (user?.email || '')
@@ -173,7 +185,7 @@ function FichaProducto({ id }) {
         nombre: producto.nombre,
         precio: producto.precio,
         unidad: producto.unidad,
-        imagen: imagenPrincipal || producto.imagen,
+        imagen: imagenes[0] || producto.imagen,
         categoria: producto.categoria,
       },
       cantidad,
@@ -193,7 +205,6 @@ function FichaProducto({ id }) {
   function elegirVariante(v) {
     setVariante(v.nombre)
     setAvisoVariante(false)
-    setImagenActiva(null)   // la galería vuelve a la primera foto de la variante
     setAgregado(null)
   }
 
@@ -298,30 +309,9 @@ function FichaProducto({ id }) {
 
       <section className="product-section">
         <div className="gallery">
-          <div className="gallery-main">
-            <img src={imagenPrincipal} alt={producto.nombre} />
-            <span className="gallery-badge">{categoriaLabel}</span>
-          </div>
-          {imagenes.length > 1 && (
-            <div className="gallery-thumbs">
-              {imagenes.map((src, i) => (
-                <div
-                  className={`thumb ${imagenPrincipal === src ? 'active' : ''}`}
-                  key={`${src}-${i}`}
-                  onClick={() => setImagenActiva(src)}
-                >
-                  <img src={src} alt="" />
-                </div>
-              ))}
-            </div>
-          )}
-          <div className="help-block">
-            <p>
-              <strong>¿Necesitas una medida o cantidad específica?</strong>
-              Si tienes un requerimiento exacto, comunícate con nosotros por WhatsApp
-              usando el botón verde en la esquina inferior derecha.
-            </p>
-          </div>
+          {/* Al cambiar de variante cambian las fotos: la galería arranca de nuevo. */}
+          <GaleriaProducto key={imagenes.join('|')} imagenes={imagenes} alt={producto.nombre} badge={categoriaLabel} />
+          {!ayudaAlFinal && bloqueAyuda}
         </div>
 
         <div className="product-info">
@@ -445,6 +435,7 @@ function FichaProducto({ id }) {
               </div>
             ))}
           </div>
+          {ayudaAlFinal && bloqueAyuda}
         </div>
       </section>
 
