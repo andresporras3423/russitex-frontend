@@ -416,6 +416,5 @@
 
 @media (max-width: 479px) {
   .home-page .beneficios-grid { grid-template-columns: 1fr; }
-  .home-page .hero-right { grid-template-columns: 1fr; height: 200px; }
-  .home-page .hero-right .img-block:last-child { display: none; }
+  .home-page .hero-right { grid-template-columns: 1fr 1fr; height: 190px; }
 }
