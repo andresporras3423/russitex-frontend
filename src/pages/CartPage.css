@@ -114,7 +114,8 @@
 
 /* ── VACÍO ── */
 .cart-vacio { background: #fff; border: 1px solid var(--linea); border-radius: var(--r-lg); padding: 4rem 2rem; text-align: center; }
-.vacio-icono { font-size: 3rem; margin-bottom: 1rem; opacity: 0.55; }
+.vacio-icono { margin-bottom: 1rem; opacity: 0.55; }
+.cart-page .vacio-icono svg { width: 64px; height: 64px; fill: var(--azul-oficio); }
 .vacio-titulo { font-family: var(--f-head); font-size: 1.4rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.6rem; }
 .vacio-texto { font-size: 0.92rem; color: var(--gris-calido); line-height: 1.7; max-width: 400px; margin: 0 auto 1.6rem; }
 .btn-catalogo { display: inline-block; padding: 0.9rem 2rem; background: var(--azul-oficio); color: #fff; border: none; border-radius: var(--r-md); cursor: pointer; font-family: var(--f-body); font-size: 0.92rem; font-weight: 700; text-decoration: none; }

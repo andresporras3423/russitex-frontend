@@ -9,6 +9,7 @@ import { useCart } from '../context/useCart'
 import {
   ICON_CARRITO, ICON_CAJA, ICON_REGLA, ICON_PALETA, ICON_ENVIO,
   ICON_CUIDADOS, ICON_INFO, ICON_FLECHA_DER,
+  ICON_CAMPANA, ICON_WA_ALTERNATIVAS, ICON_CERRAR_MODAL, ICON_CAMPANA_MODAL, ICON_CONFIRMA_MODAL,
 } from './detalleIcons'
 import './ProductoDetallePage.css'
 
@@ -416,10 +417,12 @@ function FichaProducto({ id }) {
           ) : (
             <div className="out-of-stock-actions">
               <button className="btn-notify" onClick={() => { setModalAbierto(true); setAvisoEnviado(false) }}>
-                🔔 Avísame cuando esté disponible
+                <span dangerouslySetInnerHTML={{ __html: ICON_CAMPANA }} />
+                Avísame cuando esté disponible
               </button>
               <button className="btn-alt-wa" onClick={consultarPorWhatsApp}>
-                💬 Consultar alternativas por WhatsApp
+                <span dangerouslySetInnerHTML={{ __html: ICON_WA_ALTERNATIVAS }} />
+                Consultar alternativas por WhatsApp
               </button>
             </div>
           )}
@@ -479,10 +482,10 @@ function FichaProducto({ id }) {
           administración cuando exista, o scripts/enviar-avisos.js. */}
       <div className={`modal-overlay ${modalAbierto ? 'open' : ''}`} onClick={() => setModalAbierto(false)}>
         <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Avísame cuando esté disponible">
-          <button className="modal-close" onClick={() => setModalAbierto(false)} aria-label="Cerrar">✕</button>
+          <button className="modal-close" onClick={() => setModalAbierto(false)} aria-label="Cerrar" dangerouslySetInnerHTML={{ __html: ICON_CERRAR_MODAL }} />
           {!avisoEnviado ? (
             <form className="modal-form" onSubmit={pedirAviso}>
-              <div className="modal-icon">🔔</div>
+              <div className="modal-icon" dangerouslySetInnerHTML={{ __html: ICON_CAMPANA_MODAL }} />
               <h3 className="modal-title">Te avisamos cuando vuelva</h3>
               <p className="modal-sub">
                 Déjanos tu correo y te escribimos apenas {producto.nombre}
@@ -504,7 +507,7 @@ function FichaProducto({ id }) {
             </form>
           ) : (
             <div className="modal-confirm" style={{ display: 'flex' }}>
-              <div className="confirm-icon">✅</div>
+              <div className="confirm-icon" dangerouslySetInnerHTML={{ __html: ICON_CONFIRMA_MODAL }} />
               <h3>¡Listo!</h3>
               <p>Te escribiremos a {correo} apenas vuelva a estar disponible.</p>
               <button className="btn-close-confirm" onClick={() => setModalAbierto(false)}>Cerrar</button>

@@ -1,0 +1,4 @@
+// Íconos de los avisos de error y de éxito en el acceso
+// (russitex-login-error.html y russitex-registro-exito.html de version2).
+export const IcoAvisoError = () => <svg viewBox="0 0 24 24" fill="currentColor" ariaHidden="true"><path d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,22A10,10,0,1,1,22,12,10.011,10.011,0,0,1,12,22Z" /><path d="M12,5a1,1,0,0,0-1,1v8a1,1,0,0,0,2,0V6A1,1,0,0,0,12,5Z" /><rect x="11" y="17" width="2" height="2" rx="1" /></svg>
+export const IcoAvisoOk = () => <svg viewBox="0 0 24 24" ariaHidden="true"><path d="M12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm0,22C6.486,22,2,17.514,2,12S6.486,2,12,2s10,4.486,10,10-4.486,10-10,10Z" /><path d="M16.707,8.293a1,1,0,0,0-1.414,0L11,12.586,8.707,10.293a1,1,0,1,0-1.414,1.414l3,3a1,1,0,0,0,1.414,0l5-5A1,1,0,0,0,16.707,8.293Z" /></svg>

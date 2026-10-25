@@ -5,6 +5,7 @@ import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import EyeIcon from '../components/EyeIcon'
 import { calcularFortaleza } from '../lib/password'
+import { IcoAvisoError, IcoAvisoOk } from '../components/AvisoIcons'
 import './LoginPage.css'
 
 // A dónde ir después de entrar: la página que mandó al login (la guarda,
@@ -141,7 +142,7 @@ export default function LoginPage() {
             </div>
 
             {feedback && (
-              <div className={`auth-feedback ${feedback.type}`}>{feedback.text}</div>
+              <div className={`auth-feedback ${feedback.type}`}>{feedback.type === 'error' ? <IcoAvisoError /> : <IcoAvisoOk />}<span>{feedback.text}</span></div>
             )}
 
             {tab === 'login' && (

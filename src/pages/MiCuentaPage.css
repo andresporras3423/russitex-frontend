@@ -263,3 +263,6 @@
 
 /* Descuento por compra grande */
 .pd-row .v.desc { color: #5B7A52; font-weight: 700; }
+
+/* Ícono de la ventana de cerrar sesión (diseño version2) */
+.micuenta-page .lo-icon svg { fill: var(--gris-calido); }

@@ -5,6 +5,7 @@ import SiteFooter from '../components/SiteFooter'
 import EyeIcon from '../components/EyeIcon'
 import { supabase } from '../lib/supabaseClient'
 import { calcularFortaleza, LARGO_MINIMO } from '../lib/password'
+import { IcoAvisoError } from '../components/AvisoIcons'
 import './LoginPage.css'
 
 /**
@@ -147,7 +148,7 @@ export default function NuevaContrasenaPage() {
                   Elige una contraseña que no uses en otros sitios.
                 </p>
 
-                {error && <div className="auth-feedback error">{error}</div>}
+                {error && <div className="auth-feedback error"><IcoAvisoError /><span>{error}</span></div>}
 
                 <form className="auth-pane active" onSubmit={guardar}>
                   <div className="form-fields">

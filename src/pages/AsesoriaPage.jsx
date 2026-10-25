@@ -5,7 +5,7 @@ import SiteFooter from '../components/SiteFooter'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
 import {
   ICON_BENEFIT_1, ICON_BENEFIT_2, ICON_BENEFIT_3,
-  ICON_QUESTIONS, ICON_CLOCK, ICON_WA_SUBMIT,
+  ICON_PREGUNTA, ICON_CLOCK, ICON_WA_SUBMIT,
 } from './catalogIcons'
 import './AsesoriaPage.css'
 
@@ -325,7 +325,7 @@ export default function AsesoriaPage() {
             </div>
 
             <div className="chat-info-card">
-              <h4><span dangerouslySetInnerHTML={{ __html: ICON_QUESTIONS }} />¿No sabes por dónde empezar?</h4>
+              <h4><span dangerouslySetInnerHTML={{ __html: ICON_PREGUNTA }} />¿No sabes por dónde empezar?</h4>
               <p className="info-card-text">
                 Habla con nuestro asistente. Obtén recomendaciones de materiales, información general del almacén
                 y asesoría básica. Búscalo siempre en el botón azul de la esquina inferior derecha.

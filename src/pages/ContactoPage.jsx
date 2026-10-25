@@ -3,7 +3,7 @@ import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
 import {
-  ICON_FOOTER_LOCATION, ICON_WA_SUBMIT, ICON_MAIL, ICON_CLOCK, ICON_FLECHA_SIMPLE,
+  ICON_FOOTER_LOCATION, ICON_WA_SUBMIT, ICON_MAIL, ICON_CLOCK, ICON_FLECHA_SIMPLE, ICON_ASESORIA,
 } from './catalogIcons'
 import './ContactoPage.css'
 
@@ -111,7 +111,7 @@ export default function ContactoPage() {
 
             <div className="info-card cta-card">
               <div className="info-card-label">
-                <span dangerouslySetInnerHTML={{ __html: ICON_FLECHA_SIMPLE }} /> Asesoría personalizada
+                <span dangerouslySetInnerHTML={{ __html: ICON_ASESORIA }} /> Asesoría personalizada
               </div>
               <div className="cta-card-title">¿Tu proyecto necesita una mano experta?</div>
               <p className="cta-card-text">

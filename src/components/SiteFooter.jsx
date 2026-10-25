@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
-import { ICON_FOOTER_WA, ICON_CLOCK, ICON_FOOTER_LOCATION } from '../pages/catalogIcons'
+import { ICON_FOOTER_WA, ICON_FOOTER_CLOCK, ICON_FOOTER_LOCATION } from '../pages/catalogIcons'
 import './SiteFooter.css'
 
 // Valores de respaldo por si el backend no responde: así el pie nunca
@@ -89,7 +89,7 @@ export default function SiteFooter() {
             </div>
 
             <div className="f-ci-item">
-              <span className="f-ci" dangerouslySetInnerHTML={{ __html: ICON_CLOCK }} />
+              <span className="f-ci" dangerouslySetInnerHTML={{ __html: ICON_FOOTER_CLOCK }} />
               <div>
                 Lun–Vie: {v('horario_semana')}<br />
                 Sábados: {v('horario_sabado')}
