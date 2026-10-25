@@ -122,10 +122,12 @@
 .confirmacion-page .pago-chip.rechazado { background: #F6E7E4; color: var(--rojo); }
 .confirmacion-page .pago-chip.rechazado .dot { background: var(--rojo); }
 .confirmacion-page .pago-chip.cancelado { background: var(--azul-claro); color: var(--azul-oficio); }
-.confirmacion-page .pago-chip.cancelado .dot { background: var(--azul-oficio); animation: conf-pulse 2s ease-in-out infinite; }
+.confirmacion-page .pago-chip.cancelado .dot { background: var(--azul-oficio); animation: conf-pulse-azul 2s ease-in-out infinite; }
 .confirmacion-page .pago-chip.error { background: #ECEAE5; color: var(--gris-calido); }
 .confirmacion-page .pago-chip.error .dot { background: var(--gris-calido); }
 @keyframes conf-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(91,122,82,0) } 50% { box-shadow: 0 0 0 4px rgba(91,122,82,0.18) } }
+/* Pedido cancelado: halo azul (russitex-pedido-cancelado.html). */
+@keyframes conf-pulse-azul { 0%,100% { box-shadow: 0 0 0 0 rgba(44,92,124,0) } 50% { box-shadow: 0 0 0 4px rgba(44,92,124,0.18) } }
 
 /* ── Responsive ── */
 @media (max-width: 991px) {

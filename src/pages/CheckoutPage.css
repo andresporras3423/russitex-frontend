@@ -64,8 +64,8 @@
 .campo label { font-size: 0.8rem; font-weight: 600; color: var(--tinta); }
 .campo .opt { font-weight: 400; color: var(--gris-calido); }
 .campo input, .campo select, .campo textarea {
-  padding: 0.8rem 1rem; border: 1px solid var(--linea); border-radius: var(--r-sm);
-  font-family: var(--f-body); font-size: 0.88rem; color: var(--tinta); background: #fff;
+  padding: 0.8rem 1rem; border: 1.5px solid var(--linea); border-radius: var(--r-sm);
+  font-family: var(--f-body); font-size: 0.88rem; color: var(--tinta); background-color: var(--crema);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .campo input:focus, .campo select:focus, .campo textarea:focus {

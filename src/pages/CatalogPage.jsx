@@ -124,13 +124,16 @@ export default function CatalogPage() {
     <div className="catalog-page">
       <SiteHeader activeLink="catalogo" />
 
+      <div className="breadcrumb-bar">
+        <div className="breadcrumb">
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/') }}>Inicio</a>
+          <span className="sep">/</span>
+          <span className="current">Catálogo</span>
+        </div>
+      </div>
+
       <div className="page-banner">
         <div>
-          <div className="breadcrumb">
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/') }}>Inicio</a>
-            <span>/</span>
-            <span style={{ color: 'rgba(255,255,255,0.75)' }}>Catálogo</span>
-          </div>
           <h1 className="banner-title">Catálogo de materiales</h1>
           <p className="banner-sub">Materiales para confección en Bogotá</p>
         </div>

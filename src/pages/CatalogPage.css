@@ -37,13 +37,16 @@
 
 /* ── BANNER ── */
 .catalog-page .page-banner {
-  background: var(--azul-oficio); padding: 3rem 8%;
+  background: var(--azul-oficio); padding: 3.4rem 8%;
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
 }
-.catalog-page .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; }
-.catalog-page .breadcrumb a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; background: none; border: none; cursor: pointer; font: inherit; padding: 0; }
-.catalog-page .breadcrumb a:hover { color: #fff; }
-.catalog-page .breadcrumb span { color: rgba(255,255,255,0.35); }
+/* Migas en barra beige, igual que en las demás páginas (diseño version2). */
+.catalog-page .breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 5%; border-bottom: 1px solid var(--linea); }
+.catalog-page .breadcrumb { display: flex; line-height: normal; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
+.catalog-page .breadcrumb a { color: var(--gris-calido); text-decoration: none; transition: color 0.2s; }
+.catalog-page .breadcrumb a:hover { color: var(--azul-oficio); }
+.catalog-page .breadcrumb .sep { color: var(--linea); }
+.catalog-page .breadcrumb .current { color: var(--tinta); font-weight: 600; }
 .catalog-page .banner-title {
   font-family: var(--f-head); font-size: clamp(1.9rem, 3vw, 2.6rem);
   font-weight: 600; color: #fff; line-height: 1.1; letter-spacing: -0.01em;
@@ -244,7 +247,7 @@
 
 /* ════════ RESPONSIVE ════════ */
 @media (max-width: 1199px) {
-  .catalog-page .page-banner { padding: 2.6rem 6%; }
+  .catalog-page .page-banner { padding: 2.8rem 6%; }
   .catalog-page .catalog-layout { grid-template-columns: 230px 1fr; }
   .catalog-page .catalog-main { padding: 1.8rem 1.8rem 4rem; }
   .catalog-page .products-grid { grid-template-columns: repeat(3, 1fr); }
@@ -265,7 +268,7 @@
 
 @media (max-width: 767px) {
   .catalog-page { font-size: 16px; }
-  .catalog-page .page-banner { padding: 2.2rem 6%; }
+  .catalog-page .page-banner { padding: 2.8rem 6%; }
   .catalog-page .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
   .catalog-page .prod-body { padding: 0.85rem 0.9rem 1rem; }
   .catalog-page .prod-actions { flex-direction: column; }

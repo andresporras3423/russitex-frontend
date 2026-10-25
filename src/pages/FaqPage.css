@@ -22,7 +22,7 @@
 }
 
 /* ── BREADCRUMB ── */
-.faq-page .breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 8%; border-bottom: 1px solid var(--linea); }
+.faq-page .breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 5%; border-bottom: 1px solid var(--linea); }
 .faq-page .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gris-calido); flex-wrap: wrap; }
 .faq-page .breadcrumb a { color: var(--gris-calido); text-decoration: none; transition: color 0.2s; }
 .faq-page .breadcrumb a:hover { color: var(--azul-oficio); }
