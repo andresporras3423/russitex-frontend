@@ -222,6 +222,7 @@
 .catalog-page .promo-btn {
   background: #fff; border: none; cursor: pointer; border-radius: var(--r-pill);
   padding: 0.55rem 1.2rem; font-family: var(--f-body); font-size: 0.8rem; font-weight: 700;
+  line-height: normal;   /* en el diseño es un <button> */
   margin-top: 0.35rem; transition: transform 0.2s, box-shadow 0.2s;
 }
 .catalog-page .promo-card.consult .promo-btn { color: var(--azul-profundo); }
