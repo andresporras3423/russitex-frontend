@@ -17,7 +17,12 @@ function useCarrusel(n, inicio = 0) {
   const [dx, setDx] = useState(0)
   const real = bucle ? (((pos - 1) % n) + n) % n : 0
 
-  const ir = (p, conAnimacion = true) => { setDx(0); setAnimar(conAnimacion); setPos(p) }
+  const ir = (p, conAnimacion = true) => {
+    // Con flechas o deslizando muy rápido se podría pasar del clon antes
+    // del salto; fuera de rango se ignora (el salto llega en un instante).
+    if (bucle && (p < 0 || p > n + 1)) return
+    setDx(0); setAnimar(conAnimacion); setPos(p)
+  }
   // Al llegar a un clon, salto silencioso a la foto real cuando termina la
   // animación (0.4s). Con un temporizador y no con transitionend, que no
   // llega si la pestaña queda en segundo plano a mitad del movimiento.
@@ -124,6 +129,21 @@ function VistaGrande({ imagenes, alt, inicial, onCerrar }) {
     return () => { document.body.style.overflow = antes; document.removeEventListener('keydown', tecla) }
   }, [onCerrar])
 
+  // Flechas ‹ › en pantalla y del teclado: foto anterior / siguiente.
+  const mover = (paso) => {
+    if (!c.bucle) return
+    setZoom(null)
+    c.ir(c.pos + paso)
+  }
+  useEffect(() => {
+    const tecla = (e) => {
+      if (e.key === 'ArrowLeft') mover(-1)
+      else if (e.key === 'ArrowRight') mover(1)
+    }
+    document.addEventListener('keydown', tecla)
+    return () => document.removeEventListener('keydown', tecla)
+  })
+
   const origenEn = (e) => {
     const r = e.target.closest('.lightbox-slide')?.querySelector('img')?.getBoundingClientRect()
     if (!r) return '50% 50%'
@@ -149,6 +169,12 @@ function VistaGrande({ imagenes, alt, inicial, onCerrar }) {
   return (
     <div className="lightbox open" aria-hidden="false" onClick={(e) => { if (e.target === e.currentTarget) onCerrar() }}>
       <button className="lightbox-close" onClick={onCerrar} aria-label="Cerrar">&times;</button>
+      {c.bucle && (
+        <>
+          <button className="lightbox-nav prev" onClick={() => mover(-1)} aria-label="Foto anterior">&#8249;</button>
+          <button className="lightbox-nav next" onClick={() => mover(1)} aria-label="Foto siguiente">&#8250;</button>
+        </>
+      )}
       <div className="lightbox-viewport" ref={viewport} {...puntero}>
         <div className="lightbox-track" style={c.estilo}>
           {conClones(imagenes).map((src, i) => {
