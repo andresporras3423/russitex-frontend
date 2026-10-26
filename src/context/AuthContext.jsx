@@ -4,6 +4,18 @@ import { AuthContext } from './useAuth'
 
 const API_URL = import.meta.env.VITE_API_URL
 
+// El token de Supabase dura 1 hora. Se mira su vencimiento (campo exp del
+// JWT) para renovarlo antes de usarlo, con un margen de 30 segundos.
+function tokenVencido(token) {
+  try {
+    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+    const { exp } = JSON.parse(atob(base64))
+    return !exp || exp * 1000 < Date.now() + 30_000
+  } catch {
+    return true
+  }
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(() => localStorage.getItem('russitex_token'))
@@ -30,6 +42,21 @@ export function AuthProvider({ children }) {
     setUser(null)
   }, [])
 
+  // Le pasa la sesión al cliente de Supabase del navegador para que él la
+  // renueve solo antes de que venza (avisa con TOKEN_REFRESHED). Si el token
+  // ya venció, lo cambia por uno nuevo con el refresh token.
+  // Devuelve el token vigente, o null si la sesión ya no sirve.
+  const activarRenovacion = useCallback(async (accessToken) => {
+    const refresh = localStorage.getItem('russitex_refresh')
+    if (!refresh) return accessToken && !tokenVencido(accessToken) ? accessToken : null
+    const { data, error } = tokenVencido(accessToken)
+      ? await supabase.auth.refreshSession({ refresh_token: refresh })
+      : await supabase.auth.setSession({ access_token: accessToken, refresh_token: refresh })
+    if (error || !data?.session) return null
+    guardarSesion(data.session.access_token, data.session.refresh_token)
+    return data.session.access_token
+  }, [guardarSesion])
+
   // Al montar: si ya hay token guardado (login por email), recuperar el perfil.
   // También escuchamos a Supabase por si el usuario vuelve de un login social (Google/Facebook).
   useEffect(() => {
@@ -39,7 +66,9 @@ export function AuthProvider({ children }) {
       const tokenGuardado = localStorage.getItem('russitex_token')
       if (tokenGuardado) {
         try {
-          const perfil = await cargarPerfil(tokenGuardado)
+          const vigente = await activarRenovacion(tokenGuardado)
+          if (!vigente) throw new Error('Sesión vencida')
+          const perfil = await cargarPerfil(vigente)
           if (activo) setUser(perfil)
         } catch {
           limpiarSesion()
@@ -50,6 +79,11 @@ export function AuthProvider({ children }) {
     init()
 
     const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Supabase renovó el token (cada ~hora): guardar el nuevo.
+      if (event === 'TOKEN_REFRESHED' && session?.access_token) {
+        guardarSesion(session.access_token, session.refresh_token)
+        return
+      }
       if (event === 'SIGNED_IN' && session?.access_token) {
         guardarSesion(session.access_token, session.refresh_token)
         try {
@@ -68,7 +102,7 @@ export function AuthProvider({ children }) {
       activo = false
       listener?.subscription?.unsubscribe()
     }
-  }, [cargarPerfil, guardarSesion, limpiarSesion])
+  }, [cargarPerfil, guardarSesion, limpiarSesion, activarRenovacion])
 
   const login = useCallback(async (email, contrasena) => {
     const res = await fetch(`${API_URL}/api/auth/login`, {
@@ -80,8 +114,10 @@ export function AuthProvider({ children }) {
     if (!res.ok) throw new Error(data.error || 'Error al iniciar sesión')
     guardarSesion(data.token, data.refresh)
     setUser(data.usuario)
+    // Que Supabase renueve este token antes de que venza (dura 1 hora).
+    activarRenovacion(data.token).catch(() => {})
     return data.usuario
-  }, [guardarSesion])
+  }, [guardarSesion, activarRenovacion])
 
   const register = useCallback(async (nombre, email, contrasena) => {
     const res = await fetch(`${API_URL}/api/auth/registro`, {
