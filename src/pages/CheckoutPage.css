@@ -19,6 +19,10 @@
   --rojo:         #9E3B2E;
 
   --r-sm: 10px; --r-md: 14px; --r-lg: 18px; --r-pill: 100px;
+
+  /* Los usan la cabecera, el pie y el carrito lateral (diseño: russitex-ui.css) */
+
+  --r-xl: 22px; --sh-lg: 0 16px 38px rgba(59,48,42,0.14);
   --sh-sm: 0 2px 8px rgba(59,48,42,0.06);
   --sh-md: 0 6px 20px rgba(59,48,42,0.10);
 

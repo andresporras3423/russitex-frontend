@@ -3,6 +3,8 @@
   --arena:#D8C2A1; --crema:#FDFBF7; --crema-osc:#F1EADC; --tinta:#3B302A; --gris-calido:#6E665C;
   --linea:#E0D8CB;
   --r-md:14px; --r-pill:100px;
+  /* Los usan la cabecera, el pie y el carrito lateral (diseño: russitex-ui.css) */
+  --r-xl: 22px; --sh-lg: 0 16px 38px rgba(59,48,42,0.14); --azul-claro: #E8EFF4; --r-sm: 10px; --ladrillo-osc: #8F4537;
   --sh-sm:0 2px 8px rgba(59,48,42,0.06); --sh-md:0 6px 20px rgba(59,48,42,0.10);
   --f-head:'Fraunces', Georgia, serif; --f-body:'Mulish', system-ui, sans-serif;
 
