@@ -210,3 +210,13 @@
 @media (max-width: 700px) {
   .admin-page .ped-fila { grid-template-columns: 1fr auto; }
 }
+
+/* Variantes en la pantalla de imágenes de un producto */
+.admin-page .variantes-bloque { margin-top: 2.2rem; }
+.admin-page .sub-title { font-family: var(--f-head); font-size: 1.15rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.3rem; }
+.admin-page .var-lista { padding: 0.3rem 1.1rem; }
+.admin-page .var-fila { display: flex; align-items: center; gap: 0.9rem; padding: 0.75rem 0; border-bottom: 1px solid var(--linea); }
+.admin-page .var-fila:last-child { border-bottom: none; }
+.admin-page .var-muestra { width: 44px; height: 44px; border-radius: var(--r-sm); object-fit: cover; flex-shrink: 0; background: var(--crema-osc); border: 1px solid var(--linea); display: block; }
+.admin-page .var-info { flex: 1; min-width: 0; }
+.admin-page .var-info .nom { font-weight: 600; color: var(--tinta); font-size: 0.92rem; }

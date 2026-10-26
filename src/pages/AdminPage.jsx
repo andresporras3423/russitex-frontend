@@ -68,6 +68,8 @@ export default function AdminPage() {
   const navigate = useNavigate()
   const ruta = useParams()['*'] || ''
   const [seccion, detalle] = [ruta.split('/')[0] || 'imagenes', ruta.split('/').slice(1).join('/')]
+  // En imágenes, el detalle puede ser "<producto>" o "<producto>/variante/<id>".
+  const [detalleId, , varianteId] = detalle.split('/')
   const [productos, setProductos] = useState(null)
   const [error, setError] = useState('')
   const [aviso, setAviso] = useState('')
@@ -130,10 +132,18 @@ export default function AdminPage() {
           <div className="admin-content">
             {error && <div className="admin-error">{error}</div>}
             {seccion === 'imagenes' && !detalle && <ListaImagenes productos={productos} onVer={(id) => ir(`imagenes/${id}`)} />}
-            {seccion === 'imagenes' && detalle && (
-              <ImagenesProducto token={token} producto={productos?.find((p) => p.id === detalle)} toast={toast}
+            {seccion === 'imagenes' && detalle && !varianteId && (
+              <ImagenesProducto token={token} producto={productos?.find((p) => p.id === detalleId)} toast={toast}
                 onVolver={() => ir('imagenes')}
+                onVariante={(vid) => ir(`imagenes/${detalleId}/variante/${vid}`)}
                 onCambio={(id, imagenes) => setProductos((ps) => ps.map((p) => (p.id === id ? { ...p, imagenes } : p)))} />
+            )}
+            {seccion === 'imagenes' && varianteId && (
+              <ImagenesVariante token={token} producto={productos?.find((p) => p.id === detalleId)} varianteId={Number(varianteId)} toast={toast}
+                onVolver={() => ir(`imagenes/${detalleId}`)}
+                onCambio={(vid, imagenes) => setProductos((ps) => ps.map((p) => (p.id !== detalleId ? p : {
+                  ...p, variantes: p.variantes.map((v) => (v.id === vid ? { ...v, imagenes } : v)),
+                })))} />
             )}
             {seccion === 'estado' && <EstadoProductos token={token} productos={productos} setProductos={setProductos} toast={toast} />}
             {seccion === 'pedidos' && !detalle && <ListaPedidos token={token} onVer={(ref) => ir(`pedidos/${encodeURIComponent(ref)}`)} />}
@@ -158,7 +168,7 @@ function ListaImagenes({ productos, onVer }) {
   return (
     <>
       <h1 className="sec-title">Imágenes de productos</h1>
-      <p className="sec-sub">Haz clic en un producto para ver sus imágenes, ordenarlas, eliminarlas o subir nuevas.</p>
+      <p className="sec-sub">Haz clic en un producto para ver sus imágenes y las de sus variantes, ordenarlas, eliminarlas o subir nuevas.</p>
       <input className="filtro" placeholder="Buscar producto…" value={filtro} onChange={(e) => setFiltro(e.target.value)} />
       {lista.map((p) => (
         <div className="admin-card" key={p.id}>
@@ -167,7 +177,10 @@ function ListaImagenes({ productos, onVer }) {
             <div className="prod-id">
               <div className="cat">{CATEGORIA[p.categoria] || p.categoria}</div>
               <div className="nom">{p.nombre}</div>
-              <div className="prod-meta">{p.imagenes.length === 0 ? 'Sin imágenes' : p.imagenes.length === 1 ? '1 imagen' : `${p.imagenes.length} imágenes`}</div>
+              <div className="prod-meta">
+                {p.imagenes.length === 0 ? 'Sin imágenes' : p.imagenes.length === 1 ? '1 imagen' : `${p.imagenes.length} imágenes`}
+                {p.variantes.length > 0 && ` · ${p.variantes.length} ${p.variantes.length === 1 ? 'variante' : 'variantes'}`}
+              </div>
             </div>
             <button className="ped-ver" onClick={() => onVer(p.id)}>Ver</button>
           </div>
@@ -177,27 +190,28 @@ function ListaImagenes({ productos, onVer }) {
   )
 }
 
-function ImagenesProducto({ token, producto, toast, onVolver, onCambio }) {
+const cuantas = (n) => (n === 1 ? '1 foto' : `${n} fotos`)
+
+// Subir, ordenar y eliminar imágenes. Sirve para el producto (base
+// "/productos/:id") y para cada variante (base "/variantes/:id").
+function GestorImagenes({ token, imgs, base, primera, vacio, toast, onCambio }) {
   const [subiendo, setSubiendo] = useState(false)
   const [ocupado, setOcupado] = useState(false)
   const [error, setError] = useState('')
-
-  if (!producto) return <><button className="volver-link" onClick={onVolver}>← Volver a imágenes</button><p className="cargando">Cargando…</p></>
-  const imgs = producto.imagenes
 
   async function aplicar(promesa, mensaje) {
     setError(''); setOcupado(true)
     const r = await promesa
     setOcupado(false)
     if (!r.ok) { setError(r.datos.error || 'No se pudo guardar.'); return }
-    onCambio(producto.id, r.datos.imagenes)
+    onCambio(r.datos.imagenes)
     if (mensaje) toast(mensaje)
   }
   function mover(i, dir) {
     const ids = imgs.map((x) => x.id)
     const j = i + dir
     ;[ids[i], ids[j]] = [ids[j], ids[i]]
-    aplicar(api(token, `/productos/${producto.id}/imagenes/orden`, { method: 'PUT', body: { ids } }), j === 0 ? 'Nueva portada' : null)
+    aplicar(api(token, `${base}/imagenes/orden`, { method: 'PUT', body: { ids } }), j === 0 ? `Nueva ${primera.toLowerCase()}` : null)
   }
   function eliminar(img) {
     if (!window.confirm('¿Eliminar esta imagen? Se deja de ver en la tienda.')) return
@@ -211,9 +225,9 @@ function ImagenesProducto({ token, producto, toast, onVolver, onCambio }) {
     for (const archivo of archivos) {
       try {
         const cuerpo = await prepararImagen(archivo)
-        const r = await api(token, `/productos/${producto.id}/imagenes`, { method: 'POST', body: cuerpo })
+        const r = await api(token, `${base}/imagenes`, { method: 'POST', body: cuerpo })
         if (!r.ok) throw new Error(r.datos.error || 'No se pudo subir la imagen.')
-        onCambio(producto.id, r.datos.imagenes)
+        onCambio(r.datos.imagenes)
       } catch (err) {
         setError(err.message)
         break
@@ -225,14 +239,11 @@ function ImagenesProducto({ token, producto, toast, onVolver, onCambio }) {
 
   return (
     <>
-      <button className="volver-link" onClick={onVolver}>← Volver a imágenes</button>
-      <h1 className="sec-title">Imágenes · {producto.nombre}</h1>
-      <p className="sec-sub">La primera imagen es la <strong>portada</strong>. Usa las flechas para ordenar cómo se mostrarán y la ✕ para eliminar.</p>
       {error && <div className="admin-error">{error}</div>}
       <div className="img-manage">
         {imgs.map((img, i) => (
           <div className="img-tile" key={img.id}>
-            {i === 0 && <span className="portada">Portada</span>}
+            {i === 0 && <span className="portada">{primera}</span>}
             <img src={img.url} alt="" />
             <button className="tile-del" title="Eliminar" disabled={ocupado} onClick={() => eliminar(img)}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
@@ -247,13 +258,65 @@ function ImagenesProducto({ token, producto, toast, onVolver, onCambio }) {
             </div>
           </div>
         ))}
-        {imgs.length === 0 && <div className="img-empty-msg">Este producto no tiene imágenes. Sube la primera.</div>}
+        {imgs.length === 0 && <div className="img-empty-msg">{vacio}</div>}
         <label className={`img-upload-tile ${subiendo ? 'subiendo' : ''}`}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
           <span>{subiendo ? 'Subiendo…' : 'Subir imagen'}</span>
           <input type="file" accept="image/*" multiple onChange={subir} disabled={subiendo} />
         </label>
       </div>
+    </>
+  )
+}
+
+// Cuadrito de la variante: su primera foto o, si no tiene, su color.
+function MuestraVariante({ v }) {
+  if (v.imagenes[0]) return <img className="var-muestra" src={v.imagenes[0].url} alt="" loading="lazy" />
+  return <span className="var-muestra" style={v.hex ? { background: v.hex } : undefined} />
+}
+
+function ImagenesProducto({ token, producto, toast, onVolver, onVariante, onCambio }) {
+  if (!producto) return <><button className="volver-link" onClick={onVolver}>← Volver a imágenes</button><p className="cargando">Cargando…</p></>
+  return (
+    <>
+      <button className="volver-link" onClick={onVolver}>← Volver a imágenes</button>
+      <h1 className="sec-title">Imágenes · {producto.nombre}</h1>
+      <p className="sec-sub">La primera imagen es la <strong>portada</strong>. Usa las flechas para ordenar cómo se mostrarán y la ✕ para eliminar.</p>
+      <GestorImagenes token={token} imgs={producto.imagenes} base={`/productos/${producto.id}`} primera="Portada"
+        vacio="Este producto no tiene imágenes. Sube la primera." toast={toast} onCambio={(imgs) => onCambio(producto.id, imgs)} />
+
+      {producto.variantes.length > 0 && (
+        <div className="variantes-bloque">
+          <h2 className="sub-title">Variantes</h2>
+          <p className="sec-sub">Cada variante puede tener sus propias fotos: la tienda las muestra cuando el cliente la elige. Si una variante no tiene, se ven las del producto.</p>
+          <div className="admin-card var-lista">
+            {producto.variantes.map((v) => (
+              <div className="var-fila" key={v.id}>
+                <MuestraVariante v={v} />
+                <div className="var-info">
+                  <div className="nom">{v.nombre}</div>
+                  <div className="prod-meta">{v.imagenes.length ? cuantas(v.imagenes.length) : 'Usa las fotos del producto'}</div>
+                </div>
+                <button className="ped-ver" onClick={() => onVariante(v.id)}>Editar fotos</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+function ImagenesVariante({ token, producto, varianteId, toast, onVolver, onCambio }) {
+  const v = producto?.variantes.find((x) => x.id === varianteId)
+  if (!producto || !v) return <><button className="volver-link" onClick={onVolver}>← Volver al producto</button><p className="cargando">{producto ? 'Esa variante no existe.' : 'Cargando…'}</p></>
+  return (
+    <>
+      <button className="volver-link" onClick={onVolver}>← Volver a {producto.nombre}</button>
+      <h1 className="sec-title">Imágenes · {producto.nombre} · {v.nombre}</h1>
+      <p className="sec-sub">Estas fotos se muestran cuando el cliente elige la variante <strong>{v.nombre}</strong>. La primera también se usa en el cuadrito para elegirla. Si no subes ninguna, se ven las del producto.</p>
+      <GestorImagenes token={token} imgs={v.imagenes} base={`/variantes/${v.id}`} primera="Principal"
+        vacio="Esta variante no tiene fotos propias: en la tienda se ven las del producto." toast={toast} onCambio={(imgs) => onCambio(v.id, imgs)} />
     </>
   )
 }
