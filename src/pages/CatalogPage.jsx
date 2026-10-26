@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useCart } from '../context/useCart'
@@ -240,10 +240,11 @@ export default function CatalogPage() {
 
             {!cargando && !errorCarga && visible.map((p) => (
               <div className="prod-card" key={p.id}>
-                <div className="prod-img">
+                {/* La foto lleva al detalle, igual que "Consultar". */}
+                <Link className="prod-img" to={`/producto/${p.id}`} aria-label={`Ver ${p.name}`}>
                   <img src={p.img} alt={p.name} loading="lazy" />
                   <span className="prod-cat-tag">{CAT_LABELS[p.cat]}</span>
-                </div>
+                </Link>
                 <div className="prod-body">
                   <div className="prod-name">{p.name}</div>
                   <div className="prod-unit">{p.unit}</div>
