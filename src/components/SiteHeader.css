@@ -187,8 +187,16 @@ header nav a.active::after {
 .user-menu-out { border-top: 1px solid var(--linea); margin-top: 0.35rem; padding-top: 0.62rem !important; color: var(--ladrillo) !important; }
 .user-menu-out:hover { background: rgba(169,84,69,0.08) !important; color: var(--ladrillo-osc) !important; }
 
+/* El número del carrito "salta" al agregar un producto (diseño: .cart-badge.bump) */
+.cart-badge.bump { animation: siteHeaderBump 0.3s ease; }
+@keyframes siteHeaderBump {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
 @keyframes siteHeaderFadeUp {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 

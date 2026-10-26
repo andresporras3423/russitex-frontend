@@ -18,7 +18,7 @@
 /* Solo opacidad: un transform en .cuenta-content convertiría a esa caja en
    la referencia de los position:fixed, y las ventanas (modal-overlay) no
    cubrirían toda la pantalla. */
-@keyframes mc-fadeUp { from { opacity: 0 } to { opacity: 1 } }
+@keyframes mc-fadeUp { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
 
 /* ── Miga de pan ── */
 .micuenta-page .breadcrumb-bar { background: var(--crema-osc); padding: 0.9rem 5%; border-bottom: 1px solid var(--linea); }

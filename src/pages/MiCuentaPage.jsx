@@ -196,7 +196,8 @@ export default function MiCuentaPage() {
           </nav>
         </aside>
 
-        <div className="cuenta-content">
+        {/* key: al cambiar de sección se vuelve a montar y repite la entrada */}
+        <div className="cuenta-content" key={vista}>
           {vista === 'salir' ? (
             <Salir onConfirmar={async () => { await logout(); navigate('/') }} onCancelar={() => setConfirmarSalida(false)} />
           ) : vista === 'direcciones' ? (

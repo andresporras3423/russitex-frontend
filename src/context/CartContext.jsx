@@ -29,6 +29,9 @@ function leerGuardado() {
  */
 export function CartProvider({ children }) {
   const [items, setItems] = useState(leerGuardado)
+  // Momento del último "Agregar" (0 = nada en esta visita): la cabecera lo
+  // usa para la animación del número del carrito.
+  const [agregadoEn, setAgregadoEn] = useState(0)
   // Panel lateral (MiniCart): lo abren el ícono del carrito y "Agregar".
   const [panelAbierto, setPanelAbierto] = useState(false)
   const abrirPanel = useCallback(() => setPanelAbierto(true), [])
@@ -52,6 +55,7 @@ export function CartProvider({ children }) {
   const agregar = useCallback((producto, cantidad = 1, variante = null) => {
     const cant = Math.max(1, Math.floor(Number(cantidad) || 1))
     const clave = claveLinea(producto.id, variante?.id)
+    setAgregadoEn(Date.now())
 
     setItems((prev) => {
       const i = prev.findIndex((l) => l.clave === clave)
@@ -105,6 +109,7 @@ export function CartProvider({ children }) {
   const valor = useMemo(
     () => ({
       items,
+      agregadoEn,
       lineas: items.length,
       totalArticulos,
       subtotal,
@@ -116,7 +121,7 @@ export function CartProvider({ children }) {
       abrirPanel,
       cerrarPanel,
     }),
-    [items, totalArticulos, subtotal, agregar, cambiarCantidad, quitar, vaciar, panelAbierto, abrirPanel, cerrarPanel]
+    [items, agregadoEn, totalArticulos, subtotal, agregar, cambiarCantidad, quitar, vaciar, panelAbierto, abrirPanel, cerrarPanel]
   )
 
   return <CartContext.Provider value={valor}>{children}</CartContext.Provider>
