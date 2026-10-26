@@ -5,6 +5,7 @@ import SiteFooter from '../components/SiteFooter'
 import { useAuth } from '../context/useAuth'
 import { IcoImagen, IcoEtiqueta, IcoPedidos, IcoUsuario } from './adminIcons'
 import './AdminPage.css'
+import { fechaCorta, fechaHora } from '../lib/fechas'
 
 // Panel de administrador (diseño version2: russitex-admin.html).
 // Rutas: /admin/imagenes, /admin/imagenes/<id>, /admin/estado,
@@ -13,8 +14,6 @@ import './AdminPage.css'
 
 const API_URL = import.meta.env.VITE_API_URL
 const money = (n) => `$${Math.round(Number(n) || 0).toLocaleString('es-CO')}`
-const fecha = (iso) => (iso ? new Date(iso).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' }) : '')
-const fechaHora = (iso) => (iso ? new Date(iso).toLocaleString('es-CO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : '')
 const CATEGORIA = { forros: 'Forros', entretelas: 'Entretelas', hombreras: 'Hombreras', guatas: 'Guatas', tizas: 'Tizas', cierres: 'Cierres', otros: 'Otros' }
 const METODO = { CARD: 'Tarjeta', PSE: 'PSE', NEQUI: 'Nequi', DAVIPLATA: 'DaviPlata', BANCOLOMBIA_TRANSFER: 'Bancolombia', BANCOLOMBIA_QR: 'QR Bancolombia', BANCOLOMBIA_COLLECT: 'Efectivo' }
 
@@ -372,7 +371,7 @@ function ListaPedidos({ token, onVer }) {
             {lista.map((p) => (
               <div className="ped-fila" key={p.referencia} role="button" tabIndex={0} onClick={() => onVer(p.referencia)} onKeyDown={(e) => e.key === 'Enter' && onVer(p.referencia)}>
                 <span className="pnum">#{p.referencia}</span>
-                <span className="pfecha" style={{ fontSize: '0.84rem', color: 'var(--gris-calido)' }}>{fecha(p.creadoEn)}</span>
+                <span className="pfecha" style={{ fontSize: '0.84rem', color: 'var(--gris-calido)' }}>{fechaCorta(p.creadoEn)}</span>
                 <span className="pcel">{p.cliente}</span>
                 <span className="pestado"><Badge color={p.estadoCliente.color} texto={p.estadoCliente.texto} /></span>
                 <span className="ptot">{money(p.total)}</span>

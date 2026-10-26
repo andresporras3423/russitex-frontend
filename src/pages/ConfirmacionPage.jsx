@@ -4,6 +4,8 @@ import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useCart } from '../context/useCart'
 import './ConfirmacionPage.css'
+import { nombreLugar } from '../lib/lugares'
+import { fechaLarga } from '../lib/fechas'
 
 const API_URL = import.meta.env.VITE_API_URL
 const money = (n) => `$${Number(n || 0).toLocaleString('es-CO')}`
@@ -32,18 +34,12 @@ const METODO = {
 }
 const textoMetodo = (m) => `${METODO[m] || 'Wompi'}${METODO[m] ? ' · Wompi' : ''}`
 
-function textoFecha(iso) {
-  if (!iso) return null
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return null
-  return d.toLocaleString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit' })
-}
+// "17 de mayo de 2026, 2:34 p.m.", como el diseño (lib/fechas.js)
+const textoFecha = (iso) => fechaLarga(iso) || null
 
 // "BOGOTÁ D.C." -> "Bogotá D.C.", "SAN JOSÉ DEL GUAVIARE" -> "San José del Guaviare".
-const nombreCiudad = (c) => String(c || '').toLowerCase()
-  .replace(/(^|[\s(])\S/g, (x) => x.toUpperCase())
-  .replace(/\s(De|Del|La|Las|Los|El|Y)(?=\s)/g, (x) => x.toLowerCase())
-  .replace(/\bD\.c\./g, 'D.C.')
+// Nombre propio para la lista DANE (viene en mayúsculas): lib/lugares.js
+const nombreCiudad = nombreLugar
 
 // "Medellín, Antioquia"; en Bogotá ciudad y departamento se llaman igual.
 function lugar(ciudad, departamento) {

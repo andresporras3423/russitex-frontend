@@ -105,7 +105,6 @@
 .cart-page .res-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--linea); margin-top: 1.1rem; padding-top: 1.1rem; }
 .cart-page .res-total-label { font-size: 0.95rem; font-weight: 700; color: var(--tinta); }
 .cart-page .res-total-valor { font-family: var(--f-head); font-size: 1.5rem; font-weight: 700; color: var(--ladrillo); }
-.cart-page .res-aviso { font-size: 0.8rem; color: var(--rojo); margin-top: 1rem; line-height: 1.5; }
 
 .cart-page .btn-pagar { width: 100%; margin-top: 1.2rem; padding: 0.95rem; background: var(--azul-oficio); color: #fff; border: none; border-radius: var(--r-md); cursor: pointer; font-family: var(--f-body); font-size: 0.95rem; font-weight: 700; box-shadow: var(--sh-sm); transition: all 0.2s; }
 .cart-page .btn-pagar:hover:not(:disabled) { background: var(--azul-profundo); transform: translateY(-1px); box-shadow: var(--sh-md); }
@@ -141,3 +140,8 @@
 
 /* Descuento por compra grande */
 .cart-page .res-desc { color: var(--verde); font-weight: 700; }
+
+/* Aviso arriba: producto agotado pendiente de quitar (diseño russitex-carrito.html) */
+.cart-page .cart-warning { display: flex; align-items: center; gap: 0.6rem; background: #F6E7E4; border: 1px solid #E7C6BE; color: var(--ladrillo-osc); border-radius: var(--r-md); padding: 0.85rem 1.1rem; font-size: 0.88rem; line-height: 1.45; margin-bottom: 1.4rem; }
+.cart-page .cart-warning strong { font-weight: 700; }
+.cart-page .cw-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rojo); flex-shrink: 0; }

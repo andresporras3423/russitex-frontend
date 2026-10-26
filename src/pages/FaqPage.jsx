@@ -42,7 +42,7 @@ const GRUPOS = [
             pasarela de pago segura que admite tarjetas de crédito y débito (Visa, Mastercard,
             American Express), billeteras digitales (Nequi y DaviPlata), transferencias (PSE, Botón
             Bancolombia y QR interoperable) y pago en efectivo en Corresponsales Bancolombia, según
-            las opciones disponibles en la pasarela. En nuestra <strong>tienda física</strong> recibimos
+            las opciones disponibles en la pasarela al momento del pago. En nuestra <strong>tienda física</strong> recibimos
             efectivo, Nequi, Tullave y transferencias a Bancolombia.
           </>
         ),

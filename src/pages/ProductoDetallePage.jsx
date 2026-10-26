@@ -278,7 +278,7 @@ function FichaProducto({ id }) {
             <div className="compra-item">
               <span className="compra-icon" dangerouslySetInnerHTML={{ __html: ICON_ENVIO }} />
               <div className="compra-text">
-                <strong>Disponible para:</strong> recogida en tienda o domicilio en {tienda.cobertura || 'Bogotá'}.
+                <strong>Disponible para:</strong> compra online, recogida en tienda o envío a toda Colombia.
               </div>
             </div>
           </div>
@@ -318,10 +318,11 @@ function FichaProducto({ id }) {
           <span className="prod-cat-tag">{categoriaLabel}</span>
           <h1 className="prod-name">{producto.nombre}</h1>
           <div className="prod-price">{money(producto.precio)}</div>
-          <div className="prod-unit">{producto.unidad || 'Venta por unidad'}</div>
+          {/* Diseño: «Venta por metro», «Venta por caja»… (en Alegra viene «Por metro») */}
+          <div className="prod-unit">{(producto.unidad || 'Por unidad').replace(/^por\s+/i, 'Venta por ')}</div>
 
           <div className={`avail-badge ${disponible ? 'available' : 'unavailable'}`}>
-            <span className="avail-dot"></span> {disponible ? 'Disponible' : 'Agotado'}
+            <span className="avail-dot"></span> {disponible ? 'Disponible' : 'Agotado temporalmente'}
           </div>
 
           {producto.descripcion && <p className="prod-desc">{producto.descripcion}</p>}

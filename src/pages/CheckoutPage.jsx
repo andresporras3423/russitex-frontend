@@ -5,6 +5,7 @@ import SiteFooter from '../components/SiteFooter'
 import { useCart } from '../context/useCart'
 import { useAuth } from '../context/useAuth'
 import { digitoVerificacion } from '../lib/nit'
+import { nombreLugar } from '../lib/lugares'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
 import { PORCENTAJE_DESCUENTO, umbralDescuento, calcularDescuento } from '../lib/descuento'
 import './CheckoutPage.css'
@@ -98,14 +99,14 @@ export default function CheckoutPage() {
 
   // Departamentos únicos, ordenados (primer selector).
   const departamentos = useMemo(() => {
-    return [...new Set(ciudades.map((c) => c.departamento))].sort((a, b) => a.localeCompare(b, 'es'))
+    return [...new Set(ciudades.map((c) => c.departamento))].sort((a, b) => nombreLugar(a).localeCompare(nombreLugar(b), 'es'))
   }, [ciudades])
 
   // Municipios del departamento elegido, ordenados (segundo selector).
   const municipios = useMemo(() => {
     return ciudades
       .filter((c) => c.departamento === deptoSel)
-      .sort((a, b) => a.ciudad.localeCompare(b.ciudad, 'es'))
+      .sort((a, b) => nombreLugar(a.ciudad).localeCompare(nombreLugar(b.ciudad), 'es'))
   }, [ciudades, deptoSel])
 
   // Al cambiar de departamento se limpia el municipio elegido.
@@ -508,7 +509,7 @@ export default function CheckoutPage() {
             {/* ── ENTREGA ── */}
             <div className="bloque">
               <h2>Forma de entrega</h2>
-              <p className="bloque-sub">Envíos a toda Colombia, o recoge gratis en la tienda.</p>
+              <p className="bloque-sub">Envíos a toda Colombia. En Bogotá, el mismo día si pides antes de las 12 p.m.</p>
 
               <label className={`envio-op ${envio === 'domicilio' ? 'sel' : ''}`}>
                 <input type="radio" name="envio" checked={envio === 'domicilio'} onChange={() => setEnvio('domicilio')} />
@@ -538,7 +539,7 @@ export default function CheckoutPage() {
             {envio === 'domicilio' && (
             <div className="bloque">
               <h2>Dirección de entrega</h2>
-              <p className="bloque-sub">Elige tu ciudad y con ella calculamos el costo real del envío.</p>
+              <p className="bloque-sub">Con el departamento y la ciudad calculamos el costo del envío.</p>
 
               {direccionesGuardadas.length > 0 && envio === 'domicilio' && (
                 <div className="fila una">
@@ -546,7 +547,7 @@ export default function CheckoutPage() {
                     <label htmlFor="dirGuardada">Tus direcciones guardadas</label>
                     <select id="dirGuardada" value={dirGuardada} onChange={(e) => elegirDireccionGuardada(e.target.value)}>
                       {direccionesGuardadas.map((d) => (
-                        <option key={d.id} value={d.id}>{d.destinatario} — {d.direccion}, {d.ciudad}{d.principal ? ' (principal)' : ''}</option>
+                        <option key={d.id} value={d.id}>{d.destinatario} — {d.direccion}, {nombreLugar(d.ciudad)}{d.principal ? ' (principal)' : ''}</option>
                       ))}
                       <option value="otra">Usar otra dirección</option>
                     </select>
@@ -564,20 +565,20 @@ export default function CheckoutPage() {
                     onChange={(e) => elegirDepartamento(e.target.value)}
                     disabled={envio === 'tienda' || ciudades.length === 0}
                   >
-                    <option value="">{ciudades.length ? 'Elige un departamento…' : 'Cargando…'}</option>
-                    {departamentos.map((d) => <option key={d} value={d}>{d}</option>)}
+                    <option value="">{ciudades.length ? 'Selecciona el departamento' : 'Cargando…'}</option>
+                    {departamentos.map((d) => <option key={d} value={d}>{nombreLugar(d)}</option>)}
                   </select>
                 </div>
                 <div className="campo">
-                  <label htmlFor="municipio">Municipio</label>
+                  <label htmlFor="municipio">Ciudad</label>
                   <select
                     id="municipio"
                     value={daneDestino || ''}
                     onChange={(e) => elegirMunicipio(e.target.value)}
                     disabled={envio === 'tienda' || !deptoSel}
                   >
-                    <option value="">{deptoSel ? 'Elige un municipio…' : 'Primero el departamento'}</option>
-                    {municipios.map((m) => <option key={m.dane} value={m.dane}>{m.ciudad}</option>)}
+                    <option value="">{deptoSel ? 'Selecciona la ciudad' : 'Elige primero el departamento'}</option>
+                    {municipios.map((m) => <option key={m.dane} value={m.dane}>{nombreLugar(m.ciudad)}</option>)}
                   </select>
                 </div>
               </div>

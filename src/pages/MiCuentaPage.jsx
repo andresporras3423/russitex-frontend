@@ -6,6 +6,8 @@ import { useAuth } from '../context/useAuth'
 import { useProductos } from '../hooks/useProductos'
 import { digitoVerificacion, REGIMENES } from '../lib/nit'
 import './MiCuentaPage.css'
+import { nombreLugar } from '../lib/lugares'
+import { fechaCorta, fechaHora } from '../lib/fechas'
 
 // Portada de la maqueta version2/russitex-mi-cuenta.html. Por ahora tiene
 // Resumen, Mis pedidos y el detalle de cada pedido; direcciones y datos de
@@ -19,8 +21,6 @@ const moneyCorto = (n) => {
   if (v >= 1e3) return `$${Math.round(v / 1e3)}k`
   return money(v)
 }
-const fechaCorta = (iso) => (iso ? new Date(iso).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' }) : '')
-const fechaLarga = (iso) => (iso ? new Date(iso).toLocaleString('es-CO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : '')
 
 const METODO = {
   CARD: 'Tarjeta', PSE: 'PSE', NEQUI: 'Nequi', DAVIPLATA: 'Daviplata',
@@ -29,10 +29,8 @@ const METODO = {
 }
 
 // "BOGOTÁ D.C." -> "Bogotá D.C."
-const nombreCiudad = (c) => String(c || '').toLowerCase()
-  .replace(/(^|[\s(])\S/g, (x) => x.toUpperCase())
-  .replace(/\s(De|Del|La|Las|Los|El|Y)(?=\s)/g, (x) => x.toLowerCase())
-  .replace(/\bD\.c\./g, 'D.C.')
+// Nombre propio para la lista DANE (viene en mayúsculas): lib/lugares.js
+const nombreCiudad = nombreLugar
 function lugar(ciudad, departamento) {
   const c = nombreCiudad(ciudad)
   const d = nombreCiudad(departamento)
@@ -238,7 +236,7 @@ function Resumen({ user, pedidos, onVer, onTodos }) {
   return (
     <>
       <h1 className="sec-title">¡Hola, {primerNombre(user)}! <IcoSaludo /></h1>
-      <p className="sec-sub">Desde aquí puedes ver tus pedidos y cómo van tus envíos.</p>
+      <p className="sec-sub">Desde aquí puedes gestionar tus pedidos, direcciones y datos de cuenta.</p>
       <div className="stats-row">
         <div className="stat-card"><div className="stat-ico p"><IcoBolsa /></div><div><div className="stat-num">{pagados.length}</div><div className="stat-lbl">Pedidos realizados</div></div></div>
         <div className="stat-card"><div className="stat-ico g"><IcoFactura /></div><div><div className="stat-num">{moneyCorto(pagados.reduce((s, p) => s + (Number(p.total) || 0), 0))}</div><div className="stat-lbl">Total comprado</div></div></div>
@@ -250,7 +248,7 @@ function Resumen({ user, pedidos, onVer, onTodos }) {
           {pedidos.length > 0 && <button className="rc-link" onClick={onTodos}>Ver todos →</button>}
         </div>
         {pedidos.length === 0 ? (
-          <div className="empty-mini">Aún no tienes pedidos. <Link to="/catalogo">Explora el catálogo</Link></div>
+          <div className="empty-mini">Todavía no tienes pedidos. <Link to="/catalogo">Explora el catálogo</Link></div>
         ) : (
           <>
             <div className="tabla-head"><span>Pedido</span><span>Fecha</span><span>Estado</span><span>Total</span><span /></div>
@@ -274,7 +272,7 @@ function ListaPedidos({ pedidos, onVer }) {
   return (
     <>
       <h1 className="sec-title">Mis pedidos</h1>
-      <p className="sec-sub">Historial de tus compras en Russitex. Haz clic en un pedido para ver el detalle.</p>
+      <p className="sec-sub">Historial completo de tus compras en Russitex. Haz clic en un pedido para ver el detalle.</p>
       {pedidos.length === 0 ? (
         <div className="empty-state">
           <div className="empty-ico"><IcoCarrito /></div>
@@ -327,7 +325,7 @@ function DetallePedido({ pedido, porId, onVolver }) {
         <h1>{pedido.referencia.startsWith('PEDIDO-') ? pedido.referencia : `Pedido #${pedido.referencia}`}</h1>
         <Estado e={e} />
       </div>
-      <div className="ped-fecha">{fechaLarga(pedido.creadoEn)}</div>
+      <div className="ped-fecha">{fechaHora(pedido.creadoEn)}</div>
 
       {e.envio && <div className={`envio-banner ${e.color}`}><span className="dot" />Estado del envío: {e.envio}</div>}
       {pedido.cancelacion && (
@@ -339,7 +337,7 @@ function DetallePedido({ pedido, porId, onVolver }) {
 
       <div className="ped-card">
         <h3>Datos del pedido</h3>
-        <div className="pd-row"><span className="l">Fecha</span><span className="v">{fechaLarga(pedido.creadoEn)}</span></div>
+        <div className="pd-row"><span className="l">Fecha</span><span className="v">{fechaHora(pedido.creadoEn)}</span></div>
         <div className="pd-row"><span className="l">Estado</span><span className="v"><Estado e={e} /></span></div>
         <div className="pd-row"><span className="l">Pago</span><span className="v">{e.pago}</span></div>
         {pedido.metodoPago && <div className="pd-row"><span className="l">Método de pago</span><span className="v">{METODO[pedido.metodoPago] || pedido.metodoPago} · Wompi</span></div>}
@@ -550,12 +548,12 @@ function DireccionModal({ inicial, onCerrar, onGuardar }) {
       <div className="fg"><label className="fl" htmlFor="d-depto">Departamento</label>
         <select id="d-depto" className="fi" value={f.departamento} disabled={!ciudades.length}
           onChange={(e) => setF((x) => ({ ...x, departamento: e.target.value, codigoDane: '' }))}>
-          <option value="">{ciudades.length ? 'Elige un departamento…' : 'Cargando…'}</option>
+          <option value="">{ciudades.length ? 'Selecciona el departamento' : 'Cargando…'}</option>
           {departamentos.map((d) => <option key={d} value={d}>{nombreCiudad(d)}</option>)}
         </select></div>
-      <div className="fg"><label className="fl" htmlFor="d-mun">Municipio</label>
+      <div className="fg"><label className="fl" htmlFor="d-mun">Ciudad</label>
         <select id="d-mun" className="fi" value={f.codigoDane} disabled={!f.departamento} onChange={set('codigoDane')}>
-          <option value="">{f.departamento ? 'Elige el municipio…' : 'Elige primero el departamento'}</option>
+          <option value="">{f.departamento ? 'Selecciona la ciudad' : 'Elige primero el departamento'}</option>
           {municipiosDepto.map((m) => <option key={m.dane} value={m.dane}>{nombreCiudad(m.ciudad)}</option>)}
         </select></div>
       <div className="fg"><label className="fl" htmlFor="d-dir">Dirección</label>
@@ -820,7 +818,7 @@ function Salir({ onConfirmar, onCancelar }) {
       <div className="logout-card">
         <div className="lo-icon"><IcoSalirModal /></div>
         <h3>¿Quieres cerrar sesión?</h3>
-        <p>Si cierras sesión tendrás que volver a ingresar la próxima vez que quieras revisar tus pedidos.</p>
+        <p>Si cierras sesión tendrás que volver a ingresar la próxima vez que quieras comprar o revisar tus pedidos.</p>
         <div className="lo-btns">
           <button className="btn-lo" onClick={onConfirmar}>Sí, cerrar sesión</button>
           <button className="btn-cancel" onClick={onCancelar}>Cancelar</button>

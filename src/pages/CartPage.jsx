@@ -106,6 +106,13 @@ export default function CartPage() {
               </div>
             </div>
 
+            {hayAgotados && (
+              <div className="cart-warning" role="alert">
+                <span className="cw-dot" />
+                <span>Tienes un producto <strong>agotado</strong> en tu carrito. Quítalo para poder continuar al pago.</span>
+              </div>
+            )}
+
             <div className="cart-layout">
               <div>
                 <div className="cart-items">
@@ -219,10 +226,6 @@ export default function CartPage() {
                   <span className="res-total-label">Total</span>
                   <span className="res-total-valor">{money(subtotal - descuento)}</span>
                 </div>
-
-                {hayAgotados && (
-                  <p className="res-aviso">Quita el producto agotado para continuar al pago.</p>
-                )}
 
                 <button
                   className="btn-pagar"
