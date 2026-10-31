@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useAuth } from '../context/useAuth'
-import { IcoImagen, IcoEtiqueta, IcoPedidos, IcoUsuario } from './adminIcons'
+import { IcoImagen, IcoEtiqueta, IcoPedidos, IcoUsuario, IcoInfo } from './adminIcons'
 import './AdminPage.css'
 import { fechaCorta, fechaHora } from '../lib/fechas'
 
@@ -125,6 +125,7 @@ export default function AdminPage() {
             <div className="admin-nav">
               <button className={`admin-item ${seccion === 'imagenes' ? 'active' : ''}`} onClick={() => ir('imagenes')}><IcoImagen /> Imágenes de productos</button>
               <button className={`admin-item ${seccion === 'estado' ? 'active' : ''}`} onClick={() => ir('estado')}><IcoEtiqueta /> Estado del producto</button>
+              <button className={`admin-item ${seccion === 'info' ? 'active' : ''}`} onClick={() => ir('info')}><IcoInfo /> Información del producto</button>
               <button className={`admin-item ${seccion === 'pedidos' ? 'active' : ''}`} onClick={() => ir('pedidos')}><IcoPedidos /> Pedidos</button>
             </div>
           </aside>
@@ -144,6 +145,10 @@ export default function AdminPage() {
                 onCambio={(vid, imagenes) => setProductos((ps) => ps.map((p) => (p.id !== detalleId ? p : {
                   ...p, variantes: p.variantes.map((v) => (v.id === vid ? { ...v, imagenes } : v)),
                 })))} />
+            )}
+            {seccion === 'info' && !detalle && <ListaInfo productos={productos} onVer={(id) => ir(`info/${id}`)} />}
+            {seccion === 'info' && detalle && (
+              <InfoProducto key={detalle} token={token} producto={productos?.find((p) => p.id === detalle)} toast={toast} onVolver={() => ir('info')} />
             )}
             {seccion === 'estado' && <EstadoProductos token={token} productos={productos} setProductos={setProductos} toast={toast} />}
             {seccion === 'pedidos' && !detalle && <ListaPedidos token={token} onVer={(ref) => ir(`pedidos/${encodeURIComponent(ref)}`)} />}
@@ -317,6 +322,188 @@ function ImagenesVariante({ token, producto, varianteId, toast, onVolver, onCamb
       <p className="sec-sub">Estas fotos se muestran cuando el cliente elige la variante <strong>{v.nombre}</strong>. La primera también se usa en el cuadrito para elegirla. Si no subes ninguna, se ven las del producto.</p>
       <GestorImagenes token={token} imgs={v.imagenes} base={`/variantes/${v.id}`} primera="Principal"
         vacio="Esta variante no tiene fotos propias: en la tienda se ven las del producto." toast={toast} onCambio={(imgs) => onCambio(v.id, imgs)} />
+    </>
+  )
+}
+
+// ------------------------------------------------------------
+// Información del producto (textos de la ficha, categoría, unidad, envío).
+// El nombre y el precio vienen de Alegra: aquí solo se muestran.
+// ------------------------------------------------------------
+function ListaInfo({ productos, onVer }) {
+  const [filtro, setFiltro] = useState('')
+  if (!productos) return <p className="cargando">Cargando productos…</p>
+  const lista = productos.filter((p) => p.nombre.toLowerCase().includes(filtro.toLowerCase()))
+  return (
+    <>
+      <h1 className="sec-title">Información del producto</h1>
+      <p className="sec-sub">Descripción, usos recomendados, detalles del material, cuidados y datos para cotizar el envío. El nombre y el precio se cambian en Alegra.</p>
+      <input className="filtro" placeholder="Buscar producto…" value={filtro} onChange={(e) => setFiltro(e.target.value)} />
+      {lista.map((p) => (
+        <div className="admin-card" key={p.id}>
+          <div className="prod-row">
+            {p.imagenes[0] ? <img className="prod-thumb" src={p.imagenes[0].url} alt="" loading="lazy" /> : <div className="prod-thumb" />}
+            <div className="prod-id">
+              <div className="cat">{CATEGORIA[p.categoria] || p.categoria}</div>
+              <div className="nom">{p.nombre}</div>
+            </div>
+            <button className="ped-ver" onClick={() => onVer(p.id)}>Editar</button>
+          </div>
+        </div>
+      ))}
+    </>
+  )
+}
+
+// Del servidor al formulario y de vuelta: los usos se editan uno por línea.
+const aFormulario = (i) => ({ ...i, usos: i.usos.join('\n'), pesoUnit: i.pesoUnit ?? '', volumenUnit: i.volumenUnit ?? '' })
+const aServidor = (f) => ({ ...f, usos: f.usos.split('\n').map((u) => u.trim()).filter(Boolean) })
+const ETIQUETAS_DETALLE = ['Composición', 'Textura', 'Ancho', 'Gramaje', 'Adhesión', 'Color', 'Presentación', 'Uso recomendado']
+
+function InfoProducto({ token, producto, toast, onVolver }) {
+  const [listas, setListas] = useState(null)        // { categorias, unidades }
+  const [original, setOriginal] = useState(null)    // lo guardado, para saber si hay cambios
+  const [form, setForm] = useState(null)
+  const [guardando, setGuardando] = useState(false)
+  const [error, setError] = useState('')
+  const id = producto?.id
+
+  useEffect(() => {
+    if (!id) return
+    api(token, `/productos/${id}/info`).then((r) => {
+      if (!r.ok) { setError(r.datos.error || 'No se pudo cargar la información.'); return }
+      const f = aFormulario(r.datos.info)
+      setListas({ categorias: r.datos.categorias, unidades: r.datos.unidades })
+      setOriginal(f); setForm(f)
+    })
+  }, [token, id])
+
+  if (!producto) return <><button className="volver-link" onClick={onVolver}>← Volver a la lista</button><p className="cargando">Cargando…</p></>
+  const cambio = (campo) => (e) => setForm((f) => ({ ...f, [campo]: e.target.value }))
+  const hayCambios = form && original && JSON.stringify(form) !== JSON.stringify(original)
+  const tieneVariantes = producto.variantes.length > 0
+
+  function cambiarDetalle(i, campo, valor) {
+    setForm((f) => ({ ...f, detalles: f.detalles.map((d, j) => (j === i ? { ...d, [campo]: valor } : d)) }))
+  }
+  async function guardar(e) {
+    e.preventDefault()
+    setError(''); setGuardando(true)
+    const r = await api(token, `/productos/${id}/info`, { method: 'PUT', body: aServidor(form) })
+    setGuardando(false)
+    if (!r.ok) { setError(r.datos.error || 'No se pudo guardar.'); return }
+    const f = aFormulario(r.datos.info)
+    setOriginal(f); setForm(f)
+    toast('Información guardada')
+  }
+
+  return (
+    <>
+      <button className="volver-link" onClick={onVolver}>← Volver a la lista</button>
+      <h1 className="sec-title">Información · {producto.nombre}</h1>
+      <p className="sec-sub">
+        Lo que guardes aquí se ve en la tienda en uno o dos minutos. El nombre y el precio se cambian en Alegra.{' '}
+        <a href={`/producto/${id}`} target="_blank" rel="noopener noreferrer">Ver en la tienda ↗</a>
+      </p>
+      {error && <div className="admin-error">{error}</div>}
+      {!form ? (!error && <p className="cargando">Cargando…</p>) : (
+        <form className="info-form" onSubmit={guardar}>
+          <div className="admin-card">
+            <h2 className="sub-title">Textos de la ficha</h2>
+            <div className="campo">
+              <label htmlFor="i-desc">Descripción corta</label>
+              <textarea id="i-desc" rows={3} maxLength={400} value={form.descripcion} onChange={cambio('descripcion')} />
+              <small>Aparece debajo del precio. Dos o tres frases: qué es y para qué sirve.</small>
+            </div>
+            <div className="campo">
+              <label htmlFor="i-larga">Descripción completa <span className="opc">(opcional)</span></label>
+              <textarea id="i-larga" rows={5} maxLength={2000} value={form.descripcionLarga} onChange={cambio('descripcionLarga')} />
+              <small>Va en la pestaña «Descripción». Si la dejas vacía, ahí se repite la corta.</small>
+            </div>
+            <div className="campo">
+              <label htmlFor="i-usos">Usos recomendados <span className="opc">(opcional)</span></label>
+              <textarea id="i-usos" rows={5} value={form.usos} onChange={cambio('usos')} placeholder={'Cuellos de camisa\nPuños\nPretinas'} />
+              <small>Uno por línea (hasta 12). Se muestran como etiquetas en «Usos recomendados».</small>
+            </div>
+            <div className="campo">
+              <label>Detalles del material <span className="opc">(opcional)</span></label>
+              {form.detalles.map((d, i) => (
+                <div className="detalle-fila" key={i}>
+                  <input list="etiquetas-detalle" placeholder="Ej.: Composición" maxLength={40} value={d.etiqueta} onChange={(e) => cambiarDetalle(i, 'etiqueta', e.target.value)} />
+                  <input placeholder="Ej.: 100% poliéster" maxLength={120} value={d.valor} onChange={(e) => cambiarDetalle(i, 'valor', e.target.value)} />
+                  <button type="button" className="quitar" title="Quitar" onClick={() => setForm((f) => ({ ...f, detalles: f.detalles.filter((_, j) => j !== i) }))}>✕</button>
+                </div>
+              ))}
+              <datalist id="etiquetas-detalle">{ETIQUETAS_DETALLE.map((t) => <option key={t} value={t} />)}</datalist>
+              {form.detalles.length < 10 && (
+                <button type="button" className="btn-sec" onClick={() => setForm((f) => ({ ...f, detalles: [...f.detalles, { etiqueta: '', valor: '' }] }))}>+ Agregar detalle</button>
+              )}
+              <small>Pares tipo «Composición: 100% algodón». Van en «Detalles de compra». Los que queden incompletos no se guardan.</small>
+            </div>
+            <div className="campo">
+              <label htmlFor="i-cuid">Cuidados <span className="opc">(opcional)</span></label>
+              <textarea id="i-cuid" rows={3} maxLength={600} value={form.cuidados} onChange={cambio('cuidados')} />
+              <small>Cómo plancharlo, lavarlo o guardarlo. Va en «Detalles de compra».</small>
+            </div>
+            {!tieneVariantes && (
+              <div className="campo">
+                <label htmlFor="i-pres">Presentación <span className="opc">(opcional)</span></label>
+                <input id="i-pres" maxLength={120} value={form.presentacion} onChange={cambio('presentacion')} placeholder="Ej.: Blanco — 50 tizas por caja" />
+                <small>Se muestra junto a «Presentación única».</small>
+              </div>
+            )}
+          </div>
+
+          <div className="admin-card">
+            <h2 className="sub-title">Venta y catálogo</h2>
+            <div className="campos-2">
+              <div className="campo">
+                <label htmlFor="i-cat">Categoría</label>
+                <select id="i-cat" value={form.categoria} onChange={cambio('categoria')}>
+                  {listas.categorias.map((c) => <option key={c} value={c}>{CATEGORIA[c] || c}</option>)}
+                </select>
+                <small>Dónde aparece en el catálogo y en el menú.</small>
+              </div>
+              <div className="campo">
+                <label htmlFor="i-uni">Unidad de venta</label>
+                <select id="i-uni" value={form.unidad} onChange={cambio('unidad')}>
+                  {listas.unidades.map((u) => <option key={u} value={u}>{u}</option>)}
+                </select>
+                <small>Lo que se compra con cada «+1» en el carrito.</small>
+              </div>
+            </div>
+            {tieneVariantes && (
+              <div className="campo">
+                <label htmlFor="i-var">Nombre de las variantes para el cliente</label>
+                <input id="i-var" maxLength={30} value={form.varianteEtiqueta} onChange={cambio('varianteEtiqueta')} placeholder="Ej.: Color, Diseño de la tela, Talla" />
+                <small>El título del selector en la tienda («Elige Color…»). Si lo dejas vacío dice «Opción».</small>
+              </div>
+            )}
+          </div>
+
+          <div className="admin-card">
+            <h2 className="sub-title">Envío</h2>
+            <div className="campos-2">
+              <div className="campo">
+                <label htmlFor="i-peso">Peso por unidad (kg)</label>
+                <input id="i-peso" type="number" min="0.001" max="50" step="0.001" value={form.pesoUnit} onChange={cambio('pesoUnit')} />
+                <small>Peso de una unidad de venta ({form.unidad.toLowerCase().replace(/^por /, '1 ')}) ya empacada. Ej.: 0,25.</small>
+              </div>
+              <div className="campo">
+                <label htmlFor="i-vol">Volumen por unidad (cm³)</label>
+                <input id="i-vol" type="number" min="1" max="500000" step="1" value={form.volumenUnit} onChange={cambio('volumenUnit')} />
+                <small>Largo × ancho × alto en cm, doblado o empacado. Ej.: 30 × 20 × 5 = 3000.</small>
+              </div>
+            </div>
+            <small className="nota">Con esto se cotiza el envío con la transportadora. Si quedan vacíos se usa 0,2 kg y 800 cm³.</small>
+          </div>
+
+          <div className="info-acciones">
+            <button type="submit" className="btn-refund" disabled={!hayCambios || guardando}>{guardando ? 'Guardando…' : hayCambios ? 'Guardar cambios' : 'Sin cambios'}</button>
+            {hayCambios && <button type="button" className="btn-ghost-sm" onClick={() => setForm(original)}>Descartar cambios</button>}
+          </div>
+        </form>
+      )}
     </>
   )
 }
