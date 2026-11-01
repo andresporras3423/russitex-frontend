@@ -11,8 +11,8 @@ const POR_DEFECTO = {
   direccion: 'Calle 66 # 21-50',
   ciudad: 'Bogotá, Colombia',
   whatsapp: '+57 313 890 9118',
-  horario_semana: '10:00 a.m. – 6:00 p.m.',
-  horario_sabado: '10:00 a.m. – 5:00 p.m.',
+  horario_semana: '10:00 a.m. – 7:00 p.m.',
+  horario_sabado: '10:00 a.m. – 6:00 p.m.',
   horario_domingo: 'Cerrado',
   descuento_compra_desde: 'Compras desde $350.000 COP',
 }

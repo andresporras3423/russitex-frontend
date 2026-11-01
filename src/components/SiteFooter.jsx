@@ -10,8 +10,8 @@ const POR_DEFECTO = {
   lema: '39 años siendo tu mano amiga en confección.',
   whatsapp: '+57 313 890 9118',
   whatsapp_link: 'https://wa.me/573138909118',
-  horario_semana: '10:00 a.m. – 6:00 p.m.',
-  horario_sabado: '10:00 a.m. – 5:00 p.m.',
+  horario_semana: '10:00 a.m. – 7:00 p.m.',
+  horario_sabado: '10:00 a.m. – 6:00 p.m.',
   ciudad: 'Bogotá, Colombia',
   direccion: 'Calle 66 # 21-50',
 }

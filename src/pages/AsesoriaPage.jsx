@@ -318,8 +318,8 @@ export default function AsesoriaPage() {
             <div className="chat-info-card">
               <h4><span dangerouslySetInnerHTML={{ __html: ICON_CLOCK }} />Horario de atención</h4>
               <ul>
-                <li>Lunes a viernes: {tienda.horario_semana || '10 a.m. – 6 p.m.'}</li>
-                <li>Sábados: {tienda.horario_sabado || '10 a.m. – 5 p.m.'}</li>
+                <li>Lunes a viernes: {tienda.horario_semana || '10 a.m. – 7 p.m.'}</li>
+                <li>Sábados: {tienda.horario_sabado || '10 a.m. – 6 p.m.'}</li>
                 <li>Domingos y festivos: {tienda.horario_domingo || 'cerrado'}</li>
               </ul>
             </div>
