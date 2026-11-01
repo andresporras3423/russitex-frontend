@@ -6,6 +6,7 @@ import { useAuth } from '../context/useAuth'
 import { IcoImagen, IcoEtiqueta, IcoPedidos, IcoUsuario, IcoInfo } from './adminIcons'
 import './AdminPage.css'
 import { fechaCorta, fechaHora } from '../lib/fechas'
+import { direccionCompleta } from '../lib/localidades'
 
 // Panel de administrador (diseño version2: russitex-admin.html).
 // Rutas: /admin/imagenes, /admin/imagenes/<id>, /admin/estado,
@@ -724,7 +725,7 @@ function DetallePedido({ token, referencia, toast, onVolver }) {
           <div className="lbl">Celular y correo</div>
           <p>{c.telefono || '—'}{c.avisosWhatsapp ? ' (acepta WhatsApp)' : ''}<br /><a href={`mailto:${c.email}`}>{c.email}</a></p>
           <div className="lbl">{tienda ? 'Entrega' : 'Dirección de entrega'}</div>
-          <p>{tienda ? 'Recoge en la tienda' : <>{env.direccion}<br />{[env.ciudad, env.departamento].filter(Boolean).join(', ')}{env.transportadora ? <><br />{env.transportadora}</> : null}</>}</p>
+          <p>{tienda ? 'Recoge en la tienda' : <>{direccionCompleta(env)}<br />{[env.ciudad, env.departamento].filter(Boolean).join(', ')}{env.indicaciones ? <><br />{env.indicaciones}</> : null}{env.transportadora ? <><br />{env.transportadora}</> : null}</>}</p>
           {pedido.cancelacion && <><div className="lbl">Motivo de la cancelación</div><p>{pedido.cancelacion.motivo}</p></>}
 
           <div className="det-actions">

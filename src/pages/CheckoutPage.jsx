@@ -6,6 +6,7 @@ import { useCart } from '../context/useCart'
 import { useAuth } from '../context/useAuth'
 import { digitoVerificacion } from '../lib/nit'
 import { nombreLugar } from '../lib/lugares'
+import { LOCALIDADES, esBogota, municipioUnico } from '../lib/localidades'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
 import { PORCENTAJE_DESCUENTO, umbralDescuento, calcularDescuento } from '../lib/descuento'
 import './CheckoutPage.css'
@@ -32,7 +33,7 @@ const ETIQUETA_DOC = Object.fromEntries(Object.entries(TIPOS_DOC).map(([k, v]) =
 
 const FORM_VACIO = {
   nombre: '', apellido: '', tipodoc: 'C.C.', doc: '', cel: '', correo: '',
-  ciudad: '', dir: '', notas: '',
+  ciudad: '', localidad: '', barrio: '', dir: '', notas: '',
   razon: '', nit: '', nitdv: '', regimen: '',   // solo con "Datos de empresa"
   avisosWa: false,   // acepta avisos del pedido por WhatsApp (sin marcar: tiene que elegirlo)
 }
@@ -109,12 +110,14 @@ export default function CheckoutPage() {
       .sort((a, b) => nombreLugar(a.ciudad).localeCompare(nombreLugar(b.ciudad), 'es'))
   }, [ciudades, deptoSel])
 
-  // Al cambiar de departamento se limpia el municipio elegido.
+  // Al cambiar de departamento se limpia el municipio elegido. Si tiene uno
+  // solo (Bogotá) queda elegido y el segundo selector pasa a ser la localidad.
   function elegirDepartamento(dep) {
     setDirGuardada('otra')
     setDeptoSel(dep)
-    setDaneDestino(null)
-    setForm((f) => ({ ...f, ciudad: '' }))
+    const unico = municipioUnico(ciudades, dep)
+    setDaneDestino(unico ? unico.dane : null)
+    setForm((f) => ({ ...f, ciudad: unico ? unico.ciudad : '', localidad: '' }))
   }
 
   // ── Datos de la cuenta (si inició sesión): se prellenan los datos
@@ -129,6 +132,8 @@ export default function CheckoutPage() {
     setForm((f) => ({
       ...f,
       ciudad: d ? d.ciudad : '',
+      localidad: d?.localidad || '',
+      barrio: d?.barrio || '',
       dir: d ? (d.indicaciones ? `${d.direccion} (${d.indicaciones})` : d.direccion) : '',
     }))
   }
@@ -176,6 +181,9 @@ export default function CheckoutPage() {
     setDaneDestino(dane || null)
     setForm((f) => ({ ...f, ciudad: c ? c.ciudad : '' }))
   }
+
+  const bogota = esBogota(daneDestino)
+  const cambiarDireccion = (campo) => (e) => { setDirGuardada('otra'); set(campo)(e) }
 
   // Cotizar el envío cada vez que hay ciudad + carrito (solo para domicilio).
   // La lógica va dentro de una función async para no llamar setState en el
@@ -233,8 +241,8 @@ export default function CheckoutPage() {
       form.cel.trim() && /\S+@\S+\.\S+/.test(form.correo) && acepta
     if (!datos) return false
     if (envio === 'tienda') return true
-    return Boolean(form.dir.trim() && daneDestino && envioCotizado && !cotizando)
-  }, [form, esEmpresa, envio, acepta, daneDestino, envioCotizado, cotizando])
+    return Boolean(form.dir.trim() && daneDestino && (!bogota || form.localidad) && envioCotizado && !cotizando)
+  }, [form, esEmpresa, envio, acepta, daneDestino, bogota, envioCotizado, cotizando])
 
   // Carrito vacío: no tiene sentido el checkout.
   if (items.length === 0) {
@@ -276,7 +284,7 @@ export default function CheckoutPage() {
           empresa,
           // Una dirección guardada elegida tal cual no se vuelve a mandar.
           direccion: envio === 'domicilio' && dirGuardada === 'otra'
-            ? { destinatario: nombreCliente, direccion: form.dir.trim(), codigoDane: daneDestino }
+            ? { destinatario: nombreCliente, direccion: form.dir.trim(), codigoDane: daneDestino, localidad: form.localidad, barrio: form.barrio.trim() }
             : null,
         }),
       }).catch(() => { /* no es grave: solo no queda prellenado */ })
@@ -317,6 +325,7 @@ export default function CheckoutPage() {
           envio: {
             modalidad: envio,
             ciudad: form.ciudad, direccion: form.dir, departamento: deptoSel,
+            localidad: bogota ? form.localidad : null, barrio: form.barrio.trim(), indicaciones: form.notas.trim(),
             codigoDane: daneDestino, costo: costoEnvio || 0, transportadora: envioCotizado?.transportadora || null,
           },
         }),
@@ -352,6 +361,7 @@ export default function CheckoutPage() {
           contacto: {
             nombre: nombreCliente, telefono: form.cel, correo: form.correo,
             direccion: envio === 'domicilio' ? form.dir : '', ciudad: form.ciudad, departamento: deptoSel,
+            localidad: envio === 'domicilio' && bogota ? form.localidad : '', barrio: envio === 'domicilio' ? form.barrio.trim() : '',
           },
           items: items.map((i) => ({
             productoId: i.productoId, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio,
@@ -569,25 +579,39 @@ export default function CheckoutPage() {
                     {departamentos.map((d) => <option key={d} value={d}>{nombreLugar(d)}</option>)}
                   </select>
                 </div>
-                <div className="campo">
-                  <label htmlFor="municipio">Ciudad</label>
-                  <select
-                    id="municipio"
-                    value={daneDestino || ''}
-                    onChange={(e) => elegirMunicipio(e.target.value)}
-                    disabled={envio === 'tienda' || !deptoSel}
-                  >
-                    <option value="">{deptoSel ? 'Selecciona la ciudad' : 'Elige primero el departamento'}</option>
-                    {municipios.map((m) => <option key={m.dane} value={m.dane}>{nombreLugar(m.ciudad)}</option>)}
-                  </select>
-                </div>
+                {bogota ? (
+                  <div className="campo">
+                    <label htmlFor="localidad">Localidad</label>
+                    <select id="localidad" value={form.localidad} onChange={cambiarDireccion('localidad')}>
+                      <option value="">Selecciona la localidad</option>
+                      {LOCALIDADES.map((l) => <option key={l} value={l}>{l}</option>)}
+                    </select>
+                  </div>
+                ) : (
+                  <div className="campo">
+                    <label htmlFor="municipio">Ciudad</label>
+                    <select
+                      id="municipio"
+                      value={daneDestino || ''}
+                      onChange={(e) => elegirMunicipio(e.target.value)}
+                      disabled={envio === 'tienda' || !deptoSel}
+                    >
+                      <option value="">{deptoSel ? 'Selecciona la ciudad' : 'Elige primero el departamento'}</option>
+                      {municipios.map((m) => <option key={m.dane} value={m.dane}>{nombreLugar(m.ciudad)}</option>)}
+                    </select>
+                  </div>
+                )}
               </div>
 
-              <div className="fila una">
+              <div className="fila">
                 <div className="campo">
                   <label htmlFor="dir">Dirección</label>
-                  <input id="dir" type="text" placeholder="Calle 66 # 21-50" value={form.dir} onChange={(e) => { setDirGuardada('otra'); set('dir')(e) }} disabled={envio === 'tienda'} />
+                  <input id="dir" type="text" placeholder="Calle 66 # 21-50" value={form.dir} onChange={cambiarDireccion('dir')} disabled={envio === 'tienda'} />
                   {envio === 'tienda' && <span className="ayuda">No hace falta: vas a recoger en la tienda.</span>}
+                </div>
+                <div className="campo">
+                  <label htmlFor="barrio">Barrio <span className="opt">(opcional)</span></label>
+                  <input id="barrio" type="text" placeholder="Galerías" maxLength={80} value={form.barrio} onChange={cambiarDireccion('barrio')} />
                 </div>
               </div>
 

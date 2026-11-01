@@ -6,6 +6,7 @@ import { useCart } from '../context/useCart'
 import './ConfirmacionPage.css'
 import { nombreLugar } from '../lib/lugares'
 import { fechaLarga } from '../lib/fechas'
+import { direccionCompleta } from '../lib/localidades'
 
 const API_URL = import.meta.env.VITE_API_URL
 const money = (n) => `$${Number(n || 0).toLocaleString('es-CO')}`
@@ -322,7 +323,7 @@ function Detalle({ pedido, vista, local }) {
               <Fila label="Entrega" valor={<>Recoger en la tienda<br />{DIRECCION_TIENDA}</>} />
             ) : (
               <Fila label="Dirección" valor={contacto?.direccion
-                ? <>{contacto.direccion}<br />{lugar(contacto.ciudad, contacto.departamento)}</>
+                ? <>{direccionCompleta(contacto)}<br />{lugar(contacto.ciudad, contacto.departamento)}</>
                 : lugar(envio.ciudad, envio.departamento)} />
             )}
             <Fila label="Tiempo estimado" valor={tiempo} />

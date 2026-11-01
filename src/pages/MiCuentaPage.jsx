@@ -7,6 +7,7 @@ import { useProductos } from '../hooks/useProductos'
 import { digitoVerificacion, REGIMENES } from '../lib/nit'
 import './MiCuentaPage.css'
 import { nombreLugar } from '../lib/lugares'
+import { LOCALIDADES, esBogota, municipioUnico, direccionCompleta } from '../lib/localidades'
 import { fechaCorta, fechaHora } from '../lib/fechas'
 
 // Portada de la maqueta version2/russitex-mi-cuenta.html. Por ahora tiene
@@ -459,7 +460,7 @@ function Direcciones({ token }) {
               {d.principal && <span className="dir-badge">Principal</span>}
               <div className="dir-name">{d.destinatario}</div>
               <div className="dir-addr">
-                {d.direccion}{d.indicaciones && <><br />{d.indicaciones}</>}<br />{lugar(d.ciudad, d.departamento)}
+                {direccionCompleta(d)}{d.indicaciones && <><br />{d.indicaciones}</>}<br />{lugar(d.ciudad, d.departamento)}
               </div>
               <div className="dir-btns">
                 <button className="btn-dir" onClick={() => setEditando(d)}>Editar</button>
@@ -512,6 +513,8 @@ function DireccionModal({ inicial, onCerrar, onGuardar }) {
     indicaciones: inicial?.indicaciones || '',
     departamento: inicial?.departamento || '',
     codigoDane: inicial?.codigoDane || '',
+    localidad: inicial?.localidad || '',
+    barrio: inicial?.barrio || '',
   })
   const [error, setError] = useState('')
   const [guardando, setGuardando] = useState(false)
@@ -525,14 +528,19 @@ function DireccionModal({ inicial, onCerrar, onGuardar }) {
   const departamentos = [...new Set(ciudades.map((c) => c.departamento))].sort((a, b) => a.localeCompare(b, 'es'))
   const municipiosDepto = ciudades.filter((c) => c.departamento === f.departamento).sort((a, b) => a.ciudad.localeCompare(b.ciudad, 'es'))
   const set = (campo) => (e) => setF((x) => ({ ...x, [campo]: e.target.value }))
+  const bogota = esBogota(f.codigoDane)
+  // Un departamento con un solo municipio (Bogotá) lo deja elegido.
+  const elegirDepartamento = (departamento) =>
+    setF((x) => ({ ...x, departamento, codigoDane: municipioUnico(ciudades, departamento)?.dane || '', localidad: '' }))
 
   async function guardar() {
     setError('')
     if (f.destinatario.trim().length < 2) return setError('Escribe el nombre de quien recibe.')
     if (f.direccion.trim().length < 5) return setError('Escribe la dirección completa.')
     if (!f.codigoDane) return setError('Elige el departamento y el municipio.')
+    if (bogota && !f.localidad) return setError('Elige la localidad.')
     setGuardando(true)
-    const msg = await onGuardar({ destinatario: f.destinatario, direccion: f.direccion, indicaciones: f.indicaciones, codigoDane: f.codigoDane })
+    const msg = await onGuardar({ destinatario: f.destinatario, direccion: f.direccion, indicaciones: f.indicaciones, codigoDane: f.codigoDane, localidad: bogota ? f.localidad : '', barrio: f.barrio })
     setGuardando(false)
     if (msg) setError(msg)
   }
@@ -547,17 +555,27 @@ function DireccionModal({ inicial, onCerrar, onGuardar }) {
         <input id="d-dest" className="fi" placeholder="Nombre completo" value={f.destinatario} onChange={set('destinatario')} maxLength={120} /></div>
       <div className="fg"><label className="fl" htmlFor="d-depto">Departamento</label>
         <select id="d-depto" className="fi" value={f.departamento} disabled={!ciudades.length}
-          onChange={(e) => setF((x) => ({ ...x, departamento: e.target.value, codigoDane: '' }))}>
+          onChange={(e) => elegirDepartamento(e.target.value)}>
           <option value="">{ciudades.length ? 'Selecciona el departamento' : 'Cargando…'}</option>
           {departamentos.map((d) => <option key={d} value={d}>{nombreCiudad(d)}</option>)}
         </select></div>
-      <div className="fg"><label className="fl" htmlFor="d-mun">Ciudad</label>
-        <select id="d-mun" className="fi" value={f.codigoDane} disabled={!f.departamento} onChange={set('codigoDane')}>
-          <option value="">{f.departamento ? 'Selecciona la ciudad' : 'Elige primero el departamento'}</option>
-          {municipiosDepto.map((m) => <option key={m.dane} value={m.dane}>{nombreCiudad(m.ciudad)}</option>)}
-        </select></div>
+      {bogota ? (
+        <div className="fg"><label className="fl" htmlFor="d-loc">Localidad</label>
+          <select id="d-loc" className="fi" value={f.localidad} onChange={set('localidad')}>
+            <option value="">Selecciona la localidad</option>
+            {LOCALIDADES.map((l) => <option key={l} value={l}>{l}</option>)}
+          </select></div>
+      ) : (
+        <div className="fg"><label className="fl" htmlFor="d-mun">Ciudad</label>
+          <select id="d-mun" className="fi" value={f.codigoDane} disabled={!f.departamento} onChange={set('codigoDane')}>
+            <option value="">{f.departamento ? 'Selecciona la ciudad' : 'Elige primero el departamento'}</option>
+            {municipiosDepto.map((m) => <option key={m.dane} value={m.dane}>{nombreCiudad(m.ciudad)}</option>)}
+          </select></div>
+      )}
       <div className="fg"><label className="fl" htmlFor="d-dir">Dirección</label>
         <input id="d-dir" className="fi" placeholder="Calle, número, apartamento" value={f.direccion} onChange={set('direccion')} maxLength={200} /></div>
+      <div className="fg"><label className="fl" htmlFor="d-barrio">Barrio <span>(opcional)</span></label>
+        <input id="d-barrio" className="fi" placeholder="Ej: Galerías" value={f.barrio} onChange={set('barrio')} maxLength={80} /></div>
       <div className="fg"><label className="fl" htmlFor="d-ind">Indicaciones adicionales <span>(opcional)</span></label>
         <input id="d-ind" className="fi" placeholder="Ej: torre B, timbre 3" value={f.indicaciones} onChange={set('indicaciones')} maxLength={200} /></div>
       {error && <div className="form-error">{error}</div>}
