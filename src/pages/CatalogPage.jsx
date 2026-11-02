@@ -31,7 +31,7 @@ function contarPorCategoria(productos) {
   }, {})
 }
 
-const CAT_LABELS = { forros: 'Forros', entretelas: 'Entretelas', hombreras: 'Hombreras', guatas: 'Guatas', tizas: 'Tizas', cierres: 'Cierres', otros: 'Otros' }
+const CAT_LABELS = { forros: 'Forros', entretelas: 'Entretelas', hombreras: 'Hombreras', guatas: 'Guatas', tizas: 'Tizas', cierres: 'Cierres', otros: 'Otros materiales' }
 
 const money = (n) => `$${n.toLocaleString('es-CO')}`
 
