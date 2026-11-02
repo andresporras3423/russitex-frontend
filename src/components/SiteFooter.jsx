@@ -31,7 +31,7 @@ export default function SiteFooter() {
     <footer>
       <div className="footer-grid">
         <div>
-          <span className="f-logo">Russi<span>tex</span></span>
+          <img className="f-logo" src="/logo/russitex-logo-footer.svg" alt="Russitex" loading="lazy" />
           <p className="footer-desc">{v('descripcion_corta')}</p>
           <p className="footer-slogan">{v('lema')}</p>
           <div className="f-pagos">

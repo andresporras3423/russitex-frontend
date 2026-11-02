@@ -129,7 +129,7 @@ export default function SiteHeader({ activeLink }) {
 
       <header>
         <div className="header-inner">
-          <a href="#" className="logo" onClick={(e) => { e.preventDefault(); navigate('/') }}>Russi<span>tex</span></a>
+          <a href="#" className="logo" onClick={(e) => { e.preventDefault(); navigate('/') }}><img src="/logo/russitex-logo-header.svg" alt="Russitex" /></a>
           <nav id="mainNav" className={navOpen ? 'open' : ''}>
             <a href="#" className={activeLink === 'inicio' ? 'active' : ''} onClick={(e) => { e.preventDefault(); closeMobileNav(); navigate('/') }}>Inicio</a>
 
