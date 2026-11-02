@@ -9,7 +9,9 @@ export default function ScrollToTop() {
     // encarga de saltar hasta ella. Subir arriba acá provocaría un salto
     // visible y, según el orden de los efectos, podría ganar la carrera.
     if (hash) return
-    window.scrollTo(0, 0)
+    // Instantáneo: el scroll-behavior: smooth del html haría que cada página
+    // nueva se viera subiendo desde donde quedó la anterior.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [pathname, hash])
 
   return null
