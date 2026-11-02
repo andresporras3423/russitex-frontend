@@ -117,12 +117,12 @@ export default function SiteHeader({ activeLink }) {
       <div className="topbar">
         <div className="topbar-inner">
           <div className="topbar-set topbar-set-desktop">
-            <div className="topbar-msg">📦 En Bogotá, pide antes de las 12 p.m. y <strong>recibe el mismo día.</strong></div>
-            <div className="topbar-msg">🎁 <strong>5% de descuento en tus productos</strong> — {tienda.descuento_compra_desde ?? 'Compras desde $350.000 COP'}</div>
+            <div className="topbar-msg"><span>📦 En Bogotá, pide antes de las 12 p.m. y <strong>recibe el mismo día.</strong></span></div>
+            <div className="topbar-msg"><span>🎁 <strong>5% de descuento en tus productos</strong> — {tienda.descuento_compra_desde ?? 'Compras desde $350.000 COP'}</span></div>
           </div>
           <div className="topbar-set topbar-set-mobile">
-            <div className="topbar-msg">📦 Bogotá: pide antes de las 12 pm y <strong>recibe hoy</strong></div>
-            <div className="topbar-msg">🎁 <strong>5% de descuento en tus productos</strong> — {tienda.descuento_compra_desde ?? 'Compras desde $350.000 COP'}</div>
+            <div className="topbar-msg"><span>📦 Bogotá: pide antes de las 12 pm y <strong>recibe hoy</strong></span></div>
+            <div className="topbar-msg"><span>🎁 <strong>5% de descuento en tus productos</strong><br />{tienda.descuento_compra_desde ?? 'Compras desde $350.000 COP'}</span></div>
           </div>
         </div>
       </div>
