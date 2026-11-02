@@ -193,7 +193,9 @@ function VistaGrande({ imagenes, alt, inicial, onCerrar }) {
           })}
         </div>
       </div>
-      <p className="lightbox-hint">Desliza para ver las demás fotos · toca la imagen para acercar y ver la textura</p>
+      <p className="lightbox-hint">
+        {n > 1 ? 'Desliza para ver las demás fotos · toca la imagen para acercar y ver la textura' : 'Toca la imagen para acercar y ver la textura'}
+      </p>
     </div>
   )
 }
