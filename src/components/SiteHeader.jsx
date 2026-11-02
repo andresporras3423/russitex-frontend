@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 import { useCart } from '../context/useCart'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
@@ -43,7 +43,8 @@ function getPrimerNombre(user) {
 
 export default function SiteHeader({ activeLink }) {
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
+  const { user, logout, avisoSalida, ocultarAvisoSalida } = useAuth()
+  const { pathname } = useLocation()
   const { totalArticulos, agregadoEn, abrirPanel } = useCart()
   const tienda = useTiendaInfo()
   const productos = useProductos()
@@ -52,6 +53,21 @@ export default function SiteHeader({ activeLink }) {
   const [catalogOpen, setCatalogOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [userOpen, setUserOpen] = useState(false)
+
+  // Al cerrar sesión en Mi cuenta o en el checkout no se deja la página con
+  // los datos de la cuenta a la vista: se va al inicio o al carrito.
+  async function salir() {
+    setUserOpen(false)
+    await logout({ aviso: true })
+    if (pathname.startsWith('/mi-cuenta')) navigate('/')
+    else if (pathname.startsWith('/checkout')) navigate('/carrito')
+  }
+
+  useEffect(() => {
+    if (!avisoSalida) return
+    const t = setTimeout(ocultarAvisoSalida, 3500)
+    return () => clearTimeout(t)
+  }, [avisoSalida, ocultarAvisoSalida])
   const searchInputRef = useRef(null)
   const userMenuRef = useRef(null)
   const navToggleRef = useRef(null)
@@ -114,6 +130,9 @@ export default function SiteHeader({ activeLink }) {
 
   return (
     <>
+      {/* Fuera del <header>: su backdrop-filter haría que el position: fixed
+          del aviso quedara relativo al encabezado. */}
+      {avisoSalida && <div className="aviso-salida" role="status">Cerraste sesión. ¡Vuelve pronto!</div>}
       <div className="topbar">
         <div className="topbar-inner">
           <div className="topbar-set topbar-set-desktop">
@@ -207,7 +226,7 @@ export default function SiteHeader({ activeLink }) {
                       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12,12A6,6,0,1,0,6,6,6.006,6.006,0,0,0,12,12ZM12,2A4,4,0,1,1,8,6,4,4,0,0,1,12,2Z" /><path d="M12,14a9.01,9.01,0,0,0-9,9,1,1,0,0,0,2,0,7,7,0,0,1,14,0,1,1,0,0,0,2,0A9.01,9.01,0,0,0,12,14Z" /></svg>
                       Mi cuenta
                     </a>
-                    <a href="#" className="user-menu-out" onClick={(e) => { e.preventDefault(); setUserOpen(false); logout() }}>
+                    <a href="#" className="user-menu-out" onClick={(e) => { e.preventDefault(); salir() }}>
                       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.476,15a1,1,0,0,0-1,1v3a3,3,0,0,1-3,3H5a3,3,0,0,1-3-3V5A3,3,0,0,1,5,2H7.476a3,3,0,0,1,3,3V8a1,1,0,0,0,2,0V5a5.006,5.006,0,0,0-5-5H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H7.476a5.006,5.006,0,0,0,5-5V16A1,1,0,0,0,11.476,15Z" /><path d="M22.867,9.879,18.281,5.293a1,1,0,1,0-1.414,1.414l4.262,4.263L6,11a1,1,0,0,0,0,2H6l15.188-.031-4.323,4.324a1,1,0,1,0,1.414,1.414l4.586-4.586A3,3,0,0,0,22.867,9.879Z" /></svg>
                       Cerrar sesión
                     </a>

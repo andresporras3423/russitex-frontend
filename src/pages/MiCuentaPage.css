@@ -15,8 +15,9 @@
   color: var(--tinta);
   background: var(--crema);
 }
-/* Solo opacidad: un transform en .cuenta-content convertiría a esa caja en
-   la referencia de los position:fixed, y las ventanas (modal-overlay) no
+/* La entrada usa transform, pero con fill-mode "backwards" (no "both"): si el
+   transform se quedara puesto al terminar, .cuenta-content sería la
+   referencia de los position:fixed y las ventanas (modal-overlay) no
    cubrirían toda la pantalla. */
 @keyframes mc-fadeUp { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
 
@@ -47,7 +48,7 @@
 .micuenta-page .si-icon { width: 16px; height: 16px; flex-shrink: 0; }
 
 /* ── Contenido ── */
-.micuenta-page .cuenta-content { min-width: 0; animation: mc-fadeUp 0.3s ease both; }
+.micuenta-page .cuenta-content { min-width: 0; animation: mc-fadeUp 0.3s ease backwards; }
 .micuenta-page .cargando { color: var(--gris-calido); font-size: 0.9rem; padding: 2rem 0; }
 .micuenta-page .sec-title { font-family: var(--f-head); font-size: 1.5rem; font-weight: 600; color: var(--tinta); margin-bottom: 0.3rem; }
 .micuenta-page .sec-sub { font-size: 0.87rem; color: var(--gris-calido); margin-bottom: 2rem; }

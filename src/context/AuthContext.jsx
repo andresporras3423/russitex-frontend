@@ -20,6 +20,10 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(() => localStorage.getItem('russitex_token'))
   const [loading, setLoading] = useState(true)
+  // Aviso "Cerraste sesión" (lo muestra el encabezado). Solo cuando la persona
+  // cierra sesión; no cuando la sesión vence sola.
+  const [avisoSalida, setAvisoSalida] = useState(false)
+  const ocultarAvisoSalida = useCallback(() => setAvisoSalida(false), [])
 
   const cargarPerfil = useCallback(async (accessToken) => {
     const res = await fetch(`${API_URL}/api/auth/perfil`, {
@@ -155,7 +159,7 @@ export function AuthProvider({ children }) {
     try { setUser(await cargarPerfil(token)) } catch { /* se queda el anterior */ }
   }, [token, cargarPerfil])
 
-  const logout = useCallback(async () => {
+  const logout = useCallback(async ({ aviso = false } = {}) => {
     if (token) {
       await fetch(`${API_URL}/api/auth/logout`, {
         method: 'POST',
@@ -166,11 +170,12 @@ export function AuthProvider({ children }) {
     // Datos del checkout recordados en este navegador (computadores compartidos).
     try { localStorage.removeItem('russitex_datos_checkout') } catch { /* nada que borrar */ }
     limpiarSesion()
+    if (aviso) setAvisoSalida(true)
   }, [token, limpiarSesion])
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, login, register, logout, loginConProveedor, forgotPassword, refrescarPerfil }}
+      value={{ user, token, loading, login, register, logout, loginConProveedor, forgotPassword, refrescarPerfil, avisoSalida, ocultarAvisoSalida }}
     >
       {children}
     </AuthContext.Provider>
