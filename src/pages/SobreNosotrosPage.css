@@ -30,12 +30,6 @@
 .sobre-page .delay-2 { transition-delay: 0.2s; }
 .sobre-page .delay-3 { transition-delay: 0.3s; }
 
-/* Respeta a quien pidió menos animación en su sistema. */
-@media (prefers-reduced-motion: reduce) {
-  .sobre-page .reveal, .sobre-page .reveal-left, .sobre-page .reveal-right {
-    opacity: 1; transform: none; transition: none;
-  }
-}
 
 /* ── BREADCRUMB ── */
 .sobre-page .breadcrumb-bar { background: var(--crema-osc); border-bottom: 1px solid var(--gris-claro); padding: 0.9rem 5%; }
