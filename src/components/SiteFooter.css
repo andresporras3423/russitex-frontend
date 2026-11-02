@@ -4,7 +4,7 @@
 
 footer { background: var(--tinta); color: rgba(255,255,255,0.68); padding: 4rem 8% 2rem; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1.4fr 1.6fr; gap: 4rem; padding-bottom: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.f-logo { height: 50px; width: auto; display: block; margin-bottom: 0.8rem; }
+.f-logo { height: 32px; width: auto; display: block; margin-bottom: 0.8rem; }
 .footer-desc { font-size: 0.92rem; line-height: 1.7; margin-bottom: 0.4rem; }
 .footer-slogan { font-size: 0.86rem; font-style: italic; font-family: var(--f-head); color: rgba(255,255,255,0.5); }
 .f-col h4 { color: #fff; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1.1rem; }

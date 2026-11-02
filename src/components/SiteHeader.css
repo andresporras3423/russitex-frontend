@@ -36,7 +36,7 @@ header {
 }
 .header-inner { display: flex; align-items: center; padding: 0 5%; height: 68px; gap: 2rem; }
 .logo { display: flex; align-items: center; flex-shrink: 0; }
-.logo img { height: 46px; width: auto; display: block; }
+.logo img { height: 30px; width: auto; display: block; }
 header nav { display: flex; gap: 1.7rem; flex: 1; position: relative; }
 header nav a {
   text-decoration: none; color: var(--tinta);
