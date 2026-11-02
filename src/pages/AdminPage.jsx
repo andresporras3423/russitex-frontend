@@ -357,7 +357,7 @@ function ListaInfo({ productos, onVer }) {
 }
 
 // Del servidor al formulario y de vuelta: los usos se editan uno por línea.
-const aFormulario = (i) => ({ ...i, usos: i.usos.join('\n'), pesoUnit: i.pesoUnit ?? '', volumenUnit: i.volumenUnit ?? '' })
+const aFormulario = (i) => ({ ...i, usos: i.usos.join('\n'), pesoUnit: i.pesoUnit ?? '', volumenUnit: i.volumenUnit ?? '', mlAnchoCm: i.mlAnchoCm ?? '', mlAltoCm: i.mlAltoCm ?? '', mlUnidadesPaquete: i.mlUnidadesPaquete ?? '' })
 const aServidor = (f) => ({ ...f, usos: f.usos.split('\n').map((u) => u.trim()).filter(Boolean) })
 const ETIQUETAS_DETALLE = ['Composición', 'Textura', 'Ancho', 'Gramaje', 'Adhesión', 'Color', 'Presentación', 'Uso recomendado']
 
@@ -374,7 +374,7 @@ function InfoProducto({ token, producto, toast, onVolver }) {
     api(token, `/productos/${id}/info`).then((r) => {
       if (!r.ok) { setError(r.datos.error || 'No se pudo cargar la información.'); return }
       const f = aFormulario(r.datos.info)
-      setListas({ categorias: r.datos.categorias, unidades: r.datos.unidades })
+      setListas({ categorias: r.datos.categorias, unidades: r.datos.unidades, mlTipos: r.datos.mlTipos || [] })
       setOriginal(f); setForm(f)
     })
   }, [token, id])
@@ -497,6 +497,61 @@ function InfoProducto({ token, producto, toast, onVolver }) {
               </div>
             </div>
             <small className="nota">Con esto se cotiza el envío con la transportadora. Si quedan vacíos se usa 0,2 kg y 800 cm³.</small>
+          </div>
+
+          <div className="admin-card">
+            <h2 className="sub-title">Mercado Libre</h2>
+            <small className="nota">
+              Datos que Mercado Libre pide para publicar; no se ven en la tienda. Telas: fabricante y tipo de producto.
+              Botones: marca y material. Portavestidos: marca, modelo, color, ancho y alto. Lo demás: fabricante y marca.
+            </small>
+            <div className="campos-2">
+              <div className="campo">
+                <label htmlFor="i-ml-marca">Marca</label>
+                <input id="i-ml-marca" maxLength={60} value={form.mlMarca} onChange={cambio('mlMarca')} />
+              </div>
+              <div className="campo">
+                <label htmlFor="i-ml-fab">Fabricante</label>
+                <input id="i-ml-fab" maxLength={60} value={form.mlFabricante} onChange={cambio('mlFabricante')} />
+              </div>
+              <div className="campo">
+                <label htmlFor="i-ml-tipo">Tipo de producto <span className="opc">(telas)</span></label>
+                <select id="i-ml-tipo" value={form.mlTipoProducto} onChange={cambio('mlTipoProducto')}>
+                  <option value="">—</option>
+                  {listas.mlTipos.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div className="campo">
+                <label htmlFor="i-ml-mat">Material <span className="opc">(botones)</span></label>
+                <input id="i-ml-mat" maxLength={60} value={form.mlMaterial} onChange={cambio('mlMaterial')} placeholder="Ej.: Acrílico" />
+              </div>
+              <div className="campo">
+                <label htmlFor="i-ml-mod">Modelo <span className="opc">(portavestidos)</span></label>
+                <input id="i-ml-mod" maxLength={60} value={form.mlModelo} onChange={cambio('mlModelo')} />
+              </div>
+              <div className="campo">
+                <label htmlFor="i-ml-color">Color <span className="opc">(portavestidos)</span></label>
+                <input id="i-ml-color" maxLength={40} value={form.mlColor} onChange={cambio('mlColor')} />
+              </div>
+              <div className="campo">
+                <label htmlFor="i-ml-ancho">Ancho en cm <span className="opc">(portavestidos)</span></label>
+                <input id="i-ml-ancho" type="number" min="1" max="1000" step="0.1" value={form.mlAnchoCm} onChange={cambio('mlAnchoCm')} />
+              </div>
+              <div className="campo">
+                <label htmlFor="i-ml-alto">Alto en cm <span className="opc">(portavestidos)</span></label>
+                <input id="i-ml-alto" type="number" min="1" max="1000" step="0.1" value={form.mlAltoCm} onChange={cambio('mlAltoCm')} />
+              </div>
+              <div className="campo">
+                <label htmlFor="i-ml-paq">Unidades por paquete <span className="opc">(opcional)</span></label>
+                <input id="i-ml-paq" type="number" min="1" max="1000" step="1" value={form.mlUnidadesPaquete} onChange={cambio('mlUnidadesPaquete')} />
+                <small>
+                  Mercado Libre no deja publicar por menos de $2.900: si el producto vale menos, se publica en paquete.
+                  {form.mlUnidadesPaquete > 1
+                    ? ` Paquete de ${form.mlUnidadesPaquete}: ${money(form.mlUnidadesPaquete * producto.precio)}.`
+                    : ` Vacío = el mínimo necesario (${Math.max(1, Math.ceil(2900 / producto.precio))}).`}
+                </small>
+              </div>
+            </div>
           </div>
 
           <div className="info-acciones">
