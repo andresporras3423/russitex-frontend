@@ -100,5 +100,5 @@
 /* En pantallas angostas el panel se ancla arriba a la izquierda para que
    quepa; de tablet en adelante sigue flotando junto al botón. */
 @media (max-width: 460px) {
-  .chat-panel { top:0; left:0; }
+  .chat-panel { top:0; left:0; right:0; width:auto; }
 }

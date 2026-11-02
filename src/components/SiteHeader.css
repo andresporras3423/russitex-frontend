@@ -51,10 +51,6 @@ header nav a:not(.active)::after {
 header nav a:hover { color: var(--azul-oficio); }
 header nav a:hover:not(.active)::after { right: 0; }
 header nav a.active { color: var(--azul-oficio); font-weight: 700; }
-header nav a.active::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: -2px;
-  height: 2px; background: var(--ladrillo); border-radius: 2px;
-}
 .nav-catalog-wrap { position: relative; }
 .nav-catalog-wrap > a svg { transition: transform 0.2s; }
 .nav-catalog-wrap:hover > a { color: var(--azul-oficio); }
