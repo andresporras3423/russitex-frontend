@@ -188,7 +188,7 @@
 .catalog-page .prod-price { font-size: 1.15rem; font-weight: 700; color: var(--azul-oficio); margin-bottom: 0.85rem; font-family: var(--f-head); }
 .catalog-page .prod-actions { display: flex; gap: 0.5rem; }
 .catalog-page .btn-add {
-  flex: 1; background: var(--azul-oficio); color: #fff; border: none; cursor: pointer;
+  flex: 1; background: var(--azul-oficio); color: #fff; border: 1.5px solid transparent; cursor: pointer;
   border-radius: var(--r-pill); padding: 0.55rem 0; font-family: var(--f-body);
   font-size: 0.8rem; font-weight: 700; transition: background 0.2s, transform 0.15s;
 }
@@ -279,7 +279,6 @@
 
 @media (max-width: 479px) {
   .catalog-page .products-grid { grid-template-columns: 1fr; }
-  .catalog-page .prod-actions { flex-direction: row; }
   .catalog-page .prod-img { aspect-ratio: 16 / 10; }
   .catalog-page .banner-count { width: 100%; text-align: center; }
 }
