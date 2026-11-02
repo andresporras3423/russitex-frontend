@@ -55,7 +55,10 @@
 .asesoria-page .form-layout { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
 .asesoria-page .form-card { background: white; border-radius: 22px; border: 1px solid var(--gris-claro); padding: 2.5rem; box-shadow: 0 8px 32px rgba(47,95,143,0.06); }
 .asesoria-page .form-card h2 { font-family: var(--f-head); font-size: 1.4rem; font-weight: 700; color: var(--ladrillo); margin-bottom: 0.85rem; }
-.asesoria-page .form-card > div > p { font-size: 0.88rem; color: var(--gris); line-height: 1.65; margin-bottom: 2rem; }
+/* Igual que en el diseño: el párrafo va dentro de un div, así que esta regla
+   no lo toca y se ve con la letra base. Con "> div > p" además pisaba a
+   .form-note y .form-confirm p, que quedaban más grandes que en el diseño. */
+.asesoria-page .form-card > p { font-size: 0.88rem; color: var(--gris); line-height: 1.65; margin-bottom: 2rem; }
 .asesoria-page .form-fields { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.6rem; }
 .asesoria-page .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .asesoria-page .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
