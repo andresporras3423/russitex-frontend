@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useProductos } from '../hooks/useProductos'
+import { materialesRedondeados } from '../lib/materiales'
 import './SobreNosotrosPage.css'
 
 const ANIO_FUNDACION = 1987
@@ -137,7 +138,7 @@ export default function SobreNosotrosPage() {
               <div className="hero-stat-label">Años de trayectoria</div>
             </div>
             <div className="hero-stat">
-              <div className="hero-stat-num">{totalMateriales ? `+${totalMateriales}` : '—'}</div>
+              <div className="hero-stat-num">{materialesRedondeados(totalMateriales)}</div>
               <div className="hero-stat-label">Materiales en catálogo</div>
             </div>
           </div>

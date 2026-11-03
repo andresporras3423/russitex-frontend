@@ -4,16 +4,10 @@ import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useChat } from '../context/useChat'
 import { useProductos } from '../hooks/useProductos'
+import { materialesRedondeados } from '../lib/materiales'
 import './HomePage.css'
 
 const ANIO_FUNDACION = 1987
-
-// Total del catálogo redondeado hacia abajo a la decena (41 o 49 -> +40),
-// para que la cifra no cambie con cada producto nuevo.
-function materialesRedondeados(n) {
-  if (!n) return '—'
-  return n >= 10 ? `+${Math.floor(n / 10) * 10}` : String(n)
-}
 
 // "filter" mapea al valor de categoría real del catálogo (src/pages/CatalogPage.jsx).
 // Pretinas y Botones no son categorías propias en el catálogo (Pretina vive dentro de
