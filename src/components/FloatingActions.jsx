@@ -70,8 +70,10 @@ export default function FloatingActions() {
     return () => document.removeEventListener('keydown', onKey)
   }, [abierto, cerrarChat])
 
+  // El cursor va al campo solo en computador: en celular eso abre el
+  // teclado, que tapa casi todo el chat (las sugerencias incluidas).
   useEffect(() => {
-    if (abierto) {
+    if (abierto && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
       const t = setTimeout(() => inputRef.current?.focus(), 300)
       return () => clearTimeout(t)
     }
