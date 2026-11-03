@@ -13,8 +13,8 @@ const POR_DEFECTO = {
   ciudad: 'Bogotá, Colombia',
   whatsapp: '+57 313 890 9118',
   correo: 'contacto@russitex.com',
-  horario_semana: '10:00 a.m. – 7:00 p.m.',
-  horario_sabado: '10:00 a.m. – 6:00 p.m.',
+  horario_semana: '10:00 a.m. – 6:30 p.m.',
+  horario_sabado: '10:00 a.m. – 5:00 p.m.',
   horario_domingo: 'Cerrado',
 }
 
