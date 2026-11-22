@@ -14,12 +14,15 @@ import './SiteHeader.css'
 // devuelve /api/productos, para que no queden desactualizados cuando
 // se agregue o quite un producto en Alegra.
 const MEGA_CATS = [
-  { filter: 'forros', icon: ICON_FORROS, name: 'Forros' },
+  // Refuerzos y Telas para bolsillo usan por ahora íconos de otras
+  // categorías (guatas y forros), hasta tener los suyos.
   { filter: 'entretelas', icon: ICON_ENTRETELAS, name: 'Entretelas' },
+  { filter: 'forros', icon: ICON_FORROS, name: 'Forros' },
+  { filter: 'refuerzos', icon: ICON_GUATAS, name: 'Refuerzos para saco y pantalón' },
+  { filter: 'telas', icon: ICON_FORROS, name: 'Telas para bolsillo y lonas' },
   { filter: 'hombreras', icon: ICON_HOMBRERAS, name: 'Hombreras' },
-  { filter: 'guatas', icon: ICON_GUATAS, name: 'Guatas' },
   { filter: 'tizas', icon: ICON_TIZAS, name: 'Tizas' },
-  { filter: 'cierres', icon: ICON_CIERRES, name: 'Cierres' },
+  { filter: 'botones', icon: ICON_CIERRES, name: 'Botones y cremalleras' },
   { filter: 'otros', icon: ICON_OTROS, name: 'Otros materiales' },
   { filter: 'todos', icon: ICON_TODOS, name: 'Ver todo' },
 ]

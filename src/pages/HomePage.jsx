@@ -9,19 +9,17 @@ import './HomePage.css'
 
 const ANIO_FUNDACION = 1987
 
-// "filter" mapea al valor de categoría real del catálogo (src/pages/CatalogPage.jsx).
-// Pretinas y Botones no son categorías propias en el catálogo (Pretina vive dentro de
-// "Otros materiales", y no hay productos de Botones todavía), así que esas dos tarjetas
-// llevan al catálogo completo en vez de a un filtro que no existe.
+// "filter" es la clave de categoría del catálogo (src/lib/categorias.js).
+// Las fotos son de muestra hasta tener las reales.
 const categorias = [
-  { nombre: 'Forros', filter: 'forros', img: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=440&q=80' },
   { nombre: 'Entretelas', filter: 'entretelas', img: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=440&q=80' },
+  { nombre: 'Forros', filter: 'forros', img: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=440&q=80' },
+  { nombre: 'Refuerzos para saco y pantalón', filter: 'refuerzos', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=440&q=80' },
+  { nombre: 'Telas para bolsillo y lonas', filter: 'telas', img: 'https://images.unsplash.com/photo-1544441893-675973e31985?w=440&q=80' },
   { nombre: 'Hombreras', filter: 'hombreras', img: 'https://images.unsplash.com/photo-1586495777744-4e6232bf2176?w=440&q=80' },
-  { nombre: 'Guatas', filter: 'guatas', img: 'https://images.unsplash.com/photo-1544441893-675973e31985?w=440&q=80' },
   { nombre: 'Tizas', filter: 'tizas', img: 'https://images.unsplash.com/photo-1594938298603-c8148c4b4a4a?w=440&q=80' },
-  { nombre: 'Pretinas', filter: 'otros', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=440&q=80' },
-  { nombre: 'Cierres', filter: 'cierres', img: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=440&q=80' },
-  { nombre: 'Botones', filter: null, img: 'https://images.unsplash.com/photo-1612404730960-5c71577fca11?w=440&q=80' },
+  { nombre: 'Botones y cremalleras', filter: 'botones', img: 'https://images.unsplash.com/photo-1612404730960-5c71577fca11?w=440&q=80' },
+  { nombre: 'Otros materiales', filter: 'otros', img: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=440&q=80' },
 ]
 
 const AUTO_DELAY = 3000

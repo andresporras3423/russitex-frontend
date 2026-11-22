@@ -14,15 +14,12 @@ import {
   ICON_CAMPANA, ICON_WA_ALTERNATIVAS, ICON_CERRAR_MODAL, ICON_CAMPANA_MODAL, ICON_CONFIRMA_MODAL,
 } from './detalleIcons'
 import './ProductoDetallePage.css'
+import { CAT_LABELS } from '../lib/categorias'
 
 const API_URL = import.meta.env.VITE_API_URL
 const WA_POR_DEFECTO = 'https://wa.me/573138909118'
 const IMAGEN_POR_DEFECTO = 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80'
 
-const CAT_LABELS = {
-  forros: 'Forros', entretelas: 'Entretelas', hombreras: 'Hombreras',
-  guatas: 'Guatas', tizas: 'Tizas', cierres: 'Cierres', otros: 'Otros materiales',
-}
 
 const money = (n) => `$${Number(n).toLocaleString('es-CO')}`
 
@@ -340,7 +337,10 @@ function FichaProducto({ id }) {
               <div className="estampado-grid">
                 {variantes.map((v) => {
                   const primeraFoto = listaUrls(v.imagenes)[0]
-                  const chip = v.swatch || primeraFoto
+                  // Orden: swatch propio, si no el color plano, si no la primera
+                  // foto. (Si la variante no tiene fotos propias, su primera foto
+                  // es la del producto, igual en todas: no sirve para distinguir.)
+                  const chip = v.swatch || (v.hex ? null : primeraFoto)
                   return (
                     <button
                       type="button"

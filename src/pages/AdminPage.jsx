@@ -7,6 +7,7 @@ import { IcoImagen, IcoEtiqueta, IcoPedidos, IcoUsuario, IcoInfo } from './admin
 import './AdminPage.css'
 import { fechaCorta, fechaHora } from '../lib/fechas'
 import { direccionCompleta } from '../lib/localidades'
+import { CAT_LABELS } from '../lib/categorias'
 
 // Panel de administrador (diseño version2: russitex-admin.html).
 // Rutas: /admin/imagenes, /admin/imagenes/<id>, /admin/estado,
@@ -15,7 +16,7 @@ import { direccionCompleta } from '../lib/localidades'
 
 const API_URL = import.meta.env.VITE_API_URL
 const money = (n) => `$${Math.round(Number(n) || 0).toLocaleString('es-CO')}`
-const CATEGORIA = { forros: 'Forros', entretelas: 'Entretelas', hombreras: 'Hombreras', guatas: 'Guatas', tizas: 'Tizas', cierres: 'Cierres', otros: 'Otros' }
+const CATEGORIA = CAT_LABELS
 const METODO = { CARD: 'Tarjeta', PSE: 'PSE', NEQUI: 'Nequi', DAVIPLATA: 'DaviPlata', BANCOLOMBIA_TRANSFER: 'Bancolombia', BANCOLOMBIA_QR: 'QR Bancolombia', BANCOLOMBIA_COLLECT: 'Efectivo' }
 
 async function api(token, ruta, { method = 'GET', body } = {}) {

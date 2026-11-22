@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import SiteHeader from '../components/SiteHeader'
 import SiteFooter from '../components/SiteFooter'
 import { useCart } from '../context/useCart'
+import { CATEGORIAS, CAT_LABELS } from '../lib/categorias'
 import './CatalogPage.css'
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -11,16 +12,7 @@ const API_URL = import.meta.env.VITE_API_URL
 const IMAGEN_POR_DEFECTO = 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&q=75'
 
 
-const CATEGORIES = [
-  { key: 'todos', label: 'Todos los materiales' },
-  { key: 'forros', label: 'Forros' },
-  { key: 'entretelas', label: 'Entretelas' },
-  { key: 'hombreras', label: 'Hombreras' },
-  { key: 'guatas', label: 'Guatas' },
-  { key: 'tizas', label: 'Tizas' },
-  { key: 'cierres', label: 'Cierres' },
-  { key: 'otros', label: 'Otros materiales' },
-]
+const CATEGORIES = [{ key: 'todos', label: 'Todos los materiales' }, ...CATEGORIAS]
 
 function contarPorCategoria(productos) {
   return CATEGORIES.reduce((acc, c) => {
@@ -31,7 +23,6 @@ function contarPorCategoria(productos) {
   }, {})
 }
 
-const CAT_LABELS = { forros: 'Forros', entretelas: 'Entretelas', hombreras: 'Hombreras', guatas: 'Guatas', tizas: 'Tizas', cierres: 'Cierres', otros: 'Otros materiales' }
 
 const money = (n) => `$${n.toLocaleString('es-CO')}`
 
