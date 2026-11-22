@@ -164,7 +164,10 @@ export default function SiteHeader({ activeLink }) {
               <div className="mega-menu">
                 <div className="mega-menu-title">Explorar por categoría</div>
                 <div className="mega-cats">
-                  {MEGA_CATS.map((cat) => (
+                  {/* Sin "Ver todo": con 8 categorías quedaba solo en una tercera
+                      fila, y abajo ya está el botón "Ver todos los materiales".
+                      En el menú del celular sí se deja (allí no hay ese botón). */}
+                  {MEGA_CATS.filter((cat) => cat.filter !== 'todos').map((cat) => (
                     <a href="#" className="mega-cat" data-filter={cat.filter} key={cat.filter} onClick={(e) => { e.preventDefault(); goToCatalogFilter(cat.filter) }}>
                       <span className="mega-cat-icon" dangerouslySetInnerHTML={{ __html: cat.icon }} />
                       <span className="mega-cat-name">{cat.name}</span>
