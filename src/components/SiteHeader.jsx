@@ -1,36 +1,32 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 import { useCart } from '../context/useCart'
 import { useTiendaInfo } from '../hooks/useTiendaInfo'
-import { useProductos } from '../hooks/useProductos'
 import {
   ICON_FORROS, ICON_ENTRETELAS, ICON_HOMBRERAS, ICON_GUATAS, ICON_TIZAS,
-  ICON_CIERRES, ICON_OTROS, ICON_TODOS, ICON_MEGA_VER_TODO,
+  ICON_OTROS, ICON_TODOS, ICON_TELAS, ICON_MEGA_VER_TODO,
 } from '../pages/catalogIcons'
 import './SiteHeader.css'
 
-// Los conteos NO se escriben acá: se calculan con los productos que
-// devuelve /api/productos, para que no queden desactualizados cuando
-// se agregue o quite un producto en Alegra.
+// Cada ícono trae un margen interno distinto, así que a igual tamaño unos se
+// veían más grandes que otros. encuadrar() cambia su viewBox por un cuadrado
+// centrado en el dibujo, para que todos ocupen ~90 % del recuadro. Los números
+// se midieron con getBBox() en el navegador.
+const encuadrar = (svg, viewBox) => svg.replace(/viewBox="[^"]*"/, `viewBox="${viewBox}"`)
+
+// Íconos elegidos por Jenny Paola (2026-11-22). Refuerzos usa por ahora el de guatas.
 const MEGA_CATS = [
-  // Refuerzos y Telas para bolsillo usan por ahora íconos de otras
-  // categorías (guatas y forros), hasta tener los suyos.
-  { filter: 'entretelas', icon: ICON_ENTRETELAS, name: 'Entretelas' },
-  { filter: 'forros', icon: ICON_FORROS, name: 'Forros' },
-  { filter: 'refuerzos', icon: ICON_GUATAS, name: 'Refuerzos para saco y pantalón' },
-  { filter: 'telas', icon: ICON_FORROS, name: 'Telas para bolsillo y lonas' },
-  { filter: 'hombreras', icon: ICON_HOMBRERAS, name: 'Hombreras' },
-  { filter: 'tizas', icon: ICON_TIZAS, name: 'Tizas' },
-  { filter: 'botones', icon: ICON_CIERRES, name: 'Botones y cremalleras' },
-  { filter: 'otros', icon: ICON_OTROS, name: 'Otros materiales' },
+  { filter: 'entretelas', icon: encuadrar(ICON_ENTRETELAS, '4.4 5.6 119.6 119.6'), name: 'Entretelas' },
+  { filter: 'forros', icon: encuadrar(ICON_FORROS, '0.5 0.5 127 127'), name: 'Forros' },
+  { filter: 'refuerzos', icon: encuadrar(ICON_GUATAS, '-23.1 -23.1 728.9 728.9'), name: 'Refuerzos para saco y pantalón' },
+  { filter: 'telas', icon: encuadrar(ICON_TELAS, '16.1 26.1 477.8 477.8'), name: 'Telas para bolsillo y lonas' },
+  { filter: 'hombreras', icon: encuadrar(ICON_HOMBRERAS, '-1.25 -1.25 25.3 25.3'), name: 'Hombreras' },
+  { filter: 'tizas', icon: encuadrar(ICON_TIZAS, '0.9 1.4 62.2 62.2'), name: 'Tizas' },
+  { filter: 'botones', icon: encuadrar(ICON_OTROS, '-2.67 -2.67 53.3 53.3'), name: 'Botones y cremalleras' },
+  { filter: 'otros', icon: encuadrar(ICON_TODOS, '-28.4 -28.4 568.9 568.9'), name: 'Otros materiales' },
   { filter: 'todos', icon: ICON_TODOS, name: 'Ver todo' },
 ]
-
-function textoConteo(n) {
-  if (n === null || n === undefined) return ' '   // espacio, evita que salte el layout
-  return n === 1 ? '1 producto' : `${n} productos`
-}
 
 function getInitials(user) {
   const base = user?.nombre?.trim() || user?.email || ''
@@ -50,7 +46,6 @@ export default function SiteHeader({ activeLink }) {
   const { pathname } = useLocation()
   const { totalArticulos, agregadoEn, abrirPanel } = useCart()
   const tienda = useTiendaInfo()
-  const productos = useProductos()
 
   const [navOpen, setNavOpen] = useState(false)
   const [catalogOpen, setCatalogOpen] = useState(false)
@@ -74,15 +69,6 @@ export default function SiteHeader({ activeLink }) {
   const searchInputRef = useRef(null)
   const userMenuRef = useRef(null)
   const navToggleRef = useRef(null)
-
-  // Conteos por categoría para el mega-menú. Si la petición falla, el menú
-  // igual funciona: simplemente no muestra los números.
-  const conteos = useMemo(() => {
-    if (productos.length === 0) return null
-    const acc = { todos: productos.length }
-    for (const p of productos) acc[p.categoria] = (acc[p.categoria] || 0) + 1
-    return acc
-  }, [productos])
 
   useEffect(() => {
     if (searchOpen) {
@@ -171,7 +157,6 @@ export default function SiteHeader({ activeLink }) {
                     <a href="#" className="mega-cat" data-filter={cat.filter} key={cat.filter} onClick={(e) => { e.preventDefault(); goToCatalogFilter(cat.filter) }}>
                       <span className="mega-cat-icon" dangerouslySetInnerHTML={{ __html: cat.icon }} />
                       <span className="mega-cat-name">{cat.name}</span>
-                      <span className="mega-cat-count">{textoConteo(conteos?.[cat.filter])}</span>
                     </a>
                   ))}
                 </div>

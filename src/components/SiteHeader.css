@@ -90,10 +90,9 @@ header nav a.active { color: var(--azul-oficio); font-weight: 700; }
 .mega-cat-icon { color: var(--azul-oficio); display: flex; }
 .mega-cat-icon svg { width: 26px; height: 26px; stroke: currentColor; stroke-width: 0.75px; stroke-linejoin: round; stroke-linecap: round; }
 .mega-cat-icon svg * { vector-effect: non-scaling-stroke; }
-.mega-cat-icon svg[viewBox^="0 0 682"] { stroke-width: 1.3px; }
-.mega-cat[data-filter="cierres"] .mega-cat-icon svg { stroke-width: 1.5px; }
+.mega-cat[data-filter="refuerzos"] .mega-cat-icon svg { stroke-width: 1.3px; }
+.mega-cat[data-filter="telas"] .mega-cat-icon svg { stroke-width: 1.5px; }
 .mega-cat-name { font-size: 0.78rem; font-weight: 600; color: var(--tinta); text-align: center; line-height: 1.2; }
-.mega-cat-count { font-size: 0.68rem; color: var(--gris-calido); }
 .mega-mobile { display: none; }
 .mega-footer { padding-top: 1rem; border-top: 1px solid var(--linea); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .mega-ver-todo {

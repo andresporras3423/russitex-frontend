@@ -1,5 +1,5 @@
 // Las 8 categorías del catálogo, en el orden del menú. Salen de las fichas
-// de producto de Paula (2026-11-21). Deben coincidir con las del backend
+// de producto de Jenny Paola (2026-11-21). Deben coincidir con las del backend
 // (services/categorias.js), que es lo que acepta la base de datos.
 export const CATEGORIAS = [
   { key: 'entretelas', label: 'Entretelas' },
