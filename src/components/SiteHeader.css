@@ -79,8 +79,13 @@ header nav a.active { color: var(--azul-oficio); font-weight: 700; }
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--gris-calido); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--linea);
 }
-.mega-cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 1.2rem; }
+/* minmax(0, 1fr): las 4 columnas miden lo mismo aunque un nombre sea largo
+   ("Refuerzos para saco y pantalón"); con 1fr a secas, el texto ensanchaba su
+   columna. Por eso el nombre puede partirse en dos líneas (white-space: normal,
+   porque "header nav a" pone nowrap). */
+.mega-cats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; margin-bottom: 1.2rem; }
 .mega-cat {
+  white-space: normal; justify-content: flex-start;
   display: flex; flex-direction: column; align-items: center; gap: 0.45rem;
   padding: 0.9rem 0.5rem; border-radius: var(--r-md); cursor: pointer;
   text-decoration: none; transition: all 0.18s; border: 1.5px solid transparent;
@@ -92,7 +97,7 @@ header nav a.active { color: var(--azul-oficio); font-weight: 700; }
 .mega-cat-icon svg * { vector-effect: non-scaling-stroke; }
 .mega-cat[data-filter="refuerzos"] .mega-cat-icon svg { stroke-width: 1.3px; }
 .mega-cat[data-filter="telas"] .mega-cat-icon svg { stroke-width: 1.5px; }
-.mega-cat-name { font-size: 0.78rem; font-weight: 600; color: var(--tinta); text-align: center; line-height: 1.2; }
+.mega-cat-name { font-size: 0.78rem; font-weight: 600; color: var(--tinta); text-align: center; line-height: 1.2; text-wrap: balance; }
 .mega-mobile { display: none; }
 .mega-footer { padding-top: 1rem; border-top: 1px solid var(--linea); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .mega-ver-todo {
